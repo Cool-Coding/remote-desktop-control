@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+    <bean id="encoder" class="cn.yang.common.serialization.ProtobufEncoder" scope="prototype" >
+        <constructor-arg index="0" type="java.lang.Class" value="cn.yang.common.dto.Response"/>
+    </bean>
+    <bean id="decoder" class="cn.yang.common.serialization.ProtobufDecoder" scope="prototype">
+        <constructor-arg index="0" type="java.lang.Class" value="cn.yang.common.dto.Request"/>
+    </bean>
+
+    <bean id="handler" class="cn.yang.server.netty.NettyServerHandler" />
+
+    <bean id="channelInitialize" class="cn.yang.common.ChannelInitializerNew">
+        <constructor-arg index="0" type="java.lang.Class" value="cn.yang.common.dto.Request" />
+        <constructor-arg index="1" type="java.lang.Class" value="cn.yang.common.dto.Response" />
+        <property name="channelHandler" ref="handler" />
+    </bean>
+
+    <bean id="server" class="cn.yang.server.netty.NettyServer" init-method="init">
+      <property name="channelInitialize" ref="channelInitialize" />
+    </bean>
+</beans>

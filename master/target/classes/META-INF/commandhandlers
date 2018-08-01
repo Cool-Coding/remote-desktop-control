@@ -1,0 +1,7 @@
+CONNECT=cn.yang.master.client.commandhandler.ConnectCommandHandler
+CONTROL=cn.yang.master.client.commandhandler.ControlFireCommandHandler
+KEYBOARD=cn.yang.master.client.commandhandler.FireCommandHandler
+MOUSE=cn.yang.master.client.commandhandler.FireCommandHandler
+SCREEN=cn.yang.master.client.commandhandler.ScreenCommandHandler
+TERMINATE=cn.yang.master.client.commandhandler.TerminateFireCommandHandler
+QUALITY=cn.yang.master.client.commandhandler.FireCommandHandler
