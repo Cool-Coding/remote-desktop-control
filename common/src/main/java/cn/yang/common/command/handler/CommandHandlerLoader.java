@@ -1,7 +1,7 @@
 package cn.yang.common.command.handler;
 
 import cn.yang.common.command.Commands;
-import cn.yang.common.constant.ExceptionConstants;
+import cn.yang.common.constant.ExceptionMessageConstants;
 import cn.yang.common.exception.CommandHandlerLoaderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +11,9 @@ import java.io.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static cn.yang.common.constant.ExceptionConstants.COMMANDHANDLERS_FILE_CONFIG_ERROR;
-import static cn.yang.common.constant.ExceptionConstants.COMMANDHANDLERS_FILE_NOT_FOUND;
-import static cn.yang.common.constant.ExceptionConstants.COMMAND_HANDLER_ERROR;
+import static cn.yang.common.constant.ExceptionMessageConstants.COMMANDHANDLERS_FILE_CONFIG_ERROR;
+import static cn.yang.common.constant.ExceptionMessageConstants.COMMANDHANDLERS_FILE_NOT_FOUND;
+import static cn.yang.common.constant.ExceptionMessageConstants.COMMAND_HANDLER_ERROR;
 
 /**
  * @author Cool-Coding
@@ -88,16 +88,18 @@ public class CommandHandlerLoader {
                     return (ICommandHandler) aClass.newInstance();
                 }
             }
-            throw new CommandHandlerLoaderException(String.format("%s %s",command.name(),ExceptionConstants.COMMAND_HANDLER_NOT_FOUND));
+            throw new CommandHandlerLoaderException(String.format("%s %s",command.name(), ExceptionMessageConstants.COMMAND_HANDLER_NOT_FOUND));
         }catch (Exception e){
             LOGGER.error(e.getMessage(),e);
             throw  new CommandHandlerLoaderException(e.getMessage(),e);
         }
     }
 
-    public static Class<?> getSuperestInterface(Class aClass){
+    private static Class<?> getSuperestInterface(Class aClass){
         //如果没有父类，则返回null
-        if (aClass==null) return null;
+        if (aClass==null) {
+            return null;
+        }
 
         //获取类继承的接口
         final Class<?>[] interfaces = aClass.getInterfaces();

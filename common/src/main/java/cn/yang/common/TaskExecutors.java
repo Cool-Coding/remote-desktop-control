@@ -62,11 +62,7 @@ public class TaskExecutors {
         SCHEDULED_EXECUTOR_SERVICE.schedule(task,delay,TimeUnit.MILLISECONDS);
     }
 
-    public static void submit(Runnable task,int delay,int period){
-        SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(task,delay,period,TimeUnit.MILLISECONDS);
-    }
-
-    public static void shutdown(){
+   public static void shutdown(){
         SCHEDULED_EXECUTOR_SERVICE.shutdown();
-    }
+   }
 }

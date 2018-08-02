@@ -15,5 +15,6 @@ public class ConfigConstants {
     public static final String SERVER_IP="server.ip";
     public static final String SERVER_PORT="server.port";
     public static final String ERROR_COUNT="error.count";
+    public static final String DESKTOP_BEAN_ID="desktop.bean.id";
 
 }

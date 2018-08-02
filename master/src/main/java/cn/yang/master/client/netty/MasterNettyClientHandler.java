@@ -5,7 +5,7 @@ import cn.yang.common.command.handler.CommandHandlerLoader;
 import cn.yang.common.command.handler.ICommandHandler;
 import cn.yang.common.exception.CommandHandlerLoaderException;
 import cn.yang.master.client.commandhandler.AbstractMasterFireCommandHandler;
-import cn.yang.master.client.constant.ExceptionConstants;
+import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.master.client.exception.FireCommandHandlerException;
 import cn.yang.master.client.exception.MasterChannelHandlerException;
 import io.netty.channel.ChannelHandler;
@@ -50,9 +50,9 @@ public class MasterNettyClientHandler extends SimpleChannelInboundHandler<Respon
     }
 
     @SuppressWarnings("unchecked")
-    public void sendCommand(String puppetName,Enum<Commands> command,Object data) throws MasterChannelHandlerException{
+    void sendCommand(String puppetName, Enum<Commands> command, Object data) throws MasterChannelHandlerException{
         if (StringUtils.isEmpty(puppetName)){
-            throw new MasterChannelHandlerException(ExceptionConstants.PUPPET_NAME_EMPTY);
+            throw new MasterChannelHandlerException(ExceptionMessageConstants.PUPPET_NAME_EMPTY);
         }
 
         final AbstractMasterFireCommandHandler fireCommandHandler = getFireCommandHandler(command);
@@ -71,7 +71,7 @@ public class MasterNettyClientHandler extends SimpleChannelInboundHandler<Respon
             if (commandHandler instanceof AbstractMasterFireCommandHandler) {
                 return (AbstractMasterFireCommandHandler) commandHandler;
             } else {
-                throw new MasterChannelHandlerException(ExceptionConstants.FIRE_COMMAND_HANDLE_ERROR);
+                throw new MasterChannelHandlerException(ExceptionMessageConstants.FIRE_COMMAND_HANDLE_ERROR);
             }
         }catch (CommandHandlerLoaderException e){
             throw new MasterChannelHandlerException(e.getMessage(),e);

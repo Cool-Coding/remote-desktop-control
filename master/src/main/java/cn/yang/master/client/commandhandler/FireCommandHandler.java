@@ -2,14 +2,10 @@ package cn.yang.master.client.commandhandler;
 
 import cn.yang.common.command.Commands;
 import cn.yang.common.dto.Request;
-import cn.yang.common.dto.Response;
 import cn.yang.common.exception.CommandHandlerException;
-import cn.yang.common.util.BeanUtil;
-import cn.yang.master.client.constant.ExceptionConstants;
+import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.master.client.exception.ConnectionException;
 import cn.yang.master.client.exception.FireCommandHandlerException;
-import cn.yang.master.client.ui.MasterDesktop;
-import io.netty.channel.ChannelHandlerContext;
 
 /**
  * @author Cool-Coding
@@ -23,7 +19,7 @@ public class FireCommandHandler extends AbstractMasterFireCommandHandler<Object>
     @Override
     public void fire(String puppetName,Enum<Commands> command,Object data) throws FireCommandHandlerException {
         if (puppetName==null){
-            throw new FireCommandHandlerException(ExceptionConstants.PUPPET_NAME_EMPTY);
+            throw new FireCommandHandlerException(ExceptionMessageConstants.PUPPET_NAME_EMPTY);
         }
 
         final Request request = buildRequest(command, puppetName, data);

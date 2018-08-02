@@ -7,6 +7,7 @@ import java.io.IOException;
 /**
  * @author Cool-Coding
  *         2018/7/25
+ *Master启动器
  */
 public class MasterStarter {
     public static void main(String[] args){

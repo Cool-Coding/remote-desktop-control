@@ -4,7 +4,7 @@ import cn.yang.common.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.master.client.exception.MasterClientException;
-import cn.yang.master.client.ui.PuppetScreen;
+import cn.yang.master.client.ui.IDisplayPuppet;
 import cn.yang.master.client.netty.MasterNettyClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +14,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -41,9 +39,9 @@ public class MouseListener extends MouseAdapter {
     private static final Logger LOGGER= LoggerFactory.getLogger(MouseListener.class);
 
     private MasterNettyClient masterClient;
-    private PuppetScreen puppetScreen;
+    private IDisplayPuppet puppetScreen;
 
-    public MouseListener(PuppetScreen puppetScreen){
+    public MouseListener(IDisplayPuppet puppetScreen){
         this.puppetScreen=puppetScreen;
         masterClient = BeanUtil.getBean(MasterNettyClient.class, "masterClient");
     }

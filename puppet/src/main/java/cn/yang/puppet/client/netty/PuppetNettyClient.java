@@ -6,9 +6,9 @@ import cn.yang.common.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.constant.Constants;
 import cn.yang.common.sequence.SequenceGenerator;
-import cn.yang.common.util.SequenceGeneratorUtil;
+import cn.yang.common.util.ExtensionLoader;
 import cn.yang.puppet.client.constant.ConfigConstants;
-import cn.yang.puppet.client.constant.ExceptionConstants;
+import cn.yang.puppet.client.constant.ExceptionMessageConstants;
 import cn.yang.common.util.PropertiesUtil;
 import cn.yang.puppet.client.exception.PuppetClientException;
 import io.netty.bootstrap.Bootstrap;
@@ -23,7 +23,7 @@ import java.io.IOException;
 
 /**
  * @author Cool-Coding
- * @date 2018/7/24
+ * 2018/7/24
  */
 public class PuppetNettyClient {
     /**
@@ -58,9 +58,16 @@ public class PuppetNettyClient {
                     .handler(channelInitialize);
             final ChannelFuture sync = bootstrap.connect(host, port).sync();
             if (channelInitialize.getChannelHandler() instanceof PuppetNettyClientHandler) {
-                sync.channel().writeAndFlush(buildRequest());
+                //启动一个独立线程，以免阻塞spring实例化bean
+                TaskExecutors.submit(()->{
+                    try {
+                        sync.channel().writeAndFlush(buildRequest());
+                    }catch (Exception e){
+                        LOGGER.error(e.getMessage(),e);
+                    }
+                },0);
             } else {
-                throw new RuntimeException(ExceptionConstants.PUPPET_HANDLER_ERROR);
+                throw new RuntimeException(ExceptionMessageConstants.PUPPET_HANDLER_ERROR);
             }
             sync.channel().closeFuture().sync();
         }catch (Exception e){
@@ -82,11 +89,11 @@ public class PuppetNettyClient {
         this.channelInitialize = channelInitialize;
     }
 
-    public Request buildRequest() throws PuppetClientException{
+    private Request buildRequest() throws PuppetClientException{
         try {
-            final SequenceGenerator generator = SequenceGeneratorUtil.getSequenceGenerator();
+            final SequenceGenerator generator = ExtensionLoader.getSequenceGenerator();
             final Request request = new Request();
-            request.setRequestId(""+Constants.PUPPET + generator.next() );
+            request.setId(""+Constants.PUPPET + generator.next() );
             request.setCommand(Commands.CONNECT);
             request.setPuppetName("puppet");
             return request;

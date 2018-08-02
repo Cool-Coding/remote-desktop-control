@@ -3,7 +3,7 @@ package cn.yang.puppet.client.commandhandler;
 import cn.yang.common.InputEvent.MouseEvent;
 import cn.yang.common.dto.Response;
 import cn.yang.common.exception.CommandHandlerException;
-import cn.yang.puppet.client.constant.ExceptionConstants;
+import cn.yang.puppet.client.constant.ExceptionMessageConstants;
 import cn.yang.puppet.client.exception.NullValueException;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -22,45 +22,45 @@ public class MouseEventCommandHandler extends AbstractPuppetCommandHandler {
 
     @Override
     protected void handle0(ChannelHandlerContext ctx, Response response) throws Exception {
-        Object obj=response.getResult();
+        Object obj=response.getValue();
 
         if (obj==null){
-            LOGGER.error(cn.yang.puppet.client.constant.ExceptionConstants.MOUSE_EVENT_NULL);
-            throw new NullValueException(ExceptionConstants.MOUSE_EVENT_NULL);
+            error(response, ExceptionMessageConstants.MOUSE_EVENT_NULL);
+            throw new NullValueException(ExceptionMessageConstants.MOUSE_EVENT_NULL);
         }
 
         if (!(obj instanceof MouseEvent)){
-            LOGGER.error(cn.yang.puppet.client.constant.ExceptionConstants.MOUSE_EVENT_ERROR);
-            throw new ClassCastException(ExceptionConstants.MOUSE_EVENT_ERROR);
+            error(response, ExceptionMessageConstants.MOUSE_EVENT_ERROR);
+            throw new ClassCastException(ExceptionMessageConstants.MOUSE_EVENT_ERROR);
         }
 
         MouseEvent mouseEvent=(MouseEvent)obj;
         if(mouseEvent.isClicked()){
-            puppetDesktop.mouseClick(mouseEvent);
+            REPLAY.mouseClick(mouseEvent);
         }
 
         if(mouseEvent.isDoubleClicked()){
-            puppetDesktop.mouseDoubleClick(mouseEvent);
+            REPLAY.mouseDoubleClick(mouseEvent);
         }
 
         if(mouseEvent.isDragged()){
-            puppetDesktop.mouseDragged(mouseEvent,mouseEvent.getSite());
+            REPLAY.mouseDragged(mouseEvent,mouseEvent.getSite());
         }
 
         if(mouseEvent.isMouseMoved()){
-            puppetDesktop.mouseMove(mouseEvent.getSite());
+            REPLAY.mouseMove(mouseEvent.getSite());
         }
 
         if(mouseEvent.isMouseWheel()){
-            puppetDesktop.mouseWheel(mouseEvent);
+            REPLAY.mouseWheel(mouseEvent);
         }
 
         if(mouseEvent.isMousePressed()){
-            puppetDesktop.mousePress(mouseEvent);
+            REPLAY.mousePress(mouseEvent);
         }
 
         if(mouseEvent.isMouseReleased()){
-            puppetDesktop.mouseRelease(mouseEvent);
+            REPLAY.mouseRelease(mouseEvent);
         }
 
     }

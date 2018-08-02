@@ -4,7 +4,7 @@ import cn.yang.common.InputEvent.MasterKeyEvent;
 import cn.yang.common.command.Commands;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.master.client.exception.MasterClientException;
-import cn.yang.master.client.ui.PuppetScreen;
+import cn.yang.master.client.ui.IDisplayPuppet;
 import cn.yang.master.client.netty.MasterNettyClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +19,11 @@ import java.awt.event.KeyEvent;
  */
 public class KeyBoardListener extends KeyAdapter {
 
-    private PuppetScreen puppetScreen;
+    private IDisplayPuppet puppetScreen;
     private MasterNettyClient masterClient;
     private static final Logger LOGGER= LoggerFactory.getLogger(KeyBoardListener.class);
 
-    public KeyBoardListener(PuppetScreen puppetScreen){
+    public KeyBoardListener(IDisplayPuppet puppetScreen){
         this.puppetScreen=puppetScreen;
         masterClient = BeanUtil.getBean(MasterNettyClient.class, "masterClient");
     }
@@ -40,7 +40,7 @@ public class KeyBoardListener extends KeyAdapter {
             fireCommand(e,false);
     }
 
-    public void fireCommand(KeyEvent e,boolean pressed){
+    private void fireCommand(KeyEvent e, boolean pressed){
         final MasterKeyEvent keyEvent = new MasterKeyEvent();
         keyEvent.setPressed(pressed);
         if (e.isAltDown()){
@@ -60,9 +60,5 @@ public class KeyBoardListener extends KeyAdapter {
         }catch (MasterClientException e2){
             JOptionPane.showMessageDialog(null,e2.getMessage());
         }
-    }
-
-    public void setMasterClient(MasterNettyClient masterClient) {
-        this.masterClient = masterClient;
     }
 }

@@ -10,8 +10,8 @@ import cn.yang.server.netty.ChannelPair;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
-import static cn.yang.common.constant.Constants.CONNECTION_SUCCEED;
-import static cn.yang.common.constant.ExceptionConstants.CONNECT_PUPPET_FAILED;
+import static cn.yang.server.constant.MessageConstants.CONNECTION_SUCCEED;
+import static cn.yang.common.constant.ExceptionMessageConstants.CONNECT_PUPPET_FAILED;
 import static cn.yang.server.constant.ConfigConstants.CONFIG_FILE_PATH;
 import static cn.yang.server.constant.ConfigConstants.MASTER_CONNECT_PUPPET_RETRY_INTERVAL;
 import static cn.yang.server.constant.ConfigConstants.MASTER_CONNECT_PUPPET_RETRY_TIMES;

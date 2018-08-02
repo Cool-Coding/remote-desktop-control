@@ -4,7 +4,7 @@ package cn.yang.puppet.client.constant;
  * @author Cool-Coding
  *         2018/7/26
  */
-public class ExceptionConstants {
+public class ExceptionMessageConstants {
     public static final String PUPPET_HANDLER_ERROR="puppet处理类必须为PuppetNettyClientHandler";
     public static final String KEYBOARD_EVENT_ERROR="服务器传过来的KEYBAORD事件类型错误";
     public static final String KEYBOARD_EVENT_NULL="服务器传过来的KEYBAORD事件为空";

@@ -13,5 +13,4 @@ public class ConfigConstants {
     public static final String RECONNECT_INTERVAL="reconnect.interval";
     public static final String SERVER_IP="server.ip";
     public static final String SERVER_PORT="server.port";
-
 }

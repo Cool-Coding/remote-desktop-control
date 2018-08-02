@@ -1,24 +1,21 @@
 package cn.yang.common.command;
 
-import java.io.Serializable;
-
 /**
  * @author cool-coding
- * @date 2018/7/27
+ * 2018/7/27
+ * 命令
  */
 public enum Commands{
-
-
     /**
      * 控制端或傀儡端连接服务器时的命令
      */
     CONNECT,
 
     /**
-     * 连接命令
+     * 控制命令
      * 1.主人向服务器发送控制请求
-     * 2.服务器将连接命令发给傀儡
-     * 3.傀儡收到连接命令，将主动连接服务器
+     * 2.服务器将控制命令发给傀儡
+     * 3.傀儡收到控制命令，将向服务器发送截屏
      */
     CONTROL,
 

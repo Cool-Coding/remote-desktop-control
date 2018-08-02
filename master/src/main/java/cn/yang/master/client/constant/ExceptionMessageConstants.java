@@ -4,7 +4,7 @@ package cn.yang.master.client.constant;
  * @author cool-coding
  * @date 2018/7/26
  */
-public class ExceptionConstants {
+public class ExceptionMessageConstants {
     public static final String HANDLER_NOT_SUPPORTED="not supported channelHandler";
     public static final String PUPPET_NAME_EMPTY="the puppet's name is required";
     public static final String MASTER_FIRE_COMMAND_ERROR="master can't handle this command";

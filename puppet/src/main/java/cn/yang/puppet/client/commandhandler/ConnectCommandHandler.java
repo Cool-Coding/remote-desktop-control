@@ -6,10 +6,10 @@ import cn.yang.common.command.Commands;
 import cn.yang.common.util.PropertiesUtil;
 import cn.yang.puppet.client.constant.ConfigConstants;
 import cn.yang.common.exception.CommandHandlerException;
+import cn.yang.puppet.client.constant.MessageConstants;
 import cn.yang.puppet.client.exception.HeartBeatException;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -33,23 +33,23 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
 
     @Override
     protected void handle0(ChannelHandlerContext ctx, Response response) throws Exception {
-        sendHeartBeat(ctx);
+        sendHeartBeat(ctx,response);
     }
 
-    public void sendHeartBeat(ChannelHandlerContext ctx) throws HeartBeatException {
+    private void sendHeartBeat(ChannelHandlerContext ctx,Response response) throws HeartBeatException {
         try {
             //发送心跳
             int interval = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.HEARTBEAT_INTERVAL);
             ctx.executor().scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    Request heartBeatRequest = null;
+                    Request heartBeatRequest;
                     if(isUnderControlled()){
-                        final byte[] bytes = puppetDesktop.getScreenSnapshot();
+                        final byte[] bytes = REPLAY.getScreenSnapshot();
                         heartBeatRequest = buildRequest(Commands.SCREEN, bytes);
                     }else {
                         heartBeatRequest=getHeartBeatRequest();
-                        LOGGER.debug("send a heartbeat to {}:{}", host, port);
+                        debug(response, MessageConstants.SEND_A_HEARTBEAT,host,String.valueOf(port));
                     }
 
                     if (heartBeatRequest!=null) {

@@ -2,6 +2,7 @@ package cn.yang.master.client.ui;
 
 import cn.yang.common.TaskExecutors;
 import cn.yang.common.command.Commands;
+import cn.yang.common.util.BeanUtil;
 import cn.yang.master.client.exception.MasterClientException;
 import cn.yang.master.client.netty.MasterNettyClient;
 import org.springframework.util.StringUtils;
@@ -9,7 +10,6 @@ import org.springframework.util.StringUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 /**
@@ -18,7 +18,7 @@ import java.util.HashMap;
  */
 public class MasterDesktop extends JFrame implements ActionListener{
     private MasterNettyClient masterClient;
-    private HashMap<String,PuppetScreen> puppets=new HashMap<>();
+    private HashMap<String,IDisplayPuppet> puppets=new HashMap<>();
 
     private JTextField puppetNameTextField;
 
@@ -103,21 +103,21 @@ public class MasterDesktop extends JFrame implements ActionListener{
     }
 
     /**
-     * 启动显示傀儡桌面的窗口
+     * 启动傀儡桌面的窗口
      * @param puppetName
      */
     public void lanuch(String puppetName){
-        final PuppetScreen puppetScreen = new PuppetScreen(puppetName,this);
+        final IDisplayPuppet puppetScreen = BeanUtil.getBean(IDisplayPuppet.class,puppetName);
         puppets.put(puppetName,puppetScreen);
         puppetScreen.lanuch();
     }
 
-    public void refreshScreen(String puppetName, BufferedImage image) {
+    public void refreshScreen(String puppetName,byte[] bytes) {
         //如果当前正处理控制状态，则显示傀儡发过来的屏幕截图，否则忽略
         // (当向傀儡发送终止命令后，在傀儡收到命令前，仍会发送屏幕截图)
-        final PuppetScreen puppetScreen = puppets.get(puppetName);
+        final IDisplayPuppet puppetScreen = puppets.get(puppetName);
         if (puppetScreen != null) {
-            puppetScreen.refresh(image);
+            puppetScreen.refresh(bytes);
         }
     }
 

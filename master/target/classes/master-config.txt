@@ -1,3 +1,4 @@
 reconnect.interval=2000
 server.ip=192.168.56.2
 server.port=1234
+desktop.bean.id=desktop

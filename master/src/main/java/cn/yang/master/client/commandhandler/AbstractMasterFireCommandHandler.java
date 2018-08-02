@@ -3,7 +3,7 @@ package cn.yang.master.client.commandhandler;
 import cn.yang.common.command.Commands;
 import cn.yang.common.dto.Response;
 import cn.yang.common.exception.CommandHandlerException;
-import cn.yang.master.client.constant.ExceptionConstants;
+import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.master.client.exception.FireCommandHandlerException;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -19,7 +19,7 @@ public abstract class AbstractMasterFireCommandHandler<T> extends AbstractMaster
 
     @Override
     protected void handle0(ChannelHandlerContext ctx, Response response) throws Exception {
-        throw new UnsupportedOperationException(String.format("%s %s",ExceptionConstants.MASTER_FIRE_COMMAND_ERROR,response.getCommand()));
+        throw new UnsupportedOperationException(String.format("%s %s", ExceptionMessageConstants.MASTER_FIRE_COMMAND_ERROR,response.getCommand()));
     }
 
     /**
@@ -27,6 +27,7 @@ public abstract class AbstractMasterFireCommandHandler<T> extends AbstractMaster
      * @param puppetName 傀儡名称
      * @param command 命令
      * @param data 数据
+     *
      */
     public abstract void fire(String puppetName, Enum<Commands> command, T data) throws FireCommandHandlerException;
 }

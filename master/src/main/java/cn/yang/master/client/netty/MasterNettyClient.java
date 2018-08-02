@@ -6,9 +6,9 @@ import cn.yang.common.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.constant.Constants;
 import cn.yang.common.sequence.SequenceGenerator;
-import cn.yang.common.util.SequenceGeneratorUtil;
+import cn.yang.common.util.ExtensionLoader;
 import cn.yang.common.util.MacUtils;
-import cn.yang.master.client.constant.ExceptionConstants;
+import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.common.util.PropertiesUtil;
 import cn.yang.master.client.constant.ConfigConstants;
 
@@ -27,7 +27,8 @@ import java.io.IOException;
 
 /**
  * @author Cool-Coding
- * @date 2018/7/24
+ * 2018/7/24
+ * Netty客户端，负责控制端与服务器的通信，包括所有请求数据的发送接收
  */
 public class MasterNettyClient {
     /**
@@ -43,6 +44,9 @@ public class MasterNettyClient {
     private String host;
     private int port;
 
+    /**
+     * 初始化
+     */
     public void init(){
         group = new NioEventLoopGroup();
         try {
@@ -53,6 +57,10 @@ public class MasterNettyClient {
         }
     }
 
+    /**
+     * 启动时连接服务器
+     * @throws Exception
+     */
     public void connect() throws Exception{
         final Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
@@ -72,16 +80,13 @@ public class MasterNettyClient {
         },0);
     }
 
-    private MasterNettyClientHandler getChannelHandler(){
-        if (channelInitialize.getChannelHandler() instanceof MasterNettyClientHandler) {
-            return  (MasterNettyClientHandler) channelInitialize.getChannelHandler();
-        } else {
-            final String message = String.format("%s %s",ExceptionConstants.HANDLER_NOT_SUPPORTED, channelInitialize.getChannelHandler());
-            LOGGER.error(message);
-            throw new RuntimeException(message);
-        }
-    }
-
+    /**
+     * 发送命令
+     * @param puppetName 傀儡名
+     * @param command    命令
+     * @param data       数据
+     * @throws MasterClientException
+     */
     public void fireCommand(String puppetName,Enum<Commands> command,Object data) throws MasterClientException{
         try {
             getChannelHandler().sendCommand(puppetName,command,data);
@@ -90,26 +95,37 @@ public class MasterNettyClient {
         }
     }
 
-    public void setChannelInitialize(ChannelInitializerNew channelInitialize) {
-        this.channelInitialize = channelInitialize;
+
+    private MasterNettyClientHandler getChannelHandler(){
+        if (channelInitialize.getChannelHandler() instanceof MasterNettyClientHandler) {
+            return  (MasterNettyClientHandler) channelInitialize.getChannelHandler();
+        } else {
+            final String message = String.format("%s %s", ExceptionMessageConstants.HANDLER_NOT_SUPPORTED, channelInitialize.getChannelHandler());
+            LOGGER.error(message);
+            throw new RuntimeException(message);
+        }
     }
 
-    public Request buildConnectRequest() throws MasterClientException{
+    private Request buildConnectRequest() throws MasterClientException{
         String mac= MacUtils.getMAC();
         if (StringUtils.isEmpty(mac)){
             return null;
         }
 
         try {
-            final SequenceGenerator generator = SequenceGeneratorUtil.getSequenceGenerator();
+            final SequenceGenerator generator = ExtensionLoader.getSequenceGenerator();
 
             Request request = new Request();
-            request.setRequestId(Constants.MASTER + mac + generator.next());
+            request.setId(Constants.MASTER + mac + generator.next());
             request.setCommand(Commands.CONNECT);
             return request;
         }catch (IOException e){
           throw  new MasterClientException(e.getMessage(),e);
         }
+    }
+
+    public void setChannelInitialize(ChannelInitializerNew channelInitialize) {
+        this.channelInitialize = channelInitialize;
     }
 
     public void destroy(){

@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static cn.yang.common.constant.ExceptionConstants.REQUIRED_PUPPET_NAME;
-import static cn.yang.common.constant.ExceptionConstants.REQUIRED_REQUESTID;
+import static cn.yang.common.constant.ExceptionMessageConstants.REQUIRED_PUPPET_NAME;
+import static cn.yang.common.constant.ExceptionMessageConstants.REQUIRED_REQUESTID;
 
 /**
  * @author Cool-Coding
@@ -50,14 +50,14 @@ public abstract class AbstractServerCommandHandler implements ICommandHandler<Re
 
     @Override
     public void handle(ChannelHandlerContext ctx, Request request) throws Exception {
-        if(StringUtils.isEmpty(request.getRequestId())){
+        if(StringUtils.isEmpty(request.getId())){
             error(request,REQUIRED_REQUESTID);
             sendError(request,ctx,REQUIRED_REQUESTID);
             return;
         }
 
         //除了控制端请求连接不要求PuppetName有值外，其它命令都PuppetName必须有值
-        boolean masterRequestConnect=Constants.MASTER == request.getRequestId().charAt(0) && request.getCommand()== Commands.CONNECT;
+        boolean masterRequestConnect=Constants.MASTER == request.getId().charAt(0) && request.getCommand()== Commands.CONNECT;
         if(!masterRequestConnect){
             if(StringUtils.isEmpty(request.getPuppetName())) {
                 error(request,REQUIRED_PUPPET_NAME);
@@ -72,7 +72,7 @@ public abstract class AbstractServerCommandHandler implements ICommandHandler<Re
     protected void sendError(Request request, ChannelHandlerContext ctx, String e){
         Response response=new Response();
         response.setPuppetName(request.getPuppetName());
-        response.setRequestId(request.getRequestId());
+        response.setId(request.getId());
         response.setError(new ServerException(e));
         ctx.writeAndFlush(response);
     }
@@ -84,10 +84,10 @@ public abstract class AbstractServerCommandHandler implements ICommandHandler<Re
 
     protected Response buildResponse(Request request,Enum<Commands> command, Object result){
         Response response=new Response();
-        response.setRequestId(request.getRequestId());
+        response.setId(request.getId());
         response.setPuppetName(request.getPuppetName());
         response.setCommand(command);
-        response.setResult(result);
+        response.setValue(result);
         return response;
     }
 

@@ -2,10 +2,10 @@ package cn.yang.puppet.client.commandhandler;
 
 import cn.yang.common.dto.Response;
 import cn.yang.common.exception.CommandHandlerException;
-import cn.yang.puppet.client.constant.ExceptionConstants;
+import cn.yang.puppet.client.constant.ExceptionMessageConstants;
 import cn.yang.puppet.client.exception.NullValueException;
+import cn.yang.puppet.client.ui.PuppetDesktop;
 import io.netty.channel.ChannelHandlerContext;
-import org.springframework.cache.support.NullValue;
 
 /**
  * @author Cool-Coding
@@ -19,18 +19,18 @@ public class QualityCommandHandler extends AbstractPuppetCommandHandler {
 
     @Override
     protected void handle0(ChannelHandlerContext ctx, Response request) throws Exception {
-        final Object result = request.getResult();
+        final Object result = request.getValue();
         if (result==null){
-            LOGGER.error(ExceptionConstants.QUALITY_EVENT_VALUE_NULL);
-            throw new NullValueException(ExceptionConstants.QUALITY_EVENT_VALUE_NULL);
+            LOGGER.error(ExceptionMessageConstants.QUALITY_EVENT_VALUE_NULL);
+            throw new NullValueException(ExceptionMessageConstants.QUALITY_EVENT_VALUE_NULL);
         }
 
-        if (!(request.getResult() instanceof Integer)){
-            LOGGER.error(ExceptionConstants.QUALITY_EVENT_VALUE_ERROR);
-            throw new ClassCastException(ExceptionConstants.QUALITY_EVENT_VALUE_ERROR);
+        if (!(request.getValue() instanceof Integer)){
+            LOGGER.error(ExceptionMessageConstants.QUALITY_EVENT_VALUE_ERROR);
+            throw new ClassCastException(ExceptionMessageConstants.QUALITY_EVENT_VALUE_ERROR);
         }
 
 
-        getPuppetDesktop().setQuality((Integer)result);
+        ((PuppetDesktop) getReplay()).setQuality((Integer)result);
     }
 }

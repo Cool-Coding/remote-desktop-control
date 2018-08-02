@@ -2,12 +2,12 @@ package cn.yang.server.commandhandler;
 
 import cn.yang.common.dto.Request;
 import cn.yang.common.command.Commands;
-import cn.yang.common.constant.ExceptionConstants;
+import cn.yang.common.constant.ExceptionMessageConstants;
 import cn.yang.server.netty.ChannelPair;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
-import static cn.yang.common.constant.ExceptionConstants.PUPPET_CONNECTION_LOST;
+import static cn.yang.common.constant.ExceptionMessageConstants.PUPPET_CONNECTION_LOST;
 
 /**
  * @author Cool-Coding
@@ -23,7 +23,7 @@ public class TerminateCommandHandler extends AbstractServerCommandHandler{
         }
         //检查傀儡端连接是否正常
         if (channelPair==null || channelPair.getPuppetChannel()==null || !channelPair.getPuppetChannel().isOpen()){
-            error(request,ExceptionConstants.PUPPET_CONNECTION_LOST);
+            error(request, ExceptionMessageConstants.PUPPET_CONNECTION_LOST);
             sendError(request, ctx,PUPPET_CONNECTION_LOST);
             return;
         }

@@ -8,9 +8,9 @@ import cn.yang.server.netty.ChannelPair;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
-import static cn.yang.common.constant.Constants.CONNECTION_SUCCEED;
-import static cn.yang.common.constant.ExceptionConstants.CONNECTION_EXIST;
-import static cn.yang.common.constant.ExceptionConstants.WRONG_CLIENT_TYPE;
+import static cn.yang.server.constant.MessageConstants.CONNECTION_SUCCEED;
+import static cn.yang.common.constant.ExceptionMessageConstants.CONNECTION_EXIST;
+import static cn.yang.common.constant.ExceptionMessageConstants.WRONG_CLIENT_TYPE;
 
 /**
  * @author Cool-Coding
@@ -19,7 +19,7 @@ import static cn.yang.common.constant.ExceptionConstants.WRONG_CLIENT_TYPE;
 public class ConnectionCommandHandler extends AbstractServerCommandHandler {
     @Override
     public void handle0(ChannelHandlerContext ctx, Request request) throws Exception {
-        String requestId=request.getRequestId();
+        String requestId=request.getId();
         switch (requestId.charAt(0)){
             case Constants.MASTER:
                 handleMaster(ctx,request);

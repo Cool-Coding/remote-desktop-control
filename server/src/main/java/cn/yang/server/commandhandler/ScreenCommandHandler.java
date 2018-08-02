@@ -6,10 +6,8 @@ import cn.yang.server.netty.ChannelPair;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.awt.image.BufferedImage;
-
-import static cn.yang.common.constant.ExceptionConstants.MASTER_CONNECTION_LOST;
-import static cn.yang.common.constant.ExceptionConstants.WRONG_CONNECT_VALUE;
+import static cn.yang.common.constant.ExceptionMessageConstants.MASTER_CONNECTION_LOST;
+import static cn.yang.common.constant.ExceptionMessageConstants.WRONG_CONNECT_VALUE;
 
 /**
  * @author Cool-Coding

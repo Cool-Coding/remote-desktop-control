@@ -5,11 +5,12 @@ import cn.yang.common.dto.Request;
 import cn.yang.common.dto.Response;
 import cn.yang.common.command.handler.ICommandHandler;
 import cn.yang.common.constant.Constants;
-import cn.yang.common.constant.ExceptionConstants;
+import cn.yang.common.constant.ExceptionMessageConstants;
 import cn.yang.common.exception.CommandHandlerException;
 import cn.yang.common.exception.ResponseHandleException;
 import cn.yang.common.sequence.SequenceGenerator;
-import cn.yang.common.util.SequenceGeneratorUtil;
+import cn.yang.common.util.BeanUtil;
+import cn.yang.common.util.ExtensionLoader;
 import cn.yang.common.util.MacUtils;
 import cn.yang.master.client.exception.ConnectionException;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * @author Cool-Coding
@@ -31,7 +33,7 @@ public abstract class AbstractMasterCommandHandler implements ICommandHandler<Re
     /**
      * 序号生成器
      */
-    private static  SequenceGenerator generator;
+    private static final SequenceGenerator generator= BeanUtil.getBean(SequenceGenerator.class);
 
 
     private static ChannelHandlerContext ctx;
@@ -40,23 +42,24 @@ public abstract class AbstractMasterCommandHandler implements ICommandHandler<Re
     public AbstractMasterCommandHandler() throws CommandHandlerException {
         LOGGER = LoggerFactory.getLogger(this.getClass());
 
-        if(generator==null) {
+        //sequence generator is  maintained in spring xml instead of txt
+        /*if(generator==null) {
             try {
-                generator = SequenceGeneratorUtil.getSequenceGenerator();
+                generator = ExtensionLoader.loadSingleObject(SequenceGenerator.class);
             }catch (IOException e){
                 LOGGER.error(e.getMessage(),e);
                 throw new CommandHandlerException(e.getMessage(),e);
             }
-        }
+        }*/
     }
 
     @Override
     public void handle(ChannelHandlerContext ctx, Response response) throws Exception {
         final Enum<Commands> command = response.getCommand();
         if (command==null){
-            LOGGER.error(ExceptionConstants.REQUIRED_COMMAND);
+            error(response, ExceptionMessageConstants.REQUIRED_COMMAND);
             ctx.channel().close();
-            throw new ResponseHandleException(ExceptionConstants.REQUIRED_COMMAND);
+            throw new ResponseHandleException(ExceptionMessageConstants.REQUIRED_COMMAND);
         }
 
         handle0(ctx,response);
@@ -72,7 +75,7 @@ public abstract class AbstractMasterCommandHandler implements ICommandHandler<Re
         }
 
         Request request = new Request();
-        request.setRequestId(Constants.MASTER + mac + generator.next());
+        request.setId(Constants.MASTER + mac + generator.next());
         request.setCommand(command);
         request.setPuppetName(puppetName);
         request.setValue(obj);
@@ -87,8 +90,44 @@ public abstract class AbstractMasterCommandHandler implements ICommandHandler<Re
         if (ctx!=null && ctx.channel()!=null && ctx.channel().isOpen()){
             ctx.writeAndFlush(request);
         }else{
-            LOGGER.error(cn.yang.master.client.constant.ExceptionConstants.CONNECTION_SERVER_FAILED);
-            throw new ConnectionException(cn.yang.master.client.constant.ExceptionConstants.CONNECTION_SERVER_FAILED);
+            error(request, cn.yang.master.client.constant.ExceptionMessageConstants.CONNECTION_SERVER_FAILED);
+            throw new ConnectionException(cn.yang.master.client.constant.ExceptionMessageConstants.CONNECTION_SERVER_FAILED);
         }
     }
+    void error(Request request,String... message){
+        LOGGER.error("{}:{}",request, Arrays.toString(message));
+    }
+
+    void debug(Request request,String... message){
+        LOGGER.debug("{}:{}",request, Arrays.toString(message));
+    }
+
+    void info(Request request,String... message){
+        LOGGER.info("{}:{}",request, Arrays.toString(message));
+    }
+
+    void warn(Request request,String... message){
+        LOGGER.warn("{}:{}",request, Arrays.toString(message));
+    }
+
+    void error(Response response,String message){
+        LOGGER.error("{}:{}",response,message);
+    }
+
+    void debug(Response response,String message){
+        LOGGER.debug("{}:{}",response,message);
+    }
+
+    void debug(String format,String message){
+        LOGGER.debug(format,message);
+    }
+
+    void info(Response response,String message){
+        LOGGER.info("{}:{}",response,message);
+    }
+
+    void warn(Response response,String message){
+        LOGGER.warn("{}:{}",response,message);
+    }
+
 }
