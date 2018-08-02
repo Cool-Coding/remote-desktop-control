@@ -5,10 +5,8 @@ import cn.yang.common.dto.Response;
 import cn.yang.common.command.Commands;
 import cn.yang.common.exception.CommandHandlerException;
 import cn.yang.common.util.BeanUtil;
-import cn.yang.common.util.PropertiesUtil;
-import cn.yang.master.client.constant.ConfigConstants;
 import cn.yang.master.client.exception.ConnectionException;
-import cn.yang.master.client.ui.MasterDesktop;
+import cn.yang.master.client.ui.IMasterDesktop;
 import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.master.client.exception.FireCommandHandlerException;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,7 +24,7 @@ public class ControlFireCommandHandler extends AbstractMasterFireCommandHandler<
     protected void handle0(ChannelHandlerContext ctx, Response response) throws Exception {
         if(response.getValue() instanceof String) {
             //控制成功后,创建一个PuppetScreen对象，准备显示Puppet屏幕
-            final MasterDesktop desktop = BeanUtil.getBean(MasterDesktop.class, PropertiesUtil.getString(ConfigConstants.CONFIG_FILE_PATH,ConfigConstants.DESKTOP_BEAN_ID));
+            final IMasterDesktop desktop = BeanUtil.getBean(IMasterDesktop.class);
             desktop.lanuch((String) response.getValue());
         }else{
             throw new CommandHandlerException(ExceptionMessageConstants.CONTRL_COMMAND_RESULT_ERROR);

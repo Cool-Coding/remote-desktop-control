@@ -3,11 +3,8 @@ package cn.yang.master.client.commandhandler;
 import cn.yang.common.dto.Response;
 import cn.yang.common.exception.CommandHandlerException;
 import cn.yang.common.util.BeanUtil;
-import cn.yang.common.util.ImageUtils;
-import cn.yang.common.util.PropertiesUtil;
-import cn.yang.master.client.constant.ConfigConstants;
 import cn.yang.master.client.constant.MessageConstants;
-import cn.yang.master.client.ui.MasterDesktop;
+import cn.yang.master.client.ui.IMasterDesktop;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.awt.image.BufferedImage;
@@ -31,7 +28,7 @@ public class ScreenCommandHandler extends AbstractMasterCommandHandler {
         info(response, MessageConstants.RECEIVE_SCREEN_SNAPSHOT);
         if(response.getValue() instanceof byte[]) {
             byte[] bytes=(byte[])response.getValue();
-            final MasterDesktop desktop = BeanUtil.getBean(MasterDesktop.class);
+            final IMasterDesktop desktop = BeanUtil.getBean(IMasterDesktop.class);
             desktop.refreshScreen(response.getPuppetName(),bytes);
         }
     }

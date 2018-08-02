@@ -1,6 +1,5 @@
 heartbeat.interval=2000
 reconnect.interval=2000
-server.ip=192.168.56.2
+server.ip=192.168.124.1
 server.port=1234
 error.count=10
-desktop.bean.id=deskController

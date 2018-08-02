@@ -8,7 +8,7 @@ public interface IDisplayPuppet {
     /**
      * 启动窗口显示傀儡桌面
      */
-    void lanuch();
+    void launch();
 
     /**
      * 刷新桌面

@@ -1,5 +1,6 @@
 package cn.yang.puppet.client;
 
+import cn.yang.puppet.client.ui.PuppetDesktop;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;

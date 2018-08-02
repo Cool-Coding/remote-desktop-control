@@ -34,4 +34,7 @@
     <bean id="deskController" class="cn.yang.puppet.client.ui.PuppetDesktop" init-method="init">
         <property name="puppetClient" ref="puppetClient"/>
     </bean>
+
+    <!--sequence generator-->
+    <bean id="generator" class="cn.yang.common.sequence.SimpleSequenceGenerator" />
 </beans>

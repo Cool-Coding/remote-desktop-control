@@ -54,7 +54,7 @@ public class PuppetNettyClientHandler extends SimpleChannelInboundHandler<Respon
             return;
         }
 
-        final ICommandHandler commandHandler = CommandHandlerLoader.getCommandHandler(response.getCommand());
+        final ICommandHandler commandHandler = CommandHandlerLoader.getCommandHandler(response.getCommand(),this.getClass().getClassLoader());
         if(commandHandler!=null) {
             commandHandler.handle(ctx, response);
         }

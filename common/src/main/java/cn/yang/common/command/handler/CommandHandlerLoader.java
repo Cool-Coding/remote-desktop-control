@@ -34,7 +34,7 @@ public class CommandHandlerLoader {
      * @param command 命令
      * @return  command handler
      */
-    public static ICommandHandler getCommandHandler(Enum<Commands> command) throws CommandHandlerLoaderException {
+    public static ICommandHandler getCommandHandler(Enum<Commands> command,ClassLoader classLoader) throws CommandHandlerLoaderException {
         if(command==null){
             return null;
         }
@@ -48,20 +48,19 @@ public class CommandHandlerLoader {
 
         synchronized (CommandHandlerLoader.class) {
             //加载第一个为ICommandHandler类型的实现
-            final ICommandHandler commandHandler = loadCommandHandler(command);
+            final ICommandHandler commandHandler = loadCommandHandler(command,classLoader);
             HANDLERS.put(command, commandHandler);
             return commandHandler;
         }
     }
 
-    private static ICommandHandler loadCommandHandler(Enum<Commands> command) throws CommandHandlerLoaderException {
+    private static ICommandHandler loadCommandHandler(Enum<Commands> command,ClassLoader classLoader) throws CommandHandlerLoaderException {
         final ICommandHandler iCommandHandler = HANDLERS.get(command);
         if (iCommandHandler!=null){
             return iCommandHandler;
         }
 
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        final InputStream resourceAsStream = cl.getResourceAsStream(COMMAND_HANDLER_PATH);
+        final InputStream resourceAsStream = classLoader.getResourceAsStream(COMMAND_HANDLER_PATH);
         if (resourceAsStream==null){
             LOGGER.error(COMMANDHANDLERS_FILE_NOT_FOUND);
             throw  new CommandHandlerLoaderException(COMMANDHANDLERS_FILE_NOT_FOUND);
@@ -80,7 +79,7 @@ public class CommandHandlerLoader {
                 String key=split[0];
                 if (command.name().equals(key)) {
                     String value = split[1];
-                    final Class<?> aClass = Class.forName(value);
+                    final Class<?> aClass = Class.forName(value,true,classLoader);
                     final Class<?> inter = getSuperestInterface(aClass);
                     if (inter == null) {
                         throw new CommandHandlerLoaderException(COMMAND_HANDLER_ERROR);

@@ -39,4 +39,8 @@
         <property name="masterClient" ref="masterClient"/>
     </bean>
 
+    <!--sequence generator-->
+    <bean id="generator" class="cn.yang.common.sequence.SimpleSequenceGenerator" />
+
+    <bean id="puppetScreen" class="cn.yang.master.client.ui.PuppetScreen" scope="prototype" />
 </beans>

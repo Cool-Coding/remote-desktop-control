@@ -5,6 +5,7 @@ import cn.yang.common.command.Commands;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.master.client.exception.MasterClientException;
 import cn.yang.master.client.netty.MasterNettyClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ import java.util.HashMap;
  * @author Cool-Coding
  *         2018/7/26
  */
-public class MasterDesktop extends JFrame implements ActionListener{
+public class MasterDesktop extends JFrame implements IMasterDesktop,ActionListener{
     private MasterNettyClient masterClient;
     private HashMap<String,IDisplayPuppet> puppets=new HashMap<>();
 
@@ -28,8 +29,16 @@ public class MasterDesktop extends JFrame implements ActionListener{
       initBody();
     }
 
+    public void init() throws Exception{
+        SwingUtilities.invokeAndWait(()->{
+            setVisible(true);
+        });
+        //连接服务器
+        connect();
+    }
 
-    private void setting(){
+    @Override
+    public void setting(){
         setSize(400,300);
         setResizable(false);
         setLocation(250, 250);
@@ -45,7 +54,8 @@ public class MasterDesktop extends JFrame implements ActionListener{
         });
     }
 
-    private void initMenu(){
+    @Override
+    public void initMenu(){
         JMenuBar menuBar=new JMenuBar();
         setJMenuBar(menuBar);
 
@@ -63,7 +73,8 @@ public class MasterDesktop extends JFrame implements ActionListener{
         jMenu.add(control);
     }
 
-    private void initBody(){
+    @Override
+    public void initBody(){
         Font titleFont=new Font("宋体",Font.CENTER_BASELINE,25);
         Font contentFont=new Font("宋体",Font.PLAIN,20);
 
@@ -106,12 +117,14 @@ public class MasterDesktop extends JFrame implements ActionListener{
      * 启动傀儡桌面的窗口
      * @param puppetName
      */
+    @Override
     public void lanuch(String puppetName){
         final IDisplayPuppet puppetScreen = BeanUtil.getBean(IDisplayPuppet.class,puppetName);
         puppets.put(puppetName,puppetScreen);
-        puppetScreen.lanuch();
+        puppetScreen.launch();
     }
 
+    @Override
     public void refreshScreen(String puppetName,byte[] bytes) {
         //如果当前正处理控制状态，则显示傀儡发过来的屏幕截图，否则忽略
         // (当向傀儡发送终止命令后，在傀儡收到命令前，仍会发送屏幕截图)
@@ -121,25 +134,12 @@ public class MasterDesktop extends JFrame implements ActionListener{
         }
     }
 
-
-    public void init(){
-        setVisible(true);
-        connect();
-    }
-
-    public void connect(){
+    private void connect(){
         try {
             masterClient.connect();
         }catch (Exception e){
             JOptionPane.showMessageDialog(this,"连接服务器失败,请稍后重试");
         }
-    }
-    public void setMasterClient(MasterNettyClient client) {
-        this.masterClient = client;
-    }
-
-    public MasterNettyClient getMasterClient() {
-        return masterClient;
     }
 
     @Override
@@ -164,11 +164,8 @@ public class MasterDesktop extends JFrame implements ActionListener{
        }
     }
 
-    /**
-     * 供子屏幕调用
-     * @param puppetName
-     */
-    void terminate(String puppetName){
+    @Override
+    public void terminate(String puppetName){
         terminate0(puppetName);
         puppets.remove(puppetName);
     }
@@ -179,6 +176,15 @@ public class MasterDesktop extends JFrame implements ActionListener{
         }catch (MasterClientException e){
             JOptionPane.showMessageDialog(null,e.getMessage());
         }
+    }
+
+    @Override
+    public void fireCommand(String puppetName, Enum<Commands> command, Object data) throws MasterClientException {
+        masterClient.fireCommand(puppetName,command,data);
+    }
+
+    public void setMasterClient(MasterNettyClient client) {
+        this.masterClient = client;
     }
 
     public void showMessage(String message){

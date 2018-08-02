@@ -27,7 +27,11 @@ public class PuppetScreen extends AbstractDisplayPuppet implements ActionListene
 
     public PuppetScreen(String puppetName){
         super(puppetName);
+    }
 
+
+    @Override
+    public void initMenu(JFrame jFrame) {
         JMenuBar menuBar=new JMenuBar();
         JMenu setting=new JMenu("设置");
         menuBar.add(setting);
@@ -39,10 +43,10 @@ public class PuppetScreen extends AbstractDisplayPuppet implements ActionListene
         setting.add(qualityItem);
     }
 
-   /**
+    /**
      * 改变清晰度
      */
-    public void changeQuality(){
+    private void changeQuality(){
         if (qualitySlider==null){
             qualitySlider=new QualitySlider();
         }
@@ -108,7 +112,7 @@ public class PuppetScreen extends AbstractDisplayPuppet implements ActionListene
                     if (OK_COMMAND_BUTTON.equals(e.getActionCommand())){
                         TaskExecutors.submit(()->{
                             try {
-                                masterDesktop.getMasterClient().fireCommand(puppetName, Commands.QUALITY, quality);
+                                masterDesktop.fireCommand(puppetName, Commands.QUALITY, quality);
                             }catch (MasterClientException e2){
                                 SwingUtilities.invokeLater(()->{
                                     JOptionPane.showMessageDialog(PuppetScreen.this.getjFrame(),e2.getMessage());

@@ -29,7 +29,7 @@ public class PuppetDesktop extends AbstractRobotReplay {
     private Toolkit toolkit;
 
     /**
-     * 清晰度[0,100]
+     * 清晰度[10,100]
      */
     private int quality;
 

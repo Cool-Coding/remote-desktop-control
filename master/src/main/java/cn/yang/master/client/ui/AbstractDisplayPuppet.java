@@ -14,15 +14,36 @@ import java.awt.event.WindowEvent;
  *         2018/8/2
  */
 public abstract class AbstractDisplayPuppet implements IDisplayPuppet {
-    protected final MasterDesktop masterDesktop = BeanUtil.getBean(MasterDesktop.class);;
-    protected final JFrame jFrame;
+    protected final IMasterDesktop masterDesktop = BeanUtil.getBean(IMasterDesktop.class);
+
+    /**
+     * 窗体
+     */
+    private final JFrame jFrame;
+
+    /**
+     * 傀儡名
+     */
     protected final String puppetName;
+
+    /**
+     * 傀儡屏幕
+     */
     private CanvasPanel imageJpanel;
 
     AbstractDisplayPuppet(String puppetName){
         this.puppetName=puppetName;
-        jFrame=new JFrame();
+        this.jFrame=new JFrame();
 
+        setting();
+        initBody();
+        initMenu(jFrame);
+    }
+
+    /**
+     * 窗体属性设置
+     */
+    public void setting(){
         jFrame.setLocation(250, 250);
         jFrame.setSize(500,500);
         jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -32,10 +53,14 @@ public abstract class AbstractDisplayPuppet implements IDisplayPuppet {
                 masterDesktop.terminate(puppetName);
             }
         });
+    }
 
+    /**
+     * 初使化主体
+     */
+    public void initBody(){
         imageJpanel=new CanvasPanel();
         jFrame.add(imageJpanel);
-
         final KeyBoardListener keyBoardListener = new KeyBoardListener(AbstractDisplayPuppet.this);
         final MouseListener mouseListener = new MouseListener(AbstractDisplayPuppet.this);
         jFrame.addKeyListener(keyBoardListener);
@@ -45,7 +70,7 @@ public abstract class AbstractDisplayPuppet implements IDisplayPuppet {
     }
 
     @Override
-    public void lanuch() {
+    public void launch() {
         SwingUtilities.invokeLater(()->{
             jFrame.setVisible(true);
         });
@@ -100,6 +125,11 @@ public abstract class AbstractDisplayPuppet implements IDisplayPuppet {
      */
     abstract void generateImage(byte[] bytes);
 
+    /**
+     * 初始化菜单，由子类实现
+     * @param jFrame
+     */
+    abstract void initMenu(JFrame jFrame);
     @Override
     public String getPuppetName() {
         return puppetName;

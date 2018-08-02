@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Commands.TERMINATE</artifactId>
+    <artifactId>puppet</artifactId>
 
     <dependencies>
         <dependency>

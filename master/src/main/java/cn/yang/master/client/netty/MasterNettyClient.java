@@ -113,7 +113,7 @@ public class MasterNettyClient {
         }
 
         try {
-            final SequenceGenerator generator = ExtensionLoader.getSequenceGenerator();
+            final SequenceGenerator generator = ExtensionLoader.loadSingleObject(SequenceGenerator.class);
 
             Request request = new Request();
             request.setId(Constants.MASTER + mac + generator.next());

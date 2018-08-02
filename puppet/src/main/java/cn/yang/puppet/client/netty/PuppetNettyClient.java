@@ -91,7 +91,7 @@ public class PuppetNettyClient {
 
     private Request buildRequest() throws PuppetClientException{
         try {
-            final SequenceGenerator generator = ExtensionLoader.getSequenceGenerator();
+            final SequenceGenerator generator = ExtensionLoader.loadSingleObject(SequenceGenerator.class);
             final Request request = new Request();
             request.setId(""+Constants.PUPPET + generator.next() );
             request.setCommand(Commands.CONNECT);
