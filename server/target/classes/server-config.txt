@@ -1,5 +1,0 @@
-master.connect.puppetName.retry.interval=1000
-master.connect.puppetName.retry.times=1
-
-server.ip=192.168.124.1
-server.port=1234

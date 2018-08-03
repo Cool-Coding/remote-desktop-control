@@ -1,6 +1,0 @@
-CONNECT=cn.yang.puppet.client.commandhandler.ConnectCommandHandler
-CONTROL=cn.yang.puppet.client.commandhandler.ControlCommandHandler
-KEYBOARD=cn.yang.puppet.client.commandhandler.KeyBoardEventCommandHandler
-MOUSE=cn.yang.puppet.client.commandhandler.MouseEventCommandHandler
-TERMINATE=cn.yang.puppet.client.commandhandler.TerminateCommandHandler
-QUALITY=cn.yang.puppet.client.commandhandler.QualityCommandHandler

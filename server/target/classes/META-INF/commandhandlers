@@ -1,8 +1,0 @@
-CONNECT=cn.yang.server.commandhandler.ConnectionCommandHandler
-CONTROL=cn.yang.server.commandhandler.ControlCommandHandler
-HEARTBEAT=cn.yang.server.commandhandler.HeartBeatCommandHandler
-KEYBOARD=cn.yang.server.commandhandler.InputEventCommandHandler
-MOUSE=cn.yang.server.commandhandler.InputEventCommandHandler
-SCREEN=cn.yang.server.commandhandler.ScreenCommandHandler
-TERMINATE=cn.yang.server.commandhandler.TerminateCommandHandler
-QUALITY=cn.yang.server.commandhandler.FireCommandHandler

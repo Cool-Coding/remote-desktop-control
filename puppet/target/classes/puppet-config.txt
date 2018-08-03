@@ -1,5 +1,0 @@
-heartbeat.interval=2000
-reconnect.interval=2000
-server.ip=192.168.124.1
-server.port=1234
-error.count=10
