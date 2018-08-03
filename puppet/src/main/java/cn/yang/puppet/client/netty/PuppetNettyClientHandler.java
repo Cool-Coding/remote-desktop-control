@@ -26,7 +26,7 @@ public class PuppetNettyClientHandler extends SimpleChannelInboundHandler<Respon
     /** logger */
     private static final Logger LOGGER = LoggerFactory.getLogger(PuppetNettyClientHandler.class);
     private static final Map<String,Integer> ERROR_COUNT_HASHMAP=new ConcurrentHashMap<>();
-    private static final int ERROR_COUNT=PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH,ConfigConstants.ERROR_COUNT,50);;
+    private static final int ERROR_COUNT=PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH,ConfigConstants.ERROR_COUNT,50);
 
     @SuppressWarnings("unchecked")
     @Override
@@ -54,7 +54,7 @@ public class PuppetNettyClientHandler extends SimpleChannelInboundHandler<Respon
             return;
         }
 
-        final ICommandHandler commandHandler = CommandHandlerLoader.getCommandHandler(response.getCommand(),this.getClass().getClassLoader());
+        final ICommandHandler commandHandler = CommandHandlerLoader.getCommandHandler(response.getCommand());
         if(commandHandler!=null) {
             commandHandler.handle(ctx, response);
         }

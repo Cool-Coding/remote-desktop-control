@@ -13,20 +13,17 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class QualityCommandHandler extends AbstractPuppetCommandHandler {
 
-    public QualityCommandHandler() throws CommandHandlerException{
-
-    }
 
     @Override
     protected void handle0(ChannelHandlerContext ctx, Response request) throws Exception {
         final Object result = request.getValue();
         if (result==null){
-            LOGGER.error(ExceptionMessageConstants.QUALITY_EVENT_VALUE_NULL);
+            error(request,ExceptionMessageConstants.QUALITY_EVENT_VALUE_NULL);
             throw new NullValueException(ExceptionMessageConstants.QUALITY_EVENT_VALUE_NULL);
         }
 
         if (!(request.getValue() instanceof Integer)){
-            LOGGER.error(ExceptionMessageConstants.QUALITY_EVENT_VALUE_ERROR);
+            error(request,ExceptionMessageConstants.QUALITY_EVENT_VALUE_ERROR);
             throw new ClassCastException(ExceptionMessageConstants.QUALITY_EVENT_VALUE_ERROR);
         }
 

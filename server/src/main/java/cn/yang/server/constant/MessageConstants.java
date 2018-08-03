@@ -6,4 +6,5 @@ package cn.yang.server.constant;
  */
 public class MessageConstants {
     public static final String CONNECTION_SUCCEED="connect successfully";
+    public static final String RECEIVE_A_HEARTBEAT="receive a heart beat from puppet";
 }

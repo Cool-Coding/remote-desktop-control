@@ -25,7 +25,7 @@ public class ScreenCommandHandler extends AbstractMasterCommandHandler {
     }
 
     private void refreshScreen(Response response){
-        info(response, MessageConstants.RECEIVE_SCREEN_SNAPSHOT);
+        debug(response, MessageConstants.RECEIVE_SCREEN_SNAPSHOT);
         if(response.getValue() instanceof byte[]) {
             byte[] bytes=(byte[])response.getValue();
             final IMasterDesktop desktop = BeanUtil.getBean(IMasterDesktop.class);

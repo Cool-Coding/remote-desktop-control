@@ -43,9 +43,9 @@ public class ProtobufDecoder extends ByteToMessageDecoder {
         }
 
         if (genericClass== Request.class) {
-            LOGGER.info("receive data from client,size:{}", dataLength);
+            LOGGER.debug("receive data from client,size:{}", dataLength);
         }else if(genericClass== Response.class){
-            LOGGER.info("receive data from server,size:{}",dataLength);
+            LOGGER.debug("receive data from server,size:{}",dataLength);
         }
 
         byte[] data=new byte[dataLength];

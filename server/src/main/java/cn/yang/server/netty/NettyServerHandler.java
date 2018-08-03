@@ -26,7 +26,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Request> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOGGER.error(cause.getMessage(),cause);
+        LOGGER.info(cause.getMessage());
         ctx.close();
     }
 }

@@ -1,10 +1,10 @@
-package cn.yang.common.sequence;
+package cn.yang.common.generator;
 
 /**
  * @author Cool-Coding
  *         2018/7/25
  */
-public interface SequenceGenerator {
+public interface SequenceGenerate {
 
     /**
      * 生成下一个序号

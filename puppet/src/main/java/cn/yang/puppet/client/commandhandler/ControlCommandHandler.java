@@ -9,11 +9,6 @@ import io.netty.channel.ChannelHandlerContext;
  *         2018/7/27
  */
 public class ControlCommandHandler extends AbstractPuppetCommandHandler {
-
-    public ControlCommandHandler() throws CommandHandlerException{
-
-    }
-
     @Override
     protected void handle0(ChannelHandlerContext ctx, Response request) throws Exception {
         startUnderControlled();

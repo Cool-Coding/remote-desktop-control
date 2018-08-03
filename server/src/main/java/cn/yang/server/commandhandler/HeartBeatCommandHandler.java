@@ -3,6 +3,7 @@ package cn.yang.server.commandhandler;
 import cn.yang.common.dto.Request;
 import cn.yang.common.dto.Response;
 import cn.yang.common.command.Commands;
+import cn.yang.server.constant.MessageConstants;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -13,7 +14,7 @@ public class HeartBeatCommandHandler extends AbstractServerCommandHandler {
     @Override
     public void handle0(ChannelHandlerContext ctx, Request request) throws Exception {
         final String puppetName = request.getPuppetName();
-        info(request,"receive a heartbeat");
+        debug(request, MessageConstants.RECEIVE_A_HEARTBEAT,puppetName);
         if(PRECONTROL_PUPPETS.size() > 0 && PRECONTROL_PUPPETS.contains(puppetName)){
             Response response=buildResponse(request, Commands.CONTROL);
             ctx.writeAndFlush(response).addListener((f)->{

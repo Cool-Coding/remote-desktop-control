@@ -28,7 +28,7 @@ public class TaskExecutors {
      * @return 任务执行结果
      * @throws TaskExecutorException 任务异常
      */
-    public static <T> T submit(Callable<T> callable,int interval,int times) throws TaskExecutorException{
+    public static <T> T submit(Callable<T> callable,long interval,int times) throws TaskExecutorException{
         ThreadLocal<Integer> count=new ThreadLocal<>();
         count.set(1);
         //第一次立即执行
@@ -58,8 +58,12 @@ public class TaskExecutors {
         return null;
     }
 
-    public static void submit(Runnable task,int delay){
+    public static void submit(Runnable task,long delay){
         SCHEDULED_EXECUTOR_SERVICE.schedule(task,delay,TimeUnit.MILLISECONDS);
+    }
+
+    public static void submit(Runnable task,long delay,long period){
+        SCHEDULED_EXECUTOR_SERVICE.scheduleAtFixedRate(task,delay,period,TimeUnit.MILLISECONDS);
     }
 
    public static void shutdown(){

@@ -4,9 +4,12 @@ import cn.yang.common.dto.Request;
 import cn.yang.common.dto.Response;
 import cn.yang.common.command.Commands;
 import cn.yang.common.constant.Constants;
+import cn.yang.common.generator.PuppetNameGenerate;
+import cn.yang.common.util.BeanUtil;
 import cn.yang.server.netty.ChannelPair;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import org.springframework.util.StringUtils;
 
 import static cn.yang.server.constant.MessageConstants.CONNECTION_SUCCEED;
 import static cn.yang.common.constant.ExceptionMessageConstants.CONNECTION_EXIST;
@@ -39,8 +42,8 @@ public class ConnectionCommandHandler extends AbstractServerCommandHandler {
     }
 
     private void handlePuppet(ChannelHandlerContext ctx,Request request){
-        final String puppetName = request.getPuppetName();
-        if(CONNECTED_CHANNELPAIRS.containsKey(puppetName)){
+        String puppetName = request.getPuppetName();
+        if(!StringUtils.isEmpty(puppetName) && CONNECTED_CHANNELPAIRS.containsKey(puppetName)){
             final ChannelPair channelPair = CONNECTED_CHANNELPAIRS.get(puppetName);
             final Channel puppetChannel = channelPair.getPuppetChannel();
             if(puppetChannel!=null && puppetChannel.isOpen()){
@@ -58,7 +61,9 @@ public class ConnectionCommandHandler extends AbstractServerCommandHandler {
         }else {
             ChannelPair pair=new ChannelPair();
             pair.setPuppetChannel(ctx.channel());
+            puppetName = BeanUtil.getBean(PuppetNameGenerate.class).getPuppetName(ctx);
             CONNECTED_CHANNELPAIRS.put(puppetName,pair);
+            request.setPuppetName(puppetName);
             info(request,CONNECTION_SUCCEED);
         }
 

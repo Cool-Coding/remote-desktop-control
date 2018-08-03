@@ -56,9 +56,10 @@ public abstract class AbstractServerCommandHandler implements ICommandHandler<Re
             return;
         }
 
-        //除了控制端请求连接不要求PuppetName有值外，其它命令都PuppetName必须有值
-        boolean masterRequestConnect=Constants.MASTER == request.getId().charAt(0) && request.getCommand()== Commands.CONNECT;
-        if(!masterRequestConnect){
+        /*
+         * 除了连接时不需要傀儡名，其它情况都需要
+         */
+        if(!(request.getCommand()== Commands.CONNECT)){
             if(StringUtils.isEmpty(request.getPuppetName())) {
                 error(request,REQUIRED_PUPPET_NAME);
                 sendError(request, ctx, REQUIRED_PUPPET_NAME);

@@ -31,10 +31,15 @@
         <property name="channelInitialize" ref="channelInitialize" />
     </bean>
 
-    <bean id="deskController" class="cn.yang.puppet.client.ui.PuppetDesktop" init-method="init">
+    <bean id="deskController" class="cn.yang.puppet.client.ui.PuppetDesktop">
         <property name="puppetClient" ref="puppetClient"/>
     </bean>
 
+    <!-- bean until-->
+    <bean id="beanUtil" class="cn.yang.common.util.BeanUtil" />
+
     <!--sequence generator-->
-    <bean id="generator" class="cn.yang.common.sequence.SimpleSequenceGenerator" />
+    <bean id="generator" class="cn.yang.common.generator.SimpleSequenceGenerator" />
+
+    <bean id="messageDialog" class="cn.yang.puppet.client.ui.MessageDialog" scope="prototype" />
 </beans>

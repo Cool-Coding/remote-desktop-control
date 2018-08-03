@@ -1,8 +1,10 @@
 package cn.yang.master.client;
 
+import cn.yang.master.client.ui.IMasterDesktop;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.IOException;
 
 /**
  * @author Cool-Coding
@@ -10,8 +12,10 @@ import java.io.IOException;
  *Master启动器
  */
 public class MasterStarter {
+
     public static void main(String[] args){
         final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("master-beans.xml");
         context.start();
+        context.getBean(IMasterDesktop.class).lanuch();
     }
 }

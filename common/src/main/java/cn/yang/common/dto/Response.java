@@ -24,7 +24,7 @@ public class Response extends Invocation {
     @Override
     public String toString() {
         return "Response{" +
-                "requestId='" + getId() + '\'' +
+                "id='" + getId() + '\'' +
                 ", puppetName='" + getPuppetName() + '\'' +
                 ", error=" + error +
                 ", command=" + getCommand() +

@@ -3,6 +3,7 @@ package cn.yang.master.client.ui;
 import cn.yang.common.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.util.BeanUtil;
+import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.master.client.exception.MasterClientException;
 import cn.yang.master.client.netty.MasterNettyClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.util.StringUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -29,12 +31,16 @@ public class MasterDesktop extends JFrame implements IMasterDesktop,ActionListen
       initBody();
     }
 
-    public void init() throws Exception{
-        SwingUtilities.invokeAndWait(()->{
-            setVisible(true);
-        });
-        //连接服务器
-        connect();
+    @Override
+    public void lanuch(){
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                setVisible(true);
+            });
+            connect();
+        }catch (Exception e){
+            popToShowMessage(ExceptionMessageConstants.LAUNCH_FAILED,e.getMessage());
+        }
     }
 
     @Override
@@ -134,29 +140,30 @@ public class MasterDesktop extends JFrame implements IMasterDesktop,ActionListen
         }
     }
 
-    private void connect(){
-        try {
-            masterClient.connect();
-        }catch (Exception e){
-            JOptionPane.showMessageDialog(this,"连接服务器失败,请稍后重试");
-        }
+    @Override
+    public void connect() throws Exception{
+        masterClient.connect();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
        switch (Commands.valueOf(e.getActionCommand())){
            case CONNECT:
-               connect();
+               try {
+                   connect();
+               }catch (Exception e2){
+                   popToShowMessage(ExceptionMessageConstants.CONNECTION_SERVER_FAILED,e2.getMessage());
+               }
                break;
            case CONTROL:
                if (StringUtils.isEmpty(puppetNameTextField.getText())){
-                   JOptionPane.showMessageDialog(this,"请输入被控端名称");
+                   popToShowMessage(ExceptionMessageConstants.PUPPET_NAME_EMPTY);
                }else {
                    String puppetName=puppetNameTextField.getText();
                    try {
                        masterClient.fireCommand(puppetName, Commands.CONTROL, null);
                    }catch (MasterClientException e2){
-                        JOptionPane.showMessageDialog(null,e2.getMessage());
+                        popToShowMessage(e2.getMessage());
                    }
                }
             break;
@@ -174,7 +181,7 @@ public class MasterDesktop extends JFrame implements IMasterDesktop,ActionListen
         try {
             masterClient.fireCommand(puppetName, Commands.TERMINATE, null);
         }catch (MasterClientException e){
-            JOptionPane.showMessageDialog(null,e.getMessage());
+            popToShowMessage(e.getMessage());
         }
     }
 
@@ -189,5 +196,9 @@ public class MasterDesktop extends JFrame implements IMasterDesktop,ActionListen
 
     public void showMessage(String message){
         JOptionPane.showMessageDialog(this,message);
+    }
+
+    private void popToShowMessage(String... message){
+        JOptionPane.showMessageDialog(this, Arrays.toString(message));
     }
 }

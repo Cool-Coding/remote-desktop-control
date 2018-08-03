@@ -16,10 +16,6 @@ import java.awt.*;
 public class KeyBoardEventCommandHandler extends AbstractPuppetCommandHandler {
 
 
-    public KeyBoardEventCommandHandler() throws CommandHandlerException,AWTException{
-
-    }
-
     @Override
     protected void handle0(ChannelHandlerContext ctx, Response response) throws Exception {
         Object obj=response.getValue();
@@ -35,7 +31,7 @@ public class KeyBoardEventCommandHandler extends AbstractPuppetCommandHandler {
         }
 
         MasterKeyEvent keyEvent=(MasterKeyEvent)obj;
-        LOGGER.info(keyEvent.toString());
+        debug(response,keyEvent.toString());
         if(keyEvent.isPressed()){
             REPLAY.keyPress(keyEvent);
             REPLAY.keyRelease(keyEvent);

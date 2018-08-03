@@ -7,20 +7,17 @@ import cn.yang.common.dto.Response;
 import cn.yang.common.command.handler.ICommandHandler;
 import cn.yang.common.constant.Constants;
 import cn.yang.common.exception.ResponseHandleException;
-import cn.yang.common.sequence.SequenceGenerator;
+import cn.yang.common.generator.SequenceGenerate;
 import cn.yang.common.util.BeanUtil;
-import cn.yang.common.util.PropertiesUtil;
-import cn.yang.common.util.ExtensionLoader;
 import cn.yang.common.util.MacUtils;
-import cn.yang.puppet.client.constant.ConfigConstants;
 import cn.yang.puppet.client.ui.IReplay;
-import cn.yang.common.exception.CommandHandlerException;
+import cn.yang.puppet.client.ui.MessageDialog;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
+import javax.swing.*;
 import java.util.Arrays;
 
 /**
@@ -30,13 +27,13 @@ import java.util.Arrays;
 public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Response> {
 
     /** logger */
-    protected static Logger LOGGER;
+    private static final Logger LOGGER= LoggerFactory.getLogger(AbstractPuppetCommandHandler.class);
 
 
     /**
      * 序号生成器
      */
-    private static final SequenceGenerator generator=BeanUtil.getBean(SequenceGenerator.class);
+    private static final SequenceGenerate generator=BeanUtil.getBean(SequenceGenerate.class);
 
     /**
      * 桌面控制器
@@ -47,19 +44,10 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
      */
     private static volatile boolean isUnderControlled=false;
 
-
-    public AbstractPuppetCommandHandler() throws CommandHandlerException{
-        LOGGER = LoggerFactory.getLogger(this.getClass());
-        //sequence generator is  maintained in spring xml instead of txt
-        /*if(generator==null) {
-            try {
-                generator = ExtensionLoader.loadSingleObject(SequenceGenerator.class);
-            }catch (IOException e){
-                LOGGER.error(e.getMessage(),e);
-                throw new CommandHandlerException(e.getMessage(),e);
-            }
-        }*/
-    }
+    /**
+     * 傀儡名
+     */
+    private static String puppetName;
 
     @Override
     public void handle(ChannelHandlerContext ctx, Response response) throws Exception {
@@ -77,7 +65,7 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
     protected abstract void handle0(ChannelHandlerContext ctx, Response response) throws Exception;
 
 
-    public Request buildRequest(Enum<Commands> command, Object value){
+    public static Request buildRequest(Enum<Commands> command, Object value){
         String mac= MacUtils.getMAC();
         if (StringUtils.isEmpty(mac)){
             return null;
@@ -86,7 +74,7 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
         Request request = new Request();
         request.setId(Constants.PUPPET + mac + generator.next());
         request.setCommand(command);
-        request.setPuppetName("puppet");
+        request.setPuppetName(puppetName);
         request.setValue(value);
         return  request;
     }
@@ -99,8 +87,8 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
         LOGGER.debug("{}:{}",response,Arrays.toString(message));
     }
 
-    void info(Response response,String message){
-        LOGGER.info("{}:{}",response,message);
+    void info(Response response,String... message){
+        LOGGER.info("{}:{}",response,Arrays.toString(message));
     }
 
     void warn(Response response,String message){
@@ -121,5 +109,22 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
 
     protected boolean isUnderControlled(){
         return AbstractPuppetCommandHandler.isUnderControlled;
+    }
+
+    public static void setPuppetName(String puppetName) {
+        AbstractPuppetCommandHandler.puppetName = puppetName;
+    }
+
+    public static String getPuppetName() {
+        return puppetName;
+    }
+
+    /**
+     * 显示消息对话框
+     * @param title
+     * @param message
+     */
+    public static void popMessageDialog(String title,String... message){
+        BeanUtil.getBean(MessageDialog.class,title).showMessage(Arrays.toString(message));
     }
 }

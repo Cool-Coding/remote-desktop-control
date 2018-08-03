@@ -1,8 +1,11 @@
 package cn.yang.master.client.ui.listener;
 
+import cn.yang.common.InputEvent.MasterMouseEvent;
 import cn.yang.common.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.util.BeanUtil;
+import cn.yang.common.util.PropertiesUtil;
+import cn.yang.master.client.constant.ConfigConstants;
 import cn.yang.master.client.exception.MasterClientException;
 import cn.yang.master.client.ui.IDisplayPuppet;
 import cn.yang.master.client.netty.MasterNettyClient;
@@ -46,6 +49,7 @@ public class MouseListener extends MouseAdapter {
         masterClient = BeanUtil.getBean(MasterNettyClient.class, "masterClient");
     }
 
+
     @Override
     public void mouseClicked(MouseEvent e) {
         //每次单击都将此标识示false，防止双击后的单击被认为是双击
@@ -69,9 +73,9 @@ public class MouseListener extends MouseAdapter {
 
             if (clickNum.getAndDecrement() == 1) {//定时器等待0.2秒后,双击事件仍未发生,执行单击事件
                     preButton = -1;
-                    mouseSingleClicked(e);//执行单击事件
+                    //mouseSingleClicked(e);//执行单击事件
             }
-        },2000);
+        }, PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH,ConfigConstants.MOUSE_DOUBLE_CHECK_DELAY,500));
 
         preButton=e.getButton();
     }
@@ -85,25 +89,25 @@ public class MouseListener extends MouseAdapter {
     @Override
     public void mouseDragged(MouseEvent e) {
             e.getComponent().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            final cn.yang.common.InputEvent.MouseEvent mouseEvent = new cn.yang.common.InputEvent.MouseEvent();
+            final MasterMouseEvent mouseEvent = new MasterMouseEvent();
             mouseEvent.dragged(e.getButton(), e.getX(), e.getY());
-            LOGGER.info("mouse dragged:{}", mouseEvent);
+            LOGGER.debug("mouse dragged:{}", mouseEvent);
             sendMosueEvent(mouseEvent);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-            final cn.yang.common.InputEvent.MouseEvent mouseEvent = new cn.yang.common.InputEvent.MouseEvent();
+            final MasterMouseEvent mouseEvent = new MasterMouseEvent();
             mouseEvent.mousePressed(e.getButton());
-            LOGGER.info("mouse pressed:{}", mouseEvent);
+            LOGGER.debug("mouse pressed:{}", mouseEvent);
             sendMosueEvent(mouseEvent);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-            final cn.yang.common.InputEvent.MouseEvent mouseEvent = new cn.yang.common.InputEvent.MouseEvent();
+            final MasterMouseEvent mouseEvent = new MasterMouseEvent();
             mouseEvent.mouseMoved(e.getX(), e.getY());
-            LOGGER.info("mouse moved:{}", mouseEvent);
+            LOGGER.debug("mouse moved:{}", mouseEvent);
             sendMosueEvent(mouseEvent);
     }
 
@@ -112,10 +116,10 @@ public class MouseListener extends MouseAdapter {
      * @param e 事件源参数
      */
     public void mouseSingleClicked(MouseEvent e){
-            final cn.yang.common.InputEvent.MouseEvent mouseEvent = new cn.yang.common.InputEvent.MouseEvent();
+            final MasterMouseEvent mouseEvent = new MasterMouseEvent();
             mouseEvent.buttonClicked(e.getButton());
             mouseEvent.setSite(new int[]{e.getX(),e.getY()});
-            LOGGER.info("mouse clicked", mouseEvent);
+            LOGGER.debug("mouse clicked", mouseEvent);
             sendMosueEvent(mouseEvent);
     }
 
@@ -124,9 +128,9 @@ public class MouseListener extends MouseAdapter {
      * @param e 事件源参数
      */
     public void mouseDoubleClicked(MouseEvent e){
-            final cn.yang.common.InputEvent.MouseEvent mouseEvent = new cn.yang.common.InputEvent.MouseEvent();
+            final MasterMouseEvent mouseEvent = new MasterMouseEvent();
             mouseEvent.buttonDoubleClick(e.getButton());
-            LOGGER.info("mouse double clicked", mouseEvent);
+            LOGGER.debug("mouse double clicked", mouseEvent);
             sendMosueEvent(mouseEvent);
     }
 
@@ -135,13 +139,13 @@ public class MouseListener extends MouseAdapter {
             if(e.getComponent().getCursor().getType()==Cursor.HAND_CURSOR) {
                 e.getComponent().setCursor(Cursor.getDefaultCursor());
             }
-            final cn.yang.common.InputEvent.MouseEvent mouseEvent = new cn.yang.common.InputEvent.MouseEvent();
+            final MasterMouseEvent mouseEvent = new MasterMouseEvent();
             mouseEvent.mouseReleased(e.getButton());
-            LOGGER.info("mouse released:{}", mouseEvent.getMouseButton());
+            LOGGER.debug("mouse released:{}", mouseEvent.getMouseButton());
             sendMosueEvent(mouseEvent);
     }
 
-    private void sendMosueEvent(cn.yang.common.InputEvent.MouseEvent mouseEvent){
+    private void sendMosueEvent(MasterMouseEvent mouseEvent){
         try {
             masterClient.fireCommand(puppetScreen.getPuppetName(), Commands.MOUSE, mouseEvent);
         }catch (MasterClientException e){
@@ -151,10 +155,10 @@ public class MouseListener extends MouseAdapter {
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        final cn.yang.common.InputEvent.MouseEvent mouseEvent = new cn.yang.common.InputEvent.MouseEvent();
+        final MasterMouseEvent mouseEvent = new MasterMouseEvent();
         int count=e.getScrollAmount()*e.getWheelRotation();
         mouseEvent.mouseWheel(count);
-        LOGGER.info("mouse wheel:{}",count);
+        LOGGER.debug("mouse wheel:{}",count);
         sendMosueEvent(mouseEvent);
     }
 }

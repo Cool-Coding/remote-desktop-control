@@ -66,7 +66,7 @@ public class Invocation implements Serializable {
 
     @Override
     public String toString() {
-        return "Response{" +
+        return "Invocation{" +
                 "id='" + id + '\'' +
                 ", puppetName='" + puppetName + '\'' +
                 ", command=" + command +

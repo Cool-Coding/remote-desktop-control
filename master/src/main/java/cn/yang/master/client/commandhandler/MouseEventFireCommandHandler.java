@@ -1,6 +1,6 @@
 package cn.yang.master.client.commandhandler;
 
-import cn.yang.common.InputEvent.MouseEvent;
+import cn.yang.common.InputEvent.MasterMouseEvent;
 import cn.yang.common.dto.Request;
 import cn.yang.common.command.Commands;
 import cn.yang.common.exception.CommandHandlerException;
@@ -12,13 +12,13 @@ import cn.yang.master.client.exception.FireCommandHandlerException;
  * @author Cool-Coding
  *         2018/7/27
  */
-public class MouseEventFireCommandHandler extends AbstractMasterFireCommandHandler<MouseEvent> {
+public class MouseEventFireCommandHandler extends AbstractMasterFireCommandHandler<MasterMouseEvent> {
     public MouseEventFireCommandHandler() throws CommandHandlerException{
 
     }
 
     @Override
-    public void fire(String puppetName,Enum<Commands> command,MouseEvent mouseEvent) throws FireCommandHandlerException {
+    public void fire(String puppetName,Enum<Commands> command,MasterMouseEvent mouseEvent) throws FireCommandHandlerException {
         if (puppetName==null){
             throw new FireCommandHandlerException(ExceptionMessageConstants.PUPPET_NAME_EMPTY);
         }

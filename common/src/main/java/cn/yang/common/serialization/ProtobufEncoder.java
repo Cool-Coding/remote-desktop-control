@@ -32,9 +32,9 @@ public class ProtobufEncoder extends MessageToByteEncoder {
             out.writeInt(length);
             out.writeBytes(data);
             if (genericClass== Request.class) {
-                LOGGER.info("send data to server,size:{}", length);
+                LOGGER.debug("send data to server,size:{}", length);
             }else if(genericClass== Response.class){
-                LOGGER.info("send data to client,size:{}",length);
+                LOGGER.debug("send data to client,size:{}",length);
             }
 
         }

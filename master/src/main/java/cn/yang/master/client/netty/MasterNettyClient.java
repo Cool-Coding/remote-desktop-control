@@ -2,10 +2,10 @@ package cn.yang.master.client.netty;
 
 import cn.yang.common.ChannelInitializerNew;
 import cn.yang.common.dto.Request;
-import cn.yang.common.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.constant.Constants;
-import cn.yang.common.sequence.SequenceGenerator;
+import cn.yang.common.generator.SequenceGenerate;
+import cn.yang.common.netty.INettyClient;
 import cn.yang.common.util.ExtensionLoader;
 import cn.yang.common.util.MacUtils;
 import cn.yang.master.client.constant.ExceptionMessageConstants;
@@ -30,7 +30,7 @@ import java.io.IOException;
  * 2018/7/24
  * Netty客户端，负责控制端与服务器的通信，包括所有请求数据的发送接收
  */
-public class MasterNettyClient {
+public class MasterNettyClient implements INettyClient{
     /**
      * 处理器初始化器
      */
@@ -61,6 +61,7 @@ public class MasterNettyClient {
      * 启动时连接服务器
      * @throws Exception
      */
+    @Override
     public void connect() throws Exception{
         final Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
@@ -69,15 +70,12 @@ public class MasterNettyClient {
                 .handler(channelInitialize);
         final ChannelFuture sync = bootstrap.connect(host, port).sync();
         sync.channel().writeAndFlush(buildConnectRequest());
-
-        //启动一个独立线程，以免阻塞spring实例化bean
-        TaskExecutors.submit(()->{
             try {
                 sync.channel().closeFuture().sync();
             }catch (Exception e){
                 LOGGER.error(e.getMessage(),e);
+                throw e;
             }
-        },0);
     }
 
     /**
@@ -113,7 +111,7 @@ public class MasterNettyClient {
         }
 
         try {
-            final SequenceGenerator generator = ExtensionLoader.loadSingleObject(SequenceGenerator.class);
+            final SequenceGenerate generator = ExtensionLoader.loadSingleObject(SequenceGenerate.class);
 
             Request request = new Request();
             request.setId(Constants.MASTER + mac + generator.next());

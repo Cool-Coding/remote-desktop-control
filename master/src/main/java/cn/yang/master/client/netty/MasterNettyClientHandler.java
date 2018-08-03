@@ -58,7 +58,7 @@ public class MasterNettyClientHandler extends SimpleChannelInboundHandler<Respon
         final AbstractMasterFireCommandHandler fireCommandHandler = getFireCommandHandler(command);
         try {
             fireCommandHandler.fire(puppetName,command,data);
-            LOGGER.info("fire a command to server:{}",command);
+            LOGGER.debug("fire a command to server:{}",command);
         }catch (FireCommandHandlerException e){
             throw new MasterChannelHandlerException(e.getMessage(),e);
         }

@@ -30,13 +30,13 @@ public class KeyBoardListener extends KeyAdapter {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        LOGGER.info(KeyEvent.getKeyText(e.getKeyCode())+" pressed");
+        LOGGER.debug(KeyEvent.getKeyText(e.getKeyCode())+" pressed");
         fireCommand(e,true);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-            LOGGER.info(KeyEvent.getKeyText(e.getKeyCode())+" released");
+            LOGGER.debug(KeyEvent.getKeyText(e.getKeyCode())+" released");
             fireCommand(e,false);
     }
 

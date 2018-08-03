@@ -20,7 +20,15 @@
         <property name="channelHandler" ref="handler" />
     </bean>
 
-    <bean id="server" class="cn.yang.server.netty.NettyServer" init-method="init">
+    <bean id="server" class="cn.yang.server.netty.NettyServer">
       <property name="channelInitialize" ref="channelInitialize" />
     </bean>
+
+    <!-- bean until-->
+    <bean id="beanUtil" class="cn.yang.common.util.BeanUtil" />
+
+    <!--Puppet Name Generator-->
+    <bean id="puppetNameGenerator" class="cn.yang.common.generator.SimplePuppetNameGenerator" />
+
+
 </beans>

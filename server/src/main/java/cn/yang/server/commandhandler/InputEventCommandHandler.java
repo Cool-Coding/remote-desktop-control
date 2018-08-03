@@ -1,7 +1,7 @@
 package cn.yang.server.commandhandler;
 
 import cn.yang.common.InputEvent.MasterKeyEvent;
-import cn.yang.common.InputEvent.MouseEvent;
+import cn.yang.common.InputEvent.MasterMouseEvent;
 import cn.yang.common.dto.Request;
 import cn.yang.common.dto.Response;
 import cn.yang.common.command.Commands;
@@ -22,7 +22,7 @@ public class InputEventCommandHandler  extends AbstractServerCommandHandler{
     public void handle0(ChannelHandlerContext ctx, Request request) throws Exception {
         final String puppetName = request.getPuppetName();
 
-        if (!(request.getValue() instanceof MasterKeyEvent || request.getValue() instanceof MouseEvent)){
+        if (!(request.getValue() instanceof MasterKeyEvent || request.getValue() instanceof MasterMouseEvent)){
             final String should_be_inputEvent_type = String.format("%s %s", WRONG_CONNECT_VALUE, "should be InputEvent type");
             error(request,should_be_inputEvent_type);
             sendError(request,ctx,should_be_inputEvent_type);
@@ -42,7 +42,7 @@ public class InputEventCommandHandler  extends AbstractServerCommandHandler{
          Response response=null;
         if(request.getValue() instanceof MasterKeyEvent){
             response = buildResponse(request, Commands.KEYBOARD, request.getValue());
-        }else if(request.getValue() instanceof MouseEvent){
+        }else if(request.getValue() instanceof MasterMouseEvent){
             response = buildResponse(request, Commands.MOUSE, request.getValue());
         }
         puppetChannel.writeAndFlush(response);

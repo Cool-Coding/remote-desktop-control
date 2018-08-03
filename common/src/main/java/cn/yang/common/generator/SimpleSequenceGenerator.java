@@ -1,4 +1,4 @@
-package cn.yang.common.sequence;
+package cn.yang.common.generator;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Cool-Coding
  *         2018/7/25
  */
-public class SimpleSequenceGenerator implements SequenceGenerator {
+public class SimpleSequenceGenerator implements SequenceGenerate {
     /**
      * 简单的序号生成器
      */

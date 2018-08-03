@@ -1,15 +1,14 @@
 package cn.yang.master.client.ui;
 
 import cn.yang.common.command.Commands;
+import cn.yang.common.netty.INettyClient;
 import cn.yang.master.client.exception.MasterClientException;
-
-import javax.swing.*;
 
 /**
  * @author cool-coding
  * @date 2018/8/2
  */
-public interface IMasterDesktop {
+public interface IMasterDesktop extends INettyClient{
     /**
      * 桌面窗体设置
      */
@@ -24,6 +23,11 @@ public interface IMasterDesktop {
      * 窗体
      */
     void initBody();
+
+    /**
+     * 启动
+     */
+    void lanuch();
 
     /**
      * 启动远程傀儡的屏幕

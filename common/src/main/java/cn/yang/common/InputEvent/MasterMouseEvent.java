@@ -10,7 +10,7 @@ import static java.awt.event.InputEvent.BUTTON3_DOWN_MASK;
  * @author Cool-Coding
  *         2018/7/26
  */
-public class MouseEvent {
+public class MasterMouseEvent {
     /**
      * 1.单击
      * 2.双击
@@ -37,7 +37,7 @@ public class MouseEvent {
      */
     private int[] site ;
 
-    public MouseEvent(){
+    public MasterMouseEvent(){
         site=new int[2];
     }
 
@@ -187,7 +187,7 @@ public class MouseEvent {
 
     @Override
     public String toString() {
-        return "MouseEvent{" +
+        return "MasterMouseEvent{" +
                 "status=" + status +
                 ", mouseButton=" + mouseButton +
                 ", mouseWheel=" + mouseWheel +

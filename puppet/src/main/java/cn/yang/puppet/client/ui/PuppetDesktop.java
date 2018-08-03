@@ -1,23 +1,12 @@
 package cn.yang.puppet.client.ui;
 
 
-import cn.yang.common.InputEvent.MasterKeyEvent;
-import cn.yang.common.InputEvent.MouseEvent;
 import cn.yang.common.constant.Constants;
-import cn.yang.common.util.BeanUtil;
 import cn.yang.common.util.ImageUtils;
+import cn.yang.common.netty.INettyClient;
 import cn.yang.puppet.client.netty.PuppetNettyClient;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-import io.netty.buffer.ByteBuf;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.security.Key;
 
 /**
  * @author Cool-Coding
@@ -25,7 +14,7 @@ import java.security.Key;
  */
 public class PuppetDesktop extends AbstractRobotReplay {
 
-    private PuppetNettyClient puppetClient;
+    private INettyClient puppetClient;
     private Toolkit toolkit;
 
     /**
@@ -50,7 +39,9 @@ public class PuppetDesktop extends AbstractRobotReplay {
         return ImageUtils.compressedImageAndGetByteArray(bufferedImage,quality/100.0f);
     }
 
-    public void init(){
+    @Override
+    public void connect() throws Exception{
+
         puppetClient.connect();
     }
 

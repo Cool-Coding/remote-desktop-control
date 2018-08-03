@@ -89,6 +89,8 @@ public class PuppetScreen extends AbstractDisplayPuppet implements ActionListene
         private QualitySlider(){
             super(PuppetScreen.this.getjFrame());
             Box sliderBox= new Box(BoxLayout.Y_AXIS);
+            final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            setLocation(screenSize.width/2,screenSize.height/2);
 
             slider = new JSlider(10,100,quality);
             //设置绘制刻度
@@ -130,7 +132,7 @@ public class PuppetScreen extends AbstractDisplayPuppet implements ActionListene
             pack();
             setTitle("清晰度调节");
             setModalityType(ModalityType.APPLICATION_MODAL);
-            this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+            this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         }
     }
 }

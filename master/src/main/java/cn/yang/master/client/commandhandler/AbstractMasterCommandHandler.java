@@ -8,9 +8,8 @@ import cn.yang.common.constant.Constants;
 import cn.yang.common.constant.ExceptionMessageConstants;
 import cn.yang.common.exception.CommandHandlerException;
 import cn.yang.common.exception.ResponseHandleException;
-import cn.yang.common.sequence.SequenceGenerator;
+import cn.yang.common.generator.SequenceGenerate;
 import cn.yang.common.util.BeanUtil;
-import cn.yang.common.util.ExtensionLoader;
 import cn.yang.common.util.MacUtils;
 import cn.yang.master.client.exception.ConnectionException;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -33,7 +31,7 @@ public abstract class AbstractMasterCommandHandler implements ICommandHandler<Re
     /**
      * 序号生成器
      */
-    private static final SequenceGenerator generator= BeanUtil.getBean(SequenceGenerator.class);
+    private static final SequenceGenerate generator= BeanUtil.getBean(SequenceGenerate.class);
 
 
     private static ChannelHandlerContext ctx;
@@ -45,7 +43,7 @@ public abstract class AbstractMasterCommandHandler implements ICommandHandler<Re
         //sequence generator is  maintained in spring xml instead of txt
         /*if(generator==null) {
             try {
-                generator = ExtensionLoader.loadSingleObject(SequenceGenerator.class);
+                generator = ExtensionLoader.loadSingleObject(SequenceGenerate.class);
             }catch (IOException e){
                 LOGGER.error(e.getMessage(),e);
                 throw new CommandHandlerException(e.getMessage(),e);

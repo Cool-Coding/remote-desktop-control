@@ -35,12 +35,12 @@
     <bean id="beanUtil" class="cn.yang.common.util.BeanUtil" />
 
     <!-- desktop -->
-    <bean id="desktop" class="cn.yang.master.client.ui.MasterDesktop" init-method="init">
+    <bean id="desktop" class="cn.yang.master.client.ui.MasterDesktop">
         <property name="masterClient" ref="masterClient"/>
     </bean>
 
     <!--sequence generator-->
-    <bean id="generator" class="cn.yang.common.sequence.SimpleSequenceGenerator" />
+    <bean id="generator" class="cn.yang.common.generator.SimpleSequenceGenerator" />
 
     <bean id="puppetScreen" class="cn.yang.master.client.ui.PuppetScreen" scope="prototype" />
 </beans>

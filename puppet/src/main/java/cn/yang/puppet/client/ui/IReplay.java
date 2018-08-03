@@ -1,13 +1,14 @@
 package cn.yang.puppet.client.ui;
 
 import cn.yang.common.InputEvent.MasterKeyEvent;
-import cn.yang.common.InputEvent.MouseEvent;
+import cn.yang.common.InputEvent.MasterMouseEvent;
+import cn.yang.common.netty.INettyClient;
 
 /**
  * @author Cool-Coding
  *         2018/8/2
  */
-public interface IReplay {
+public interface IReplay extends INettyClient {
     /**
      * 键按下
      * @param keyEvent
@@ -24,25 +25,25 @@ public interface IReplay {
      * 鼠标单击
      * @param mouseEvent
      */
-    void mouseClick(MouseEvent mouseEvent);
+    void mouseClick(MasterMouseEvent mouseEvent);
 
     /**
      * 滚轮滚动
      * @param mouseEvent
      */
-    void mouseWheel(MouseEvent mouseEvent);
+    void mouseWheel(MasterMouseEvent mouseEvent);
 
     /**
      * 鼠标键按下
      * @param mouseEvent
      */
-    void mousePress(MouseEvent mouseEvent);
+    void mousePress(MasterMouseEvent mouseEvent);
 
     /**
      * 鼠标键释放
      * @param mouseEvent
      */
-    void mouseRelease(MouseEvent mouseEvent);
+    void mouseRelease(MasterMouseEvent mouseEvent);
 
     /**
      * 鼠标移动
@@ -54,14 +55,14 @@ public interface IReplay {
      * 鼠标双击
      * @param mouseEvent
      */
-    void mouseDoubleClick(MouseEvent mouseEvent);
+    void mouseDoubleClick(MasterMouseEvent mouseEvent);
 
     /**
      * 鼠标拖动
      * @param mouseEvent
      * @param site
      */
-    void mouseDragged(MouseEvent mouseEvent,int[] site);
+    void mouseDragged(MasterMouseEvent mouseEvent, int[] site);
 
 
     /**

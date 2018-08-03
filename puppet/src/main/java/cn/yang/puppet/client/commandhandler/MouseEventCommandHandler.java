@@ -1,13 +1,10 @@
 package cn.yang.puppet.client.commandhandler;
 
-import cn.yang.common.InputEvent.MouseEvent;
+import cn.yang.common.InputEvent.MasterMouseEvent;
 import cn.yang.common.dto.Response;
-import cn.yang.common.exception.CommandHandlerException;
 import cn.yang.puppet.client.constant.ExceptionMessageConstants;
 import cn.yang.puppet.client.exception.NullValueException;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.awt.*;
 
 /**
  * @author Cool-Coding
@@ -15,10 +12,6 @@ import java.awt.*;
  */
 public class MouseEventCommandHandler extends AbstractPuppetCommandHandler {
 
-
-    public MouseEventCommandHandler() throws CommandHandlerException,AWTException{
-
-    }
 
     @Override
     protected void handle0(ChannelHandlerContext ctx, Response response) throws Exception {
@@ -29,12 +22,12 @@ public class MouseEventCommandHandler extends AbstractPuppetCommandHandler {
             throw new NullValueException(ExceptionMessageConstants.MOUSE_EVENT_NULL);
         }
 
-        if (!(obj instanceof MouseEvent)){
+        if (!(obj instanceof MasterMouseEvent)){
             error(response, ExceptionMessageConstants.MOUSE_EVENT_ERROR);
             throw new ClassCastException(ExceptionMessageConstants.MOUSE_EVENT_ERROR);
         }
 
-        MouseEvent mouseEvent=(MouseEvent)obj;
+        MasterMouseEvent mouseEvent=(MasterMouseEvent)obj;
         if(mouseEvent.isClicked()){
             REPLAY.mouseClick(mouseEvent);
         }
@@ -57,11 +50,15 @@ public class MouseEventCommandHandler extends AbstractPuppetCommandHandler {
 
         if(mouseEvent.isMousePressed()){
             REPLAY.mousePress(mouseEvent);
-        }
-
-        if(mouseEvent.isMouseReleased()){
+            /**
+             * 同键盘按键一样，为了处理按下之后的延迟，按下后即释放
+             */
             REPLAY.mouseRelease(mouseEvent);
         }
+
+        /*if(mouseEvent.isMouseReleased()){
+            REPLAY.mouseRelease(mouseEvent);
+        }*/
 
     }
 }

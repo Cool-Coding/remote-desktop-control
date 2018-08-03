@@ -2,14 +2,10 @@ package cn.yang.puppet.client.ui;
 
 
 import cn.yang.common.InputEvent.MasterKeyEvent;
-import cn.yang.common.InputEvent.MouseEvent;
-import cn.yang.common.constant.Constants;
-import cn.yang.common.util.ImageUtils;
-import cn.yang.puppet.client.netty.PuppetNettyClient;
+import cn.yang.common.InputEvent.MasterMouseEvent;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 
 /**
  * @author Cool-Coding
@@ -64,7 +60,7 @@ public abstract class AbstractRobotReplay implements IReplay {
     }
 
     @Override
-    public void mouseClick(MouseEvent mouseEvent){
+    public void mouseClick(MasterMouseEvent mouseEvent){
         final int mouseButton1 = mouseEvent.getMouseButton();
         robot.mousePress(mouseButton1);
         robot.mouseRelease(mouseButton1);
@@ -72,18 +68,18 @@ public abstract class AbstractRobotReplay implements IReplay {
 
 
     @Override
-    public void mouseWheel(MouseEvent mouseEvent){
+    public void mouseWheel(MasterMouseEvent mouseEvent){
         robot.mouseWheel(mouseEvent.getMouseWheel());
     }
 
     @Override
-    public void mousePress(MouseEvent mouseEvent){
-        robot.mousePress(mouseEvent.getMouseButton());;
+    public void mousePress(MasterMouseEvent mouseEvent){
+        robot.mousePress(mouseEvent.getMouseButton());
     }
 
     @Override
-    public void mouseRelease(MouseEvent mouseEvent){
-        robot.mouseRelease(mouseEvent.getMouseButton());;
+    public void mouseRelease(MasterMouseEvent mouseEvent){
+        robot.mouseRelease(mouseEvent.getMouseButton());
     }
 
     @Override
@@ -92,7 +88,7 @@ public abstract class AbstractRobotReplay implements IReplay {
     }
 
     @Override
-    public void mouseDoubleClick(MouseEvent mouseEvent){
+    public void mouseDoubleClick(MasterMouseEvent mouseEvent){
         final int mouseButton1 = mouseEvent.getMouseButton();
         robot.mousePress(mouseButton1);
         robot.mouseRelease(mouseButton1);
@@ -101,7 +97,7 @@ public abstract class AbstractRobotReplay implements IReplay {
     }
 
     @Override
-    public void mouseDragged(MouseEvent mouseEvent,int[] site){
+    public void mouseDragged(MasterMouseEvent mouseEvent, int[] site){
         final int mouseButton1 = mouseEvent.getMouseButton();
         robot.mousePress(mouseButton1);
         mouseMove(site);

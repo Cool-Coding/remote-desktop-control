@@ -24,7 +24,7 @@ public class NettyServer {
     /** logger */
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyServer.class);
 
-    void bind(String host,int port) throws InterruptedException{
+    private void bind(String host,int port) throws InterruptedException{
         final NioEventLoopGroup boss=new NioEventLoopGroup();
         final NioEventLoopGroup worker=new NioEventLoopGroup();
 
@@ -39,14 +39,7 @@ public class NettyServer {
             final ChannelFuture f = bootstrap.bind(host, port).sync();
 
             LOGGER.info("server start on port:{}",port);
-
             f.channel().closeFuture().sync();
-
-            try {
-                System.in.read();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }finally {
             boss.shutdownGracefully();
             worker.shutdownGracefully();
@@ -54,13 +47,14 @@ public class NettyServer {
     }
 
 
-    public void init(){
+    public void start() throws Exception{
         try {
             String ip = PropertiesUtil.getString(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_IP);
             int port = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_PORT);
             bind(ip,port);
         }catch (IOException | InterruptedException e){
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(),e);
+            throw e;
         }
     }
 

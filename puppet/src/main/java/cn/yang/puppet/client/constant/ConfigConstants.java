@@ -12,9 +12,10 @@ public class ConfigConstants {
 
     public static final String HEARTBEAT_INTERVAL="heartbeat.interval";
     public static final String RECONNECT_INTERVAL="reconnect.interval";
+    public static final String TASK_CHECK_INTERVAL="task.check.interval";
     public static final String SERVER_IP="server.ip";
     public static final String SERVER_PORT="server.port";
     public static final String ERROR_COUNT="error.count";
-    public static final String DESKTOP_BEAN_ID="desktop.bean.id";
+    public static final String SCREEN_REFRESH_FREQUENCY="screen.refresh.frequency";
 
 }

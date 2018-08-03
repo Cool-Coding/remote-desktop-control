@@ -20,7 +20,7 @@ public class BeanUtil implements BeanFactoryAware {
 
     @SuppressWarnings("unchecked")
     public static <T> T getBean(Class<T> aclass,String beanName){
-        return (T)beanFactory.getBean(beanName);
+        return (T)beanFactory.getBean(aclass,beanName);
     }
 
     public static <T> T getBean(Class<T> aclass){
