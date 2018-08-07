@@ -1,7 +1,7 @@
 package cn.yang.server.commandhandler;
 
 import cn.yang.common.dto.Request;
-import cn.yang.common.TaskExecutors;
+import cn.yang.common.util.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.exception.ServerException;
 import cn.yang.common.exception.TaskExecutorException;
@@ -76,11 +76,7 @@ public class ControlCommandHandler extends AbstractServerCommandHandler {
                 }
             }
 
-            //2.如果没有，则将傀儡名称加入待连接列表
-            if (!PRECONTROL_PUPPETS.contains(name)) {
-                PRECONTROL_PUPPETS.add(name);
-            }
-            //返回null时，会重试
+            //2.返回null时，会重试
             return null;
         },interval,times);
     }

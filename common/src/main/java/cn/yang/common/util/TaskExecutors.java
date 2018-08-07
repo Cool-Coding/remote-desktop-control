@@ -1,4 +1,4 @@
-package cn.yang.common;
+package cn.yang.common.util;
 
 import cn.yang.common.exception.TaskExecutorException;
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public class TaskExecutors {
             LOGGER.error(e.getMessage(),e);
             throw new TaskExecutorException(e.getMessage(),e);
         }finally {
-            //最后注意清除记数
+            //清除记数
             count.remove();
         }
 

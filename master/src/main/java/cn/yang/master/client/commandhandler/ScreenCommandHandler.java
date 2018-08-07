@@ -15,9 +15,6 @@ import java.awt.image.BufferedImage;
  *傀儡传过来的屏幕命令处理逻辑
  */
 public class ScreenCommandHandler extends AbstractMasterCommandHandler {
-    public ScreenCommandHandler() throws CommandHandlerException{
-
-    }
 
     @Override
     protected void handle0(ChannelHandlerContext ctx, Response response) throws Exception {

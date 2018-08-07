@@ -1,7 +1,7 @@
 package cn.yang.puppet.client.netty;
 
-import cn.yang.common.ChannelInitializerNew;
-import cn.yang.common.TaskExecutors;
+import cn.yang.common.netty.ChannelInitializer;
+import cn.yang.common.util.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.netty.INettyClient;
 import cn.yang.puppet.client.commandhandler.AbstractPuppetCommandHandler;
@@ -16,7 +16,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 
 /**
@@ -27,7 +26,7 @@ public class PuppetNettyClient implements INettyClient {
     /**
      * 处理器初始化器
      */
-    private ChannelInitializerNew channelInitialize;
+    private ChannelInitializer channelInitialize;
 
     private NioEventLoopGroup group;
 
@@ -48,7 +47,7 @@ public class PuppetNettyClient implements INettyClient {
     }
 
     @Override
-    public void connect() throws Exception{
+    public void connect(){
             final Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
@@ -61,18 +60,12 @@ public class PuppetNettyClient implements INettyClient {
                     sync.channel().closeFuture().sync();
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
-                    throw e;
                 } finally {
                     //如果连接断开了，重新与服务器连接
-                    LOGGER.error(ExceptionMessageConstants.DISCONNECT_TO_SERVER+"{}:{}", host, port);
                     try {
-                        TaskExecutors.submit(() -> {
-                            try {
-                                connect();
-                            }catch (Exception e){
-                                //此处不必记录消息并抛出，因为connect中会记录消息
-                            }
-                        }, PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.RECONNECT_INTERVAL));
+                        int interval=PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.RECONNECT_INTERVAL);
+                        LOGGER.error(ExceptionMessageConstants.DISCONNECT_TO_SERVER, host, port,interval);
+                        TaskExecutors.submit(this::connect,interval );
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -83,7 +76,7 @@ public class PuppetNettyClient implements INettyClient {
 
     }
 
-    public void setChannelInitialize(ChannelInitializerNew channelInitialize) {
+    public void setChannelInitialize(ChannelInitializer channelInitialize) {
         this.channelInitialize = channelInitialize;
     }
 

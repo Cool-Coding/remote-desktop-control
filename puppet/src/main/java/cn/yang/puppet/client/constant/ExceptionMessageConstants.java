@@ -12,6 +12,6 @@ public class ExceptionMessageConstants {
     public static final String MOUSE_EVENT_NULL             = "The value of mouseevent from server is null";
     public static final String QUALITY_EVENT_VALUE_ERROR    = "The value  of quality from server is not the type Integer";
     public static final String QUALITY_EVENT_VALUE_NULL     = "The value  of quality from server is null";
-    public static final String DISCONNECT_TO_SERVER         = "Disconnect to server";
+    public static final String DISCONNECT_TO_SERVER         = "Disconnect to server {}:{},will be reconnect to server in {} milliseconds";
 
 }

@@ -1,5 +1,6 @@
-package cn.yang.common.generator;
+package cn.yang.common.generator.impl;
 
+import cn.yang.common.generator.PuppetNameGenerate;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;

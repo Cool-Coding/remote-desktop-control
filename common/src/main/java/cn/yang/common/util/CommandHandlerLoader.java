@@ -25,7 +25,7 @@ public class CommandHandlerLoader {
     /** logger */
     private static final Logger LOGGER = LoggerFactory.getLogger(CommandHandlerLoader.class);
 
-    private static final Map<Enum<Commands>,ICommandHandler> HANDLERS =new ConcurrentHashMap<>();
+    private static final Map<Enum<Commands>, ICommandHandler> HANDLERS =new ConcurrentHashMap<>();
 
     private static final String COMMAND_HANDLER_PATH="META-INF/commandhandlers";
 

@@ -1,4 +1,6 @@
-package cn.yang.common.generator;
+package cn.yang.common.generator.impl;
+
+import cn.yang.common.generator.SequenceGenerate;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

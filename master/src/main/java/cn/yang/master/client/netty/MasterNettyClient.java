@@ -1,12 +1,12 @@
 package cn.yang.master.client.netty;
 
-import cn.yang.common.ChannelInitializerNew;
+import cn.yang.common.netty.ChannelInitializer;
 import cn.yang.common.dto.Request;
 import cn.yang.common.command.Commands;
 import cn.yang.common.constant.Constants;
 import cn.yang.common.generator.SequenceGenerate;
 import cn.yang.common.netty.INettyClient;
-import cn.yang.common.util.ExtensionLoader;
+import cn.yang.common.util.BeanUtil;
 import cn.yang.common.util.MacUtils;
 import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.common.util.PropertiesUtil;
@@ -34,7 +34,7 @@ public class MasterNettyClient implements INettyClient{
     /**
      * 处理器初始化器
      */
-    private ChannelInitializerNew channelInitialize;
+    private ChannelInitializer channelInitialize;
 
     private NioEventLoopGroup group;
 
@@ -87,7 +87,7 @@ public class MasterNettyClient implements INettyClient{
      */
     public void fireCommand(String puppetName,Enum<Commands> command,Object data) throws MasterClientException{
         try {
-            getChannelHandler().sendCommand(puppetName,command,data);
+            getChannelHandler().fireCommand(puppetName,command,data);
         }catch (MasterChannelHandlerException e){
            throw new MasterClientException(e.getMessage(),e);
         }
@@ -110,19 +110,15 @@ public class MasterNettyClient implements INettyClient{
             return null;
         }
 
-        try {
-            final SequenceGenerate generator = ExtensionLoader.loadSingleObject(SequenceGenerate.class);
+        final SequenceGenerate generator = BeanUtil.getBean(SequenceGenerate.class);
 
-            Request request = new Request();
-            request.setId(Constants.MASTER + mac + generator.next());
-            request.setCommand(Commands.CONNECT);
-            return request;
-        }catch (IOException e){
-          throw  new MasterClientException(e.getMessage(),e);
-        }
+        Request request = new Request();
+        request.setId(Constants.MASTER + mac + generator.next());
+        request.setCommand(Commands.CONNECT);
+        return request;
     }
 
-    public void setChannelInitialize(ChannelInitializerNew channelInitialize) {
+    public void setChannelInitialize(ChannelInitializer channelInitialize) {
         this.channelInitialize = channelInitialize;
     }
 

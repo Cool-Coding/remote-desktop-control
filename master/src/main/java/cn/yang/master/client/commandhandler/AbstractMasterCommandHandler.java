@@ -26,7 +26,7 @@ import java.util.Arrays;
 public abstract class AbstractMasterCommandHandler implements ICommandHandler<Response> {
 
     /** logger */
-    protected static Logger LOGGER;
+    private static final Logger LOGGER= LoggerFactory.getLogger(AbstractMasterCommandHandler.class);
 
     /**
      * 序号生成器
@@ -35,21 +35,6 @@ public abstract class AbstractMasterCommandHandler implements ICommandHandler<Re
 
 
     private static ChannelHandlerContext ctx;
-
-
-    public AbstractMasterCommandHandler() throws CommandHandlerException {
-        LOGGER = LoggerFactory.getLogger(this.getClass());
-
-        //sequence generator is  maintained in spring xml instead of txt
-        /*if(generator==null) {
-            try {
-                generator = ExtensionLoader.loadSingleObject(SequenceGenerate.class);
-            }catch (IOException e){
-                LOGGER.error(e.getMessage(),e);
-                throw new CommandHandlerException(e.getMessage(),e);
-            }
-        }*/
-    }
 
     @Override
     public void handle(ChannelHandlerContext ctx, Response response) throws Exception {

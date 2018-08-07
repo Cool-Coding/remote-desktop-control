@@ -1,10 +1,9 @@
 package cn.yang.puppet.client.commandhandler;
 
 import cn.yang.common.dto.Response;
-import cn.yang.common.exception.CommandHandlerException;
 import cn.yang.puppet.client.constant.ExceptionMessageConstants;
 import cn.yang.puppet.client.exception.NullValueException;
-import cn.yang.puppet.client.ui.PuppetDesktop;
+import cn.yang.puppet.client.ui.impl.PuppetDesktop;
 import io.netty.channel.ChannelHandlerContext;
 
 /**

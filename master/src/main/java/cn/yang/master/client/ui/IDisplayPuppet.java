@@ -3,6 +3,7 @@ package cn.yang.master.client.ui;
 /**
  * @author Cool-Coding
  *         2018/8/2
+ * 傀儡控制屏幕接口
  */
 public interface IDisplayPuppet {
     /**

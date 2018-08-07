@@ -56,9 +56,9 @@ public class MouseEventCommandHandler extends AbstractPuppetCommandHandler {
             REPLAY.mouseRelease(mouseEvent);
         }
 
-        /*if(mouseEvent.isMouseReleased()){
+        if(mouseEvent.isMouseReleased()){
             REPLAY.mouseRelease(mouseEvent);
-        }*/
+        }
 
     }
 }

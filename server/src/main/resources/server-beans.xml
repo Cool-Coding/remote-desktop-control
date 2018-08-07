@@ -14,7 +14,7 @@
 
     <bean id="handler" class="cn.yang.server.netty.NettyServerHandler" />
 
-    <bean id="channelInitialize" class="cn.yang.common.ChannelInitializerNew">
+    <bean id="channelInitialize" class="cn.yang.common.netty.ChannelInitializer">
         <constructor-arg index="0" type="java.lang.Class" value="cn.yang.common.dto.Request" />
         <constructor-arg index="1" type="java.lang.Class" value="cn.yang.common.dto.Response" />
         <property name="channelHandler" ref="handler" />
@@ -28,7 +28,7 @@
     <bean id="beanUtil" class="cn.yang.common.util.BeanUtil" />
 
     <!--Puppet Name Generator-->
-    <bean id="puppetNameGenerator" class="cn.yang.common.generator.SimplePuppetNameGenerator" />
+    <bean id="puppetNameGenerator" class="cn.yang.common.generator.impl.SimplePuppetNameGenerator" />
 
 
 </beans>

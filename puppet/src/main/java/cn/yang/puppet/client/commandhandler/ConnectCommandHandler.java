@@ -3,11 +3,9 @@ package cn.yang.puppet.client.commandhandler;
 import cn.yang.common.dto.Request;
 import cn.yang.common.dto.Response;
 import cn.yang.common.command.Commands;
-import cn.yang.common.exception.ConnectionException;
 import cn.yang.common.util.PropertiesUtil;
 import cn.yang.puppet.client.constant.ConfigConstants;
 import cn.yang.common.exception.CommandHandlerException;
-import cn.yang.puppet.client.constant.ExceptionMessageConstants;
 import cn.yang.puppet.client.constant.MessageConstants;
 import cn.yang.puppet.client.exception.HeartBeatException;
 import io.netty.channel.ChannelHandlerContext;
@@ -48,7 +46,7 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
         try {
             //为减少带宽负载，发送屏幕截图时不再发送心跳，当屏幕截图发送完后，继续发送心跳，
             //启动一个线程，进行周期性检查，管理心跳与屏幕截图任务
-            final TaskManagement taskManagement = new TaskManagement(ctx, response);
+            final HeartBeatAndScreenSnapShotTaskManagement taskManagement = new HeartBeatAndScreenSnapShotTaskManagement(ctx, response);
             int interval = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.TASK_CHECK_INTERVAL);
             ctx.executor().scheduleAtFixedRate(()->{
                     try {
@@ -66,12 +64,12 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
     }
 
 
-    private class TaskManagement {
+    private class HeartBeatAndScreenSnapShotTaskManagement {
         private final Map<Runnable,ScheduledFuture> tasks=new HashMap<>();
         private ChannelHandlerContext ctx;
         private Response response;
 
-        private TaskManagement(ChannelHandlerContext ctx,Response response){
+        private HeartBeatAndScreenSnapShotTaskManagement(ChannelHandlerContext ctx, Response response){
             this.ctx=ctx;
             this.response=response;
         }

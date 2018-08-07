@@ -1,18 +1,16 @@
-package cn.yang.common;
+package cn.yang.common.netty;
 
 import cn.yang.common.serialization.ProtobufDecoder;
 import cn.yang.common.serialization.ProtobufEncoder;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.handler.timeout.ReadTimeoutHandler;
 
 /**
  * @author Cool-Coding
  *         2018/7/25
  * 使用单例，由Spring管理
  */
-public class ChannelInitializerNew extends ChannelInitializer<SocketChannel> {
+public class ChannelInitializer extends io.netty.channel.ChannelInitializer<SocketChannel> {
 
     /**
      * 处理器
@@ -22,7 +20,7 @@ public class ChannelInitializerNew extends ChannelInitializer<SocketChannel> {
     private Class<?> requestClass;
     private Class<?> responseClass;
 
-    public ChannelInitializerNew(Class<?> requestClass,Class<?> responseClass){
+    public ChannelInitializer(Class<?> requestClass, Class<?> responseClass){
         this.requestClass=requestClass;
         this.responseClass=responseClass;
     }
@@ -39,7 +37,7 @@ public class ChannelInitializerNew extends ChannelInitializer<SocketChannel> {
             ch.pipeline()
                     .addLast(new ProtobufDecoder(requestClass))
                     .addLast(new ProtobufEncoder(responseClass))
-                    .addLast(channelHandler); // 使用 HeartBeatNettyClient 发送心跳
+                    .addLast(channelHandler);
     }
 
     public void setChannelHandler(ChannelHandler channelHandler) {

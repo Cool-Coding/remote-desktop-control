@@ -1,7 +1,7 @@
 package cn.yang.master.client.netty;
+import cn.yang.common.util.CommandHandlerLoader;
 import cn.yang.common.dto.Response;
 import cn.yang.common.command.*;
-import cn.yang.common.command.handler.CommandHandlerLoader;
 import cn.yang.common.command.handler.ICommandHandler;
 import cn.yang.common.exception.CommandHandlerLoaderException;
 import cn.yang.master.client.commandhandler.AbstractMasterFireCommandHandler;
@@ -50,7 +50,7 @@ public class MasterNettyClientHandler extends SimpleChannelInboundHandler<Respon
     }
 
     @SuppressWarnings("unchecked")
-    void sendCommand(String puppetName, Enum<Commands> command, Object data) throws MasterChannelHandlerException{
+    void fireCommand(String puppetName, Enum<Commands> command, Object data) throws MasterChannelHandlerException{
         if (StringUtils.isEmpty(puppetName)){
             throw new MasterChannelHandlerException(ExceptionMessageConstants.PUPPET_NAME_EMPTY);
         }

@@ -1,12 +1,13 @@
-package cn.yang.master.client.ui;
+package cn.yang.master.client.ui.impl;
 
-import cn.yang.common.TaskExecutors;
+import cn.yang.common.util.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.master.client.exception.MasterClientException;
 import cn.yang.master.client.netty.MasterNettyClient;
-import org.springframework.beans.factory.annotation.Value;
+import cn.yang.master.client.ui.IDisplayPuppet;
+import cn.yang.master.client.ui.IMasterDesktop;
 import org.springframework.util.StringUtils;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ import java.util.HashMap;
  */
 public class MasterDesktop extends JFrame implements IMasterDesktop,ActionListener{
     private MasterNettyClient masterClient;
-    private HashMap<String,IDisplayPuppet> puppets=new HashMap<>();
+    private HashMap<String, IDisplayPuppet> puppets=new HashMap<>();
 
     private JTextField puppetNameTextField;
 
@@ -45,7 +46,8 @@ public class MasterDesktop extends JFrame implements IMasterDesktop,ActionListen
 
     @Override
     public void setting(){
-        setSize(400,300);
+        setBackground(new Color(255,255,255));
+        setSize(450,300);
         setResizable(false);
         setLocation(250, 250);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -81,7 +83,7 @@ public class MasterDesktop extends JFrame implements IMasterDesktop,ActionListen
 
     @Override
     public void initBody(){
-        Font titleFont=new Font("宋体",Font.CENTER_BASELINE,25);
+        Font titleFont=new Font("宋体",Font.BOLD,25);
         Font contentFont=new Font("宋体",Font.PLAIN,20);
 
         JPanel jPanel=new JPanel(new GridLayout(3,1));
@@ -89,31 +91,32 @@ public class MasterDesktop extends JFrame implements IMasterDesktop,ActionListen
         JPanel titlePanel=new JPanel();
         JTextArea jTitle=new JTextArea(3,10);
         jTitle.setText("远程桌面控制");
+        jTitle.setForeground(Color.decode("#36648B"));
         jTitle.setFont(titleFont);
         jTitle.setOpaque(false);
         jTitle.setEditable(false);
         titlePanel.add(jTitle);
         jPanel.add(titlePanel);
 
-        JPanel jPanel5=new JPanel();
-        jPanel.add(jPanel5);
+        JPanel puppetNamePanel=new JPanel();
+        jPanel.add(puppetNamePanel);
         JLabel jLabel=new JLabel();
         jLabel.setText("被控端名称:");
         jLabel.setFont(contentFont);
-        jPanel5.add(jLabel);
+        puppetNamePanel.add(jLabel);
 
-        puppetNameTextField =new JTextField(15);
+        puppetNameTextField =new JTextField(30);
         puppetNameTextField.setToolTipText("输入被控端名称");
         puppetNameTextField.setFont(contentFont);
-        jPanel5.add(puppetNameTextField);
+        puppetNamePanel.add(puppetNameTextField);
 
-        JPanel jPanel6=new JPanel();
-        jPanel.add(jPanel6);
+        JPanel remoteButtonPanel=new JPanel();
+        jPanel.add(remoteButtonPanel);
         JButton jButton=new JButton();
         jButton.setText("远程");
         jButton.setActionCommand(Commands.CONTROL.name());
         jButton.addActionListener(this);
-        jPanel6.add(jButton);
+        remoteButtonPanel.add(jButton);
 
         final Container contentPane = getContentPane();
         contentPane.add(BorderLayout.CENTER,jPanel);

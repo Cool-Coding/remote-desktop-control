@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://D:\hadoop\remote-desktop-control\puppet\Commands.TERMINATE.iml" filepath="D:\hadoop\remote-desktop-control\puppet\Commands.TERMINATE.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/desktop-control-parent.iml" filepath="$PROJECT_DIR$/desktop-control-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/master/master.iml" filepath="$PROJECT_DIR$/master/master.iml" />
       <module fileurl="file://$PROJECT_DIR$/puppet/puppet.iml" filepath="$PROJECT_DIR$/puppet/puppet.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/remote-desktop-control.iml" filepath="$PROJECT_DIR$/.idea/remote-desktop-control.iml" />
       <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
     </modules>
   </component>

@@ -11,10 +11,7 @@ import cn.yang.master.client.exception.FireCommandHandlerException;
  * @author Cool-Coding
  *         2018/7/27
  */
-public class FireCommandHandler extends AbstractMasterFireCommandHandler<Object> {
-    public FireCommandHandler() throws CommandHandlerException{
-
-    }
+public class CommonFireCommandHandler extends AbstractMasterFireCommandHandler<Object> {
 
     @Override
     public void fire(String puppetName,Enum<Commands> command,Object data) throws FireCommandHandlerException {

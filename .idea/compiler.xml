@@ -6,7 +6,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Commands.TERMINATE" />
         <module name="common" />
         <module name="master" />
         <module name="puppet" />
@@ -14,11 +13,10 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Commands.TERMINATE" target="1.8" />
       <module name="common" target="1.8" />
+      <module name="desktop-control-parent" target="1.8" />
       <module name="master" target="1.8" />
       <module name="puppet" target="1.8" />
-      <module name="remote-desktop-control" target="1.8" />
       <module name="server" target="1.8" />
     </bytecodeTargetLevel>
   </component>

@@ -13,10 +13,6 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public abstract class AbstractMasterFireCommandHandler<T> extends AbstractMasterCommandHandler {
 
-    public AbstractMasterFireCommandHandler() throws CommandHandlerException{
-
-    }
-
     @Override
     protected void handle0(ChannelHandlerContext ctx, Response response) throws Exception {
         throw new UnsupportedOperationException(String.format("%s %s", ExceptionMessageConstants.MASTER_FIRE_COMMAND_ERROR,response.getCommand()));

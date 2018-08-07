@@ -38,12 +38,6 @@ public abstract class AbstractServerCommandHandler implements ICommandHandler<Re
     protected static final Map<String,ChannelPair> CONNECTED_CHANNELPAIRS=new ConcurrentHashMap<>();
 
 
-    /**
-     * 待连接的傀儡集合
-     */
-    protected static final Set<String> PRECONTROL_PUPPETS =new ConcurrentSet<>();
-
-
     public AbstractServerCommandHandler(){
         LOGGER=LoggerFactory.getLogger(this.getClass());
     }

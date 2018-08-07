@@ -1,8 +1,9 @@
-package cn.yang.puppet.client.ui;
+package cn.yang.puppet.client.ui.impl;
 
 
 import cn.yang.common.InputEvent.MasterKeyEvent;
 import cn.yang.common.InputEvent.MasterMouseEvent;
+import cn.yang.puppet.client.ui.IReplay;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

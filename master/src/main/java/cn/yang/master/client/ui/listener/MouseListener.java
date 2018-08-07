@@ -1,7 +1,7 @@
 package cn.yang.master.client.ui.listener;
 
 import cn.yang.common.InputEvent.MasterMouseEvent;
-import cn.yang.common.TaskExecutors;
+import cn.yang.common.util.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.common.util.PropertiesUtil;

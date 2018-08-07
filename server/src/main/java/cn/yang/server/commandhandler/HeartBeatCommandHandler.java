@@ -15,14 +15,5 @@ public class HeartBeatCommandHandler extends AbstractServerCommandHandler {
     public void handle0(ChannelHandlerContext ctx, Request request) throws Exception {
         final String puppetName = request.getPuppetName();
         debug(request, MessageConstants.RECEIVE_A_HEARTBEAT,puppetName);
-        if(PRECONTROL_PUPPETS.size() > 0 && PRECONTROL_PUPPETS.contains(puppetName)){
-            Response response=buildResponse(request, Commands.CONTROL);
-            ctx.writeAndFlush(response).addListener((f)->{
-                //如果通知傀儡连接成功，则从待控制集合中移除
-                if(f.isSuccess()){
-                    PRECONTROL_PUPPETS.remove(puppetName);
-                }
-            });
-        }
     }
 }

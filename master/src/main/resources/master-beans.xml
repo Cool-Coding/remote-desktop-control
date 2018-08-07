@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans
-            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-            http://www.springframework.org/schema/context
-            http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+            http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
     <bean id="encoder" class="cn.yang.common.serialization.ProtobufEncoder" scope="prototype">
         <constructor-arg index="0" type="java.lang.Class" value="cn.yang.common.dto.Request"/>
@@ -20,7 +16,7 @@
     <!-- 响应处理器 -->
     <bean id="handler" class="cn.yang.master.client.netty.MasterNettyClientHandler" />
 
-    <bean id="channelInitialize" class="cn.yang.common.ChannelInitializerNew">
+    <bean id="channelInitialize" class="cn.yang.common.netty.ChannelInitializer">
         <constructor-arg index="0" type="java.lang.Class" value="cn.yang.common.dto.Response" />
         <constructor-arg index="1" type="java.lang.Class" value="cn.yang.common.dto.Request" />
         <property name="channelHandler" ref="handler" />
@@ -35,12 +31,12 @@
     <bean id="beanUtil" class="cn.yang.common.util.BeanUtil" />
 
     <!-- desktop -->
-    <bean id="desktop" class="cn.yang.master.client.ui.MasterDesktop">
+    <bean id="desktop" class="cn.yang.master.client.ui.impl.MasterDesktop">
         <property name="masterClient" ref="masterClient"/>
     </bean>
 
     <!--sequence generator-->
-    <bean id="generator" class="cn.yang.common.generator.SimpleSequenceGenerator" />
+    <bean id="generator" class="cn.yang.common.generator.impl.SimpleSequenceGenerator" />
 
-    <bean id="puppetScreen" class="cn.yang.master.client.ui.PuppetScreen" scope="prototype" />
+    <bean id="puppetScreen" class="cn.yang.master.client.ui.impl.PuppetScreen" scope="prototype" />
 </beans>

@@ -1,14 +1,10 @@
-package cn.yang.master.client.ui;
+package cn.yang.master.client.ui.impl;
 
-import cn.yang.common.TaskExecutors;
+import cn.yang.common.util.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.constant.Constants;
-import cn.yang.common.util.BeanUtil;
 import cn.yang.common.util.ImageUtils;
 import cn.yang.master.client.exception.MasterClientException;
-import cn.yang.master.client.ui.listener.KeyBoardListener;
-import cn.yang.master.client.ui.listener.MouseListener;
-import org.springframework.beans.BeanUtils;
 
 import javax.swing.*;
 import java.awt.*;

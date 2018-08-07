@@ -1,6 +1,8 @@
-package cn.yang.master.client.ui;
+package cn.yang.master.client.ui.impl;
 
 import cn.yang.common.util.BeanUtil;
+import cn.yang.master.client.ui.IDisplayPuppet;
+import cn.yang.master.client.ui.IMasterDesktop;
 import cn.yang.master.client.ui.listener.KeyBoardListener;
 import cn.yang.master.client.ui.listener.MouseListener;
 
@@ -43,7 +45,7 @@ public abstract class AbstractDisplayPuppet implements IDisplayPuppet {
     /**
      * 窗体属性设置
      */
-    public void setting(){
+    private void setting(){
         jFrame.setLocation(250, 250);
         jFrame.setSize(500,500);
         jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -58,7 +60,7 @@ public abstract class AbstractDisplayPuppet implements IDisplayPuppet {
     /**
      * 初使化主体
      */
-    public void initBody(){
+    private void initBody(){
         imageJpanel=new CanvasPanel();
         jFrame.add(imageJpanel);
         final KeyBoardListener keyBoardListener = new KeyBoardListener(AbstractDisplayPuppet.this);
@@ -105,7 +107,7 @@ public abstract class AbstractDisplayPuppet implements IDisplayPuppet {
 
     /**
      * 由子类具体的画图逻辑
-     * @param g
+     * @param g 绘图器
      */
     protected void paint(Graphics g){};
 
@@ -127,9 +129,11 @@ public abstract class AbstractDisplayPuppet implements IDisplayPuppet {
 
     /**
      * 初始化菜单，由子类实现
-     * @param jFrame
+     * @param jFrame JFrame窗体
      */
     abstract void initMenu(JFrame jFrame);
+
+
     @Override
     public String getPuppetName() {
         return puppetName;

@@ -124,7 +124,7 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
      * @param title
      * @param message
      */
-    public static void popMessageDialog(String title,String... message){
-        BeanUtil.getBean(MessageDialog.class,title).showMessage(Arrays.toString(message));
+    public static void popMessageDialog(String title,String message){
+        BeanUtil.getBean(MessageDialog.class,title).showMessage(message);
     }
 }

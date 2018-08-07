@@ -1,19 +1,6 @@
 package cn.yang.common.util;
 
-import cn.yang.common.constant.Constants;
-import com.sun.glass.ui.Pixels;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
-import com.sun.imageio.plugins.png.PNGImageReader;
-import com.sun.imageio.plugins.png.PNGImageReaderSpi;
-import com.sun.imageio.plugins.png.PNGImageWriter;
-import com.sun.imageio.plugins.png.PNGImageWriterSpi;
-import com.sun.media.jfxmedia.control.VideoFormat;
-import net.coobird.thumbnailator.Thumbnailator;
 import net.coobird.thumbnailator.Thumbnails;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -24,20 +11,16 @@ import java.util.Locale;
 
 import javax.imageio.*;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageOutputStream;
 
 /**
  * Utilities methods for image manipulation. It does not support writting of GIF images, but it can read from. GIF images will be saved as PNG.
- * 
- * @author Rafael Steil
- * @version $Id: ImageUtils.java,v 1.23 2007/09/09 01:05:22 rafaelsteil Exp $
+ * 图像处理工具类
  */
 public class ImageUtils {
-	public static final int IMAGE_UNKNOWN = -1;
 	public static final int IMAGE_JPEG = 0;
 	public static final int IMAGE_PNG = 1;
-	public static final int IMAGE_GIF = 2;
+
 
 	/**
 	 * Resizes an image
@@ -154,6 +137,15 @@ public class ImageUtils {
 		}
 	}
 
+    /**
+     * 保持宽高比压缩图像
+     * @param image
+     *          图像
+     * @param quality
+     *          质量(0,1]
+     * @return
+     *          压缩后的图像
+     */
     public static BufferedImage compressedImage(BufferedImage image, float quality) {
         try {
             return Thumbnails.of(image).scale(1f).outputQuality(quality).asBufferedImage();
@@ -162,6 +154,15 @@ public class ImageUtils {
         }
     }
 
+    /**
+     * 保持宽高比压缩图像
+     * @param image
+     *          图像
+     * @param quality
+     *          质量(0,1]
+     * @return
+     *          压缩后图像的字节数组
+     */
 	public static byte[] compressedImageAndGetByteArray(BufferedImage image, float quality) {
 
 		try {
@@ -173,6 +174,13 @@ public class ImageUtils {
 		}
 	}
 
+    /**
+     * 字节数组转化为图像
+     * @param data
+     *          字节数组
+     * @return
+     *           图像
+     */
 	public static BufferedImage getImageFromByteArray(byte[] data){
 		try {
 			final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
@@ -316,6 +324,12 @@ public class ImageUtils {
 		}
 	}
 
+    /**
+     * 图像转化成字节数组
+     * @param image
+     * @param format
+     * @return
+     */
 	public static byte[] ImageConvertToByteArray(BufferedImage image,String format){
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		try {
@@ -327,6 +341,11 @@ public class ImageUtils {
 	}
 
 
+    /**
+     * 字节数组转换成BufferedImage
+     * @param bytes
+     * @return
+     */
 	public static BufferedImage ByteArrayConvertToImage(byte[] bytes){
 		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 		try {

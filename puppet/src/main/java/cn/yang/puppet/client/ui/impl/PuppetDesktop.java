@@ -1,4 +1,4 @@
-package cn.yang.puppet.client.ui;
+package cn.yang.puppet.client.ui.impl;
 
 
 import cn.yang.common.constant.Constants;
