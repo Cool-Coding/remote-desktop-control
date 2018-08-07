@@ -1,13 +1,29 @@
-## 前言
+> <font size="5" >【目录】</font>  
+> <font size="4">[1.前言](#1)</font>  
+> <font size="4">[2.初现端倪](#2)</font>  
+> <font size="4">[3.款款深入](#3)</font>  
+> <font size="4">[4.责任细分](#4)</font>  
+> <font size="4">[5.功能层级图](#5)</font>  
+> <font size="4">[6.项目结构](#6)</font>  
+> <font size="4">[7.关键类设计](#7)</font>  
+> <font size="4">[8.一些设计想法](#8)</font>  
+> <font size="4">[9.未解决问题](#9)</font>  
+> <font size="4">[10.一点心得](#10)</font>  
+> <font size="4">[11.效果演示](#11)</font>  
+> <font size="4">[12.讨论](#12)</font>  
+> <font size="4">[13.GitHub源码](#13)</font>  
+
+## <span id="1">前言</span>
 远程桌面控制的产品已经有很多很多，我做此项目的初衷并不是要开发出一个商用的产品，只是出于兴趣爱好，做一个开源的项目，之前也没有阅读过任何远程桌面控制的项目源码，只是根据自己已有的经验设计开发，肯定有许多不足，有兴趣的朋友欢迎留言讨论。
 
-## 初现端倪
+## <span id="2">初现端倪</span>
 一般需要远程控制的场景发生在公司和家之间，由于公司和家里的电脑一般都在局域网内，所以不能直接相连，需要第三方中转，所以至少有三方,如下图。
 ![](https://upload-images.jianshu.io/upload_images/6752673-bdfc1646a00bd3d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 负责中转的第三方是服务器，控制端和傀儡端(被控制端)相对于服务器来说都是客户端，都和服务器直接相连，也就是说控制端不和傀儡端相连。
 
-## 款款深入
+## <span id="3">款款深入</span>
+
 > **约定:**
 > - 控制端M(Master)
 > - 服务器S(Server)
@@ -20,13 +36,13 @@
 
 > 控制端、傀儡端的接收器和服务器中的转发器都是一个，为便于流程的清晰，分开画了。
 
-## 责任细分
+## <span id="4">责任细分</span>
 ![责任细分](https://upload-images.jianshu.io/upload_images/6752673-434fe6b4600d463f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 可以看出三者交互主要通过命令形式(命令可以带数据也可以不带数据)，发送、转发、接收命令，然后做出相应的动作。
 从上图中看到，服务端不仅需要转数据，还需要记录存活的傀儡以及维护控制端和傀儡之间的关系，其实还得处理一些异常情况，比如远程过程中，傀儡断开，过一会又连接上，傀儡是否需要继续给控制端发送屏幕截图。
 
-## 功能层级图
+## <span id="5">功能层级图</span>
 
 粗粒度分一下，可以分为三层：Desktop层负责UI处理，CommandHandler层负责命令处理,Netty网络层负责数据的网络传输。
 
@@ -37,7 +53,7 @@
 
 CommandHandlerLoader工具类会根据Netty或Desktop层传入的Command到配置文件commandhandlers中查找对应的处理类，动态加载，然后进行逻辑处理，这样对于后期命令添加是非常方便的，命令与命令之间，以及命令与Netty/Deskto之间解耦。
 
-##项目结构
+## <span id="6">项目结构</sapn>
 ![总体顶目结构](https://upload-images.jianshu.io/upload_images/6752673-822b7d4301573cd8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 这个项目一共有四个子模块:
@@ -58,7 +74,7 @@ CommandHandlerLoader工具类会根据Netty或Desktop层传入的Command到配�
 |PuppetStarter|启动器类|
 |Resources/commandhandlers|命令对应的处理器配置文件|
 
-## 关键类设计
+## <span id="7">关键类设计</span>
 下面来看一下关键几个类的设计:
 ### 请求/响应类 Invocation
 ```java
@@ -171,7 +187,7 @@ public interface ICommandHandler<T> {
 ```
 ICommandHandler接口是所有命令处理类的父接口，Netty ChannelHandler在处理请求时，根据不同的命令，寻找对应的处理类。
 
-## 一些设计想法
+## <span id="8">一些设计想法</span>
 ### 心跳与屏幕截图
 心跳和屏幕截图都是定时向服务器发送，所以在设计时这两者同时只有一个活动即可。即发送心跳时不发送屏幕截图，发送屏幕截图时不发送心跳，控制结束后，继续发送心跳。这两者之间的控制由Puppet模块中***ConnectCommandHandler***类中的***HeartBeatAndScreenSnapShotTaskManagement***内部类控制。
 
@@ -189,10 +205,10 @@ ICommandHandler接口是所有命令处理类的父接口，Netty ChannelHandler
    (2). **区域级别**：只记录变化图像的开始点(左上角)和结束点(右下角)，然后绘制以这两个点框定的矩形式区域。
 我尝试了这两种方式，自己对于Swing绘制图像这块不太精通，没有达到很好的效果，最后采取了压缩图像的方式。若有更好的方式，可以通过继承Puppet模块中抽象类*AbstractRobotReplay*，实现屏幕截屏方法*byte[] getScreenSnapshot()*,然后继承Master模块中抽像类*AbstractDisplayPuppet*实现其中的paint方法(也可以继承现有的实现类*PuppetScreen*，覆盖相应的方法)，然后将自定义的类在spring配置文件中配置，替换掉现在的实现类即可。
 
-## 未解决问题
+## <span id="9">未解决问题</span>
 - 快速按键的情况、双击时响应的比较慢。传输命令需要时间，所以快速按键时命令产生滞后现象，而傀儡端图像传输到控制端后，Swing是单线程处理AWT事件(鼠标、键盘、绘图等)，若此时仍在按键，则会阻塞，等到按键结束之后，再进行图像的绘制。
 
-## 一点心得
+## <span id="10">一点心得</span>
 
 1. 需求分析很重要，分析需求中各对象的属性和行为，以及对象之间的关系，这是后面功能、领域模型、静态/动态模型分析的基础。
 2. 设计静态模型时，需要根据SOLID原则进行设计，例如远程控制中命令较多，就抽像出一层，为每个命令单独写处理逻辑(当然多个命令也可以共用同一处理逻辑)，既符合单一职责原则，又符合开闭原则，将影响降到最低，具体很大的灵活性。又如Master模块中的***IDisplayPuppet***接口，此接口是控制端显示傀儡屏幕的接口，供控制端主窗口***MasterDesktop***和***Listener**调用。
@@ -245,7 +261,7 @@ public interface IDisplayPuppet {
 
 [Java异常处理的10个最佳实践](http://www.importnew.com/20139.html)
 
-## 效果演示
+## <span id="11">效果演示</span>
 
 > - **Centos6.5**：傀儡端
 > - **Windows**： 控制端、服务器
@@ -264,8 +280,3 @@ public interface IDisplayPuppet {
 
 ## 讨论
 **bug反馈及建议**：https://github.com/Cool-Coding/remote-desktop-control/issues
-
-## GitHub源码
-https://github.com/Cool-Coding/remote-desktop-control
-
-如果觉得还不错，**Star**支持一下吧。
