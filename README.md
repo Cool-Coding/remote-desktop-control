@@ -235,17 +235,17 @@ public interface IDisplayPuppet {
 ```
 接口中这三个方法前两个方法launch和refresh，都是主窗口启动傀儡控制窗口和刷新屏幕必须的方法，第三个方法是由于发送命令时，需要知道傀儡名称，而实体之间是面向接口设计的，所以需要提供获取傀儡自身名称的方法。
 
-3.日志、异常处理
+3.日志、异常处理   
 
    日志和异常处理是相当重要的，好的日志记录方式和好的异常处理方式能够使项目结构更加清晰，怎么样才算好呢，人者见仁，智者见智。
 
-  **日志**
+  **日志**   
   
     1. 记录程序关键步骤的上下文信息，例如记录请求或响应的数据以及附加的消息，记录此处建议使用trace/debug级别。
     2. 记录业务流程的日志，使用info/error级别，这一部分日志主要是应用日志，例如控制端发起控制，成功或失败消息。
     3. 日志最好通过统一的口径记录，便于结构清晰和日志管理
 
-  **异常**
+  **异常**   
   
     1. 一定不要catch异常不处理，而且不要catch Throwable，因为Throwable包括了Error和Exception,Error一般都是不可恢复的错误，无法在程序中手工处理，不应该catch住。
     2. 一般下层在记录异常日志，并向上抛出后，上层不需要处理，直接继续向上抛出即可，如果为了让异常具体业务含义，便于异常问题查找，可以封装一些关键的业务异常。
@@ -259,17 +259,17 @@ public interface IDisplayPuppet {
 
 ## 效果演示
 
-> - **Centos6.5**：傀儡端
-> - **Windows**： 控制端、服务器
-1. 启动服务器、傀儡、控制端
-2. 复制傀儡名
+> - **Centos6.5**：傀儡端   
+> - **Windows**： 控制端、服务器   
+1. 启动服务器、傀儡、控制端   
+2. 复制傀儡名   
 ![傀儡名](https://upload-images.jianshu.io/upload_images/6752673-802a8f5903d2aea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
 也可以通过日志获取:![](https://upload-images.jianshu.io/upload_images/6752673-573e31c59731cbd7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-3. 将名称输入控制端
+3. 将名称输入控制端  
 ![](https://upload-images.jianshu.io/upload_images/6752673-8ae57ded64d33d94.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-4. 控制端打开一个远程屏幕
+4. 控制端打开一个远程屏幕   
 ![](https://upload-images.jianshu.io/upload_images/6752673-327308e1b21731d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 5. 可以进行鼠标(单击，双击，右键，拖动等)或键盘(单键或组合键等)操作，并可调整屏幕清晰度。
