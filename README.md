@@ -11,10 +11,10 @@
 > <font size="4">[10.一点心得](#一点心得)</font>  
 > <font size="4">[11.效果演示](#效果演示)</font>  
 
-##前言
+## 前言
 远程桌面控制的产品已经有很多很多，我做此项目的初衷并不是要开发出一个商用的产品，只是出于兴趣爱好，做一个开源的项目，之前也没有阅读过任何远程桌面控制的项目源码，只是根据自己已有的经验设计开发，肯定有许多不足，有兴趣的朋友欢迎留言讨论。
 
-##初现端倪
+## 初现端倪
 一般需要远程控制的场景发生在公司和家之间，由于公司和家里的电脑一般都在局域网内，所以不能直接相连，需要第三方中转，所以至少有三方,如下图。
 ![](https://upload-images.jianshu.io/upload_images/6752673-bdfc1646a00bd3d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
@@ -117,7 +117,7 @@ public class Invocation implements Serializable {
 Invocation类是一个基类，请求类(Request)和响应类(Response)在此基础之上扩展。
 Invocation类中有一个成员变量是命令command，我们来看一下:
 
-###命令类 Commands
+### 命令类 Commands
 ```java
 /**
  * @author cool-coding
@@ -171,7 +171,7 @@ public enum Commands{
 ```
 目前一共有8个命令，有的命令是M和P共用，有的是一方单用。
 
-###命令处理接口 ICommandHandler
+### 命令处理接口 ICommandHandler
 ```java
 public interface ICommandHandler<T> {
     /**
