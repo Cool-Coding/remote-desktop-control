@@ -221,13 +221,11 @@ public interface IDisplayPuppet {
      * 启动窗口显示傀儡桌面
      */
     void launch();
-
     /**
      * 刷新桌面
      * @param bytes
      */
     void refresh(byte[] bytes);
-
     /**
      *
      * @return 傀儡名称
@@ -265,7 +263,7 @@ public interface IDisplayPuppet {
 > - **Windows**： 控制端、服务器
 1. 启动服务器、傀儡、控制端
 2. 复制傀儡名
-![傀儡名](https://upload-images.jianshu.io/upload_images/6752673-802a8f5903d2aea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![傀儡名](https://upload-images.jianshu.io/upload_images/6752673-802a8f5903d2aea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
 也可以通过日志获取:![](https://upload-images.jianshu.io/upload_images/6752673-573e31c59731cbd7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 3. 将名称输入控制端
