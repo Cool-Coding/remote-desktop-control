@@ -1,9 +1,263 @@
-## 远程桌面控制
-远程桌面控制的产品已经有很多很多，我做此项目的初衷并不是要开发出一个商用的产品，只是出于兴趣爱好，当然功能也不能于商用的相比。
-我并没有阅读过任何远程桌面控制的源码，只是根据自己的想法进行设计开发，问题有很多，有的目前还没有解决，希望有兴趣的朋友不吝赐教，感激不尽！
+## 前言
+远程桌面控制的产品已经有很多很多，我做此项目的初衷并不是要开发出一个商用的产品，只是出于兴趣爱好，做一个开源的项目，之前也没有阅读过任何远程桌面控制的项目源码，只是根据自己已有的经验设计开发，肯定有许多不足，有兴趣的朋友可以留言讨论与支持。
 
-###初步想法
-一般需要远程控制的场景发生在公司和家之间，由于公司和家里的电脑一般都在局域网内，所以不能直接相连，需要第三方中转，所以至少有三方。
+## 初现端倪
+一般需要远程控制的场景发生在公司和家之间，由于公司和家里的电脑一般都在局域网内，所以不能直接相连，需要第三方中转，所以至少有三方,如下图。
+![](https://upload-images.jianshu.io/upload_images/6752673-bdfc1646a00bd3d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
+负责中转的第三方是服务器，控制端和傀儡端(被控制端)相对于服务器来说都是客户端，都和服务器直接相连，也就是说控制端不和傀儡端相连。
 
+## 款款深入
+> **约定:**
+> - 控制端M(Master)
+> - 服务器S(Server)
+> - 傀儡端P(Puppet)
 
+> **为了叙述方便,以下如不做特别说明,M表示控制端,S表示服务端,P表示傀儡端。**
+
+如果要达到控制傀儡的目的，应该怎么做呢？三方之间至少要发生什么交互呢？
+![三方会谈](https://upload-images.jianshu.io/upload_images/6752673-601784990497dcd4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+> 控制端、傀儡端的接收器和服务器中的转发器都是一个，为便于流程的清晰，分开画了。
+
+## 责任细分
+![责任细分](https://upload-images.jianshu.io/upload_images/6752673-434fe6b4600d463f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+可以看出三者交互主要通过命令形式(命令可以带数据也可以不带数据)，发送、转发、接收命令，然后做出相应的动作。
+从上图中看到，服务端不仅需要转数据，还需要记录存活的傀儡以及维护控制端和傀儡之间的关系，其实还得处理一些异常情况，比如远程过程中，傀儡断开，过一会又连接上，傀儡是否需要继续给控制端发送屏幕截图。
+
+## 功能层级图
+
+粗粒度分一下，可以分为三层：Desktop层负责UI处理，CommandHandler层负责命令处理,Netty网络层负责数据的网络传输。
+
+![功能层级图](https://upload-images.jianshu.io/upload_images/6752673-f8658fede3bab7ed.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+具体来看一下commandHandler层：
+![commandhandler](https://upload-images.jianshu.io/upload_images/6752673-55b5f559f4823e05.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+CommandHandlerLoader工具类会根据Netty或Desktop层传入的Command到配置文件commandhandlers中查找对应的处理类，动态加载，然后进行逻辑处理，这样对于后期命令添加是非常方便的，命令与命令之间，以及命令与Netty/Deskto之间解耦。
+
+##项目结构
+![总体顶目结构](https://upload-images.jianshu.io/upload_images/6752673-822b7d4301573cd8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+这个项目一共有四个子模块:
+- **server**:  服务端
+- **puppet**: 傀儡端
+- **master**  控制端
+- **common**: 前面三者共用的一些类或接口。
+各个子模块的包结构类似，我们看其中的一个子模块puppet即可。
+![puppet](https://upload-images.jianshu.io/upload_images/6752673-a4762e940be18b9a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+| 包名  |描述  |
+|-- | -- |
+|commandhandler|命令处理器|
+|constants|常量类，包括配置参数常量、异常消息常量、和消息常量|
+| exception|自定义的一些业务异常类 |
+|netty|Netty网络通信的相关类|
+|ui|界面操作的相关类|
+|PuppetStarter|启动器类|
+|Resources/commandhandlers|命令对应的处理器配置文件|
+
+## 关键类设计
+下面来看一下关键几个类的设计:
+### 请求/响应类 Invocation
+```java
+public class Invocation implements Serializable {
+    /**
+     * ID(客户端标识(控制端为'M',傀儡端为'P')+MAC地址+序列号)
+     */
+    private String id;
+
+    /**
+     * 傀儡名
+     */
+    private String puppetName;
+
+    /**
+     * 命令
+     */
+    private Enum<Commands> command;
+
+    /**
+     * 值
+     */
+    private Object value;
+
+    //省略getter、setter方法
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "requestId='" + requestId + '\'' +
+                ", puppetName='" + puppetName + '\'' +
+                ", command=" + command +
+                ", value=" + value +
+                '}';
+    }
+}
+```
+其中id的作用有两点：
+1. 用于标识是来自M的请求，还是P的请求。 
+2. 用于标识一次请求或响应，可以将M和P串联起来，用于请求追踪。  
+
+Invocation类是一个基类，请求类(Request)和响应类(Response)在此基础之上扩展。
+Invocation类中有一个成员变量是命令command，我们来看一下:
+
+###命令类 Commands
+```java
+/**
+ * @author cool-coding
+ * 2018/7/27
+ * 命令
+ */
+public enum Commands{
+    /**
+     * 控制端或傀儡端连接服务器时的命令
+     */
+    CONNECT,
+
+    /**
+     * 控制命令
+     * 1.主人向服务器发送控制请求
+     * 2.服务器将控制命令发给傀儡
+     * 3.傀儡收到控制命令，将向服务器发送截屏
+     */
+    CONTROL,
+
+    /**
+     * 傀儡发送心跳给服务器
+     */
+    HEARTBEAT,
+
+    /**
+     * 傀儡发送屏幕截图命令
+     */
+    SCREEN,
+
+    /**
+     * 控制端发送键盘事件
+     */
+    KEYBOARD,
+
+    /**
+     * 控制端发送鼠标事件
+     */
+    MOUSE,
+
+    /**
+     * 断开控制傀儡
+     */
+    TERMINATE,
+
+    /**
+     * 清晰度
+     */
+    QUALITY
+}
+```
+目前一共有8个命令，有的命令是M和P共用，有的是一方单用。
+
+###命令处理接口 ICommandHandler
+```java
+public interface ICommandHandler<T> {
+    /**
+     * 
+     * @param ctx           当前channel处理器上下文
+     * @param inbound       channel输入对象
+     * @throws Exception    异常
+     */
+    void handle(ChannelHandlerContext ctx,T inbound) throws Exception;
+}
+```
+ICommandHandler接口是所有命令处理类的父接口，Netty ChannelHandler在处理请求时，根据不同的命令，寻找对应的处理类。
+
+## 一些设计想法
+### 心跳与屏幕截图
+心跳和屏幕截图都是定时向服务器发送，所以在设计时这两者同时只有一个活动即可。即发送心跳时不发送屏幕截图，发送屏幕截图时不发送心跳，控制结束后，继续发送心跳。这两者之间的控制由Puppet模块中***ConnectCommandHandler***类中的***HeartBeatAndScreenSnapShotTaskManagement***内部类控制。
+
+### 命令分层
+通过对用例和流程的分析，发现命令出现的频率比较高，于是考虑将命令处理单独独立出来，采取动态加载的方式，使其与ChannelHandler解耦，使用后期扩展，而且当命令很多时，不需要一次都加载，只是在使用时按需加载，减少JVM加载类的字节码量，此处参考了SPI思想。而添加命令，势必会修改界面，我使用模板模式，预留出菜单，界面体，界面属性设置等，修改时只需继续相关类并修改，然后在spring配置文件进行配置即可。
+
+### 序列号和Puppet名称生成器
+请求和响应类中都有ID属性，其中一部分是通过序列号生成器生成的，所以提供了SequenceGenerate接口和一个简单的实现类SimpleSequenceGenerator。同理还有当傀儡连接服务器时，服务器生成唯一的傀儡名，也提供了一个简单的实现类SimplePuppetNameGenerator。
+
+### 图像处理
+图像的数据相对于纯命令来说大了许多，所以需要想办法减少图像传输的数据，大致有两种方式：
+- **选择合适的图片格式，并进行压缩**：我这里选择了jpg格式，并使用Google Thumbnailator工具进行等宽高压缩，因为jpg具有较高的压缩比,但是代价是压缩后图像的质量不是太理想。
+- 只传输变化的图像：很多时候图像变化的部分并不太多，可以只传输变化的区域，传输到控制端后，控制端只绘制变化的区域。
+    (1). **像素级别**: 我的思路是在傀儡端保持前一次传输时的截屏，和本次截屏图像进行像素级的比较，将不同的像素保存到一个对象数组中，记录像素的位置和像素值，传输到控制端后，根据像素位置和要替换的像素进行绘制
+   (2). **区域级别**：只记录变化图像的开始点(左上角)和结束点(右下角)，然后绘制以这两个点框定的矩形式区域。
+我尝试了这两种方式，自己对于Swing绘制图像这块不太精通，没有达到很好的效果，最后采取了压缩图像的方式。若有更好的方式，可以通过继承Puppet模块中抽象类*AbstractRobotReplay*，实现屏幕截屏方法*byte[] getScreenSnapshot()*,然后继承Master模块中抽像类*AbstractDisplayPuppet*实现其中的paint方法(也可以继承现有的实现类*PuppetScreen*，覆盖相应的方法)，然后将自定义的类在spring配置文件中配置，替换掉现在的实现类即可。
+
+## 未解决问题
+- 快速按键的情况、双击时响应的比较慢。传输命令需要时间，所以快速按键时命令产生滞后现象，而傀儡端图像传输到控制端后，Swing是单线程处理AWT事件(鼠标、键盘、绘图等)，若此时仍在按键，则会阻塞，等到按键结束之后，再进行图像的绘制。
+
+## 一点心得
+- 需求分析很重要，分析需求中各对象的属性和行为，以及对象之间的关系，这是后面功能、领域模型、静态/动态模型分析的基础。
+- 设计静态模型时，需要根据SOLID原则进行设计，例如远程控制中命令较多，就抽像出一层，为每个命令单独写处理逻辑(当然多个命令也可以共用同一处理逻辑)，既符合单一职责原则，又符合开闭原则，将影响降到最低，具体很大的灵活性。又如Master模块中的***IDisplayPuppet***接口，此接口是控制端显示傀儡屏幕的接口，供控制端主窗口***MasterDesktop***和***Listener**调用。
+```java
+
+/**
+ * @author Cool-Coding
+ *         2018/8/2
+ * 傀儡控制屏幕接口
+ */
+public interface IDisplayPuppet {
+    /**
+     * 启动窗口显示傀儡桌面
+     */
+    void launch();
+
+    /**
+     * 刷新桌面
+     * @param bytes
+     */
+    void refresh(byte[] bytes);
+
+    /**
+     *
+     * @return 傀儡名称
+     */
+    String getPuppetName();
+}
+```
+接口中这三个方法前两个方法launch和refresh，都是主窗口启动傀儡控制窗口和刷新屏幕必须的方法，第三个方法是由于发送命令时，需要知道傀儡名称，而实体之间是面向接口设计的，所以需要提供获取傀儡自身名称的方法。
+
+- 日志、异常处理
+   日志和异常处理是相当重要的，好的日志记录方式和好的异常处理方式能够使项目结构更加清晰，怎么样才算好呢，人者见仁，智者见智。
+我的心得是：
+**日志**
+    1. 记录程序关键步骤的上下文信息，例如记录请求或响应的数据以及附加的消息，记录此处建议使用trace/debug级别。
+    2. 记录业务流程的日志，使用info/error级别，这一部分日志主要是应用日志，例如控制端发起控制，成功或失败消息。
+    3. 日志最好通过统一的口径记录，便于结构清晰和日志管理
+
+  **异常**
+   1. 一定不要catch异常不处理，而且不要catch Throwable，因为Throwable包括了Error和Exception,Error一般都是不可恢复的错误，无法在程序中手工处理，不应该catch住。
+
+  2. 一般下层在记录异常日志，并向上抛出后，上层不需要处理，直接继续向上抛出即可，如果为了让异常具体业务含义，便于异常问题查找，可以封装一些关键的业务异常。
+
+  3. 异常最好集中处理,如springmvc:将异常集中在一个异常处理类中处理。
+
+有两篇文章，我觉得不错，推荐给大家，我也从中参考了一些方法。
+[Java 日志管理最佳实践](https://blog.csdn.net/f525921307/article/details/50519443)
+[Java异常处理的10个最佳实践](http://www.importnew.com/20139.html)
+
+## 效果演示
+- **Centos6.5**：傀儡端
+- **Windows**： 控制端、服务器
+1. 启动服务器、傀儡、控制端
+2. 复制傀儡名![傀儡名](https://upload-images.jianshu.io/upload_images/6752673-802a8f5903d2aea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)也可以通过日志获取:![](https://upload-images.jianshu.io/upload_images/6752673-573e31c59731cbd7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+3. 将名称输入控制端![](https://upload-images.jianshu.io/upload_images/6752673-8ae57ded64d33d94.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+4. 控制端打开一个远程屏幕![](https://upload-images.jianshu.io/upload_images/6752673-327308e1b21731d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+5. 可以进行鼠标(单击，双击，右键，拖动等)或键盘(单键或组合键等)操作，并可调整屏幕清晰度。
+
+## 讨论
+**bug反馈及建议**：https://github.com/Cool-Coding/remote-desktop-control/issues
+
+## GitHub源码
+https://github.com/Cool-Coding/remote-desktop-control
+
+如果觉得还不错，**Star**支持一下吧。
