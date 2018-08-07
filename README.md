@@ -1,5 +1,5 @@
 ## 前言
-远程桌面控制的产品已经有很多很多，我做此项目的初衷并不是要开发出一个商用的产品，只是出于兴趣爱好，做一个开源的项目，之前也没有阅读过任何远程桌面控制的项目源码，只是根据自己已有的经验设计开发，肯定有许多不足，有兴趣的朋友可以留言讨论与支持。
+远程桌面控制的产品已经有很多很多，我做此项目的初衷并不是要开发出一个商用的产品，只是出于兴趣爱好，做一个开源的项目，之前也没有阅读过任何远程桌面控制的项目源码，只是根据自己已有的经验设计开发，肯定有许多不足，有兴趣的朋友欢迎留言讨论。
 
 ## 初现端倪
 一般需要远程控制的场景发生在公司和家之间，由于公司和家里的电脑一般都在局域网内，所以不能直接相连，需要第三方中转，所以至少有三方,如下图。
@@ -193,10 +193,10 @@ ICommandHandler接口是所有命令处理类的父接口，Netty ChannelHandler
 - 快速按键的情况、双击时响应的比较慢。传输命令需要时间，所以快速按键时命令产生滞后现象，而傀儡端图像传输到控制端后，Swing是单线程处理AWT事件(鼠标、键盘、绘图等)，若此时仍在按键，则会阻塞，等到按键结束之后，再进行图像的绘制。
 
 ## 一点心得
-- 需求分析很重要，分析需求中各对象的属性和行为，以及对象之间的关系，这是后面功能、领域模型、静态/动态模型分析的基础。
-- 设计静态模型时，需要根据SOLID原则进行设计，例如远程控制中命令较多，就抽像出一层，为每个命令单独写处理逻辑(当然多个命令也可以共用同一处理逻辑)，既符合单一职责原则，又符合开闭原则，将影响降到最低，具体很大的灵活性。又如Master模块中的***IDisplayPuppet***接口，此接口是控制端显示傀儡屏幕的接口，供控制端主窗口***MasterDesktop***和***Listener**调用。
-```java
 
+1. 需求分析很重要，分析需求中各对象的属性和行为，以及对象之间的关系，这是后面功能、领域模型、静态/动态模型分析的基础。
+2. 设计静态模型时，需要根据SOLID原则进行设计，例如远程控制中命令较多，就抽像出一层，为每个命令单独写处理逻辑(当然多个命令也可以共用同一处理逻辑)，既符合单一职责原则，又符合开闭原则，将影响降到最低，具体很大的灵活性。又如Master模块中的***IDisplayPuppet***接口，此接口是控制端显示傀儡屏幕的接口，供控制端主窗口***MasterDesktop***和***Listener**调用。
+```java
 /**
  * @author Cool-Coding
  *         2018/8/2
@@ -223,34 +223,42 @@ public interface IDisplayPuppet {
 ```
 接口中这三个方法前两个方法launch和refresh，都是主窗口启动傀儡控制窗口和刷新屏幕必须的方法，第三个方法是由于发送命令时，需要知道傀儡名称，而实体之间是面向接口设计的，所以需要提供获取傀儡自身名称的方法。
 
-- 日志、异常处理
+3.日志、异常处理
+
    日志和异常处理是相当重要的，好的日志记录方式和好的异常处理方式能够使项目结构更加清晰，怎么样才算好呢，人者见仁，智者见智。
-我的心得是：
-**日志**
+
+  **日志**
+  
     1. 记录程序关键步骤的上下文信息，例如记录请求或响应的数据以及附加的消息，记录此处建议使用trace/debug级别。
     2. 记录业务流程的日志，使用info/error级别，这一部分日志主要是应用日志，例如控制端发起控制，成功或失败消息。
     3. 日志最好通过统一的口径记录，便于结构清晰和日志管理
 
   **异常**
-   1. 一定不要catch异常不处理，而且不要catch Throwable，因为Throwable包括了Error和Exception,Error一般都是不可恢复的错误，无法在程序中手工处理，不应该catch住。
-
-  2. 一般下层在记录异常日志，并向上抛出后，上层不需要处理，直接继续向上抛出即可，如果为了让异常具体业务含义，便于异常问题查找，可以封装一些关键的业务异常。
-
-  3. 异常最好集中处理,如springmvc:将异常集中在一个异常处理类中处理。
+  
+    1. 一定不要catch异常不处理，而且不要catch Throwable，因为Throwable包括了Error和Exception,Error一般都是不可恢复的错误，无法在程序中手工处理，不应该catch住。
+    2. 一般下层在记录异常日志，并向上抛出后，上层不需要处理，直接继续向上抛出即可，如果为了让异常具体业务含义，便于异常问题查找，可以封装一些关键的业务异常。
+    3. 异常最好集中处理,如springmvc:将异常集中在一个异常处理类中处理。
 
 有两篇文章，我觉得不错，推荐给大家，我也从中参考了一些方法。
+
 [Java 日志管理最佳实践](https://blog.csdn.net/f525921307/article/details/50519443)
+
 [Java异常处理的10个最佳实践](http://www.importnew.com/20139.html)
 
 ## 效果演示
-- **Centos6.5**：傀儡端
-- **Windows**： 控制端、服务器
+
+> - **Centos6.5**：傀儡端
+> - **Windows**： 控制端、服务器
 1. 启动服务器、傀儡、控制端
-2. 复制傀儡名![傀儡名](https://upload-images.jianshu.io/upload_images/6752673-802a8f5903d2aea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)也可以通过日志获取:![](https://upload-images.jianshu.io/upload_images/6752673-573e31c59731cbd7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+2. 复制傀儡名
+![傀儡名](https://upload-images.jianshu.io/upload_images/6752673-802a8f5903d2aea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+也可以通过日志获取:![](https://upload-images.jianshu.io/upload_images/6752673-573e31c59731cbd7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-3. 将名称输入控制端![](https://upload-images.jianshu.io/upload_images/6752673-8ae57ded64d33d94.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+3. 将名称输入控制端
+![](https://upload-images.jianshu.io/upload_images/6752673-8ae57ded64d33d94.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-4. 控制端打开一个远程屏幕![](https://upload-images.jianshu.io/upload_images/6752673-327308e1b21731d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+4. 控制端打开一个远程屏幕
+![](https://upload-images.jianshu.io/upload_images/6752673-327308e1b21731d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 5. 可以进行鼠标(单击，双击，右键，拖动等)或键盘(单键或组合键等)操作，并可调整屏幕清晰度。
 
