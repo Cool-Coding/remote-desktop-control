@@ -209,7 +209,7 @@ ICommandHandler接口是所有命令处理类的父接口，Netty ChannelHandler
 ## 一点心得
 
 1. 需求分析很重要，分析需求中各对象的属性和行为，以及对象之间的关系，这是后面功能、领域模型、静态/动态模型分析的基础。
-2. 设计静态模型时，需要根据SOLID原则进行设计，例如远程控制中命令较多，就抽像出一层，为每个命令单独写处理逻辑(当然多个命令也可以共用同一处理逻辑)，既符合单一职责原则，又符合开闭原则，将影响降到最低，具体很大的灵活性。又如Master模块中的***IDisplayPuppet***接口，此接口是控制端显示傀儡屏幕的接口，供控制端主窗口***MasterDesktop***和***Listener**调用。
+2. 设计静态模型时，需要根据SOLID原则进行设计，例如远程控制中命令较多，就抽像出一层，为每个命令单独写处理逻辑(当然多个命令也可以共用同一处理逻辑)，既符合单一职责原则，又符合开闭原则，将影响降到最低，具体很大的灵活性。又如Master模块中的 ***IDisplayPuppet*** 接口，此接口是控制端显示傀儡屏幕的接口，供控制端主窗口***MasterDesktop***和***Listener**调用。
 ```java
 /**
  * @author Cool-Coding
@@ -259,12 +259,13 @@ public interface IDisplayPuppet {
 
 ## 效果演示
 
-> - **Centos6.5**：傀儡端   
-> - **Windows**： 控制端、服务器   
+> - **Centos6.5**：傀儡端
+> - **Windows**： 控制端、服务器
 1. 启动服务器、傀儡、控制端   
 2. 复制傀儡名   
 ![傀儡名](https://upload-images.jianshu.io/upload_images/6752673-802a8f5903d2aea6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)  
-也可以通过日志获取:![](https://upload-images.jianshu.io/upload_images/6752673-573e31c59731cbd7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+也可以通过日志获取:
+ ![](https://upload-images.jianshu.io/upload_images/6752673-573e31c59731cbd7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 3. 将名称输入控制端  
 ![](https://upload-images.jianshu.io/upload_images/6752673-8ae57ded64d33d94.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
