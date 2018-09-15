@@ -68,8 +68,7 @@ public class CommandHandlerLoader {
             throw  new CommandHandlerLoaderException(COMMANDHANDLERS_FILE_NOT_FOUND);
         }
 
-        try {
-            final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resourceAsStream, "utf-8"));
+        try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resourceAsStream, "utf-8"))) {
             String s;
             while(!StringUtils.isEmpty(s=bufferedReader.readLine())){
                 final String[] split = s.split("=");

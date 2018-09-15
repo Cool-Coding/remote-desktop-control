@@ -119,6 +119,7 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
          * 心跳任务
          */
         private Runnable heartBeatTask = new Runnable() {
+
             @Override
             public void run() {
                 Request heartBeatRequest = AbstractPuppetCommandHandler.buildRequest(Commands.HEARTBEAT,null);
@@ -136,16 +137,50 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
          * 屏幕截图任务
          */
         private Runnable screenSnapShotTask = new Runnable(){
+            private byte[] previousScreen;
+
             @Override
             public void run() {
                 final byte[] bytes = REPLAY.getScreenSnapshot();
-                final Request request = buildRequest(Commands.SCREEN, bytes);
-                debug(response,MessageConstants.SEND_A_SCREENSNAPSHOT, host, String.valueOf(port));
-                if (request != null) {
-                    if (ctx.channel() != null && ctx.channel().isOpen()) {
-                        ctx.writeAndFlush(request);
+                if (isDifferentFrom(bytes)) {
+                    final Request request = buildRequest(Commands.SCREEN, bytes);
+                    debug(response, MessageConstants.SEND_A_SCREENSNAPSHOT, host, String.valueOf(port));
+                    if (request != null) {
+                        if (ctx.channel() != null && ctx.channel().isOpen()) {
+                            ctx.writeAndFlush(request);
+                        }
                     }
                 }
+            }
+
+
+
+            /**
+             * 比较上一个屏幕与当前屏幕是否一样
+             * @param now
+             * @return
+             */
+            private boolean isDifferentFrom(byte[] now){
+                if (now == null){
+                    return false;
+                }
+
+                //如果前一个屏幕为空，而且当前屏幕与前一个屏幕不一样，则发送
+               if(previousScreen==null || previousScreen.length == 0 ||  previousScreen.length != now.length){
+                   previousScreen = now;
+                   return true;
+               }
+
+               int len=previousScreen.length;
+               boolean changeable = false;
+               for(int i=0;i<len;i++){
+                if(previousScreen[i] != now[i] ){
+                    previousScreen = now;
+                    changeable = true;
+                    break;
+                }
+               }
+                return changeable;
             }
         };
     }

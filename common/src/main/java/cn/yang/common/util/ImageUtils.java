@@ -330,7 +330,7 @@ public class ImageUtils {
      * @param format
      * @return
      */
-	public static byte[] ImageConvertToByteArray(BufferedImage image,String format){
+	public static byte[] ConvertImageToByteArray(BufferedImage image, String format){
 		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		try {
 			ImageIO.write(image, format, byteArrayOutputStream);
@@ -346,7 +346,7 @@ public class ImageUtils {
      * @param bytes
      * @return
      */
-	public static BufferedImage ByteArrayConvertToImage(byte[] bytes){
+	public static BufferedImage convertByteArrayToImage(byte[] bytes){
 		final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 		try {
 			return ImageIO.read(byteArrayInputStream);

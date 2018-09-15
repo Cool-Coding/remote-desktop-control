@@ -2,6 +2,6 @@ heartbeat.interval=2000
 reconnect.interval=2000
 screen.refresh.frequency=1000
 task.check.interval=1000
-server.ip=192.168.56.2
+server.ip=192.168.124.1
 server.port=1234
 error.count=10

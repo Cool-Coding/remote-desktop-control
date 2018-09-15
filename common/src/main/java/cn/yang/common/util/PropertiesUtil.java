@@ -23,7 +23,8 @@ public final class PropertiesUtil {
         }catch (IOException e){
             return defaultValue;
         }
-        return Integer.valueOf(getValue(filePath,key,String.valueOf(defaultValue)));
+
+        return Integer.parseInt(getValue(filePath,key,String.valueOf(defaultValue)));
     }
 
     public static int getInt(String filePath,String key) throws IOException{
@@ -32,7 +33,7 @@ public final class PropertiesUtil {
         }catch (IOException e){
             throw e;
         }
-        return Integer.valueOf(getValue(filePath,key));
+        return Integer.parseInt(getValue(filePath,key));
     }
 
     public static String getString(String filePath,String key,String defaultValue){

@@ -4,7 +4,7 @@ package cn.yang.master.client.exception;
  * @author cool-coding
  * @date 2018/7/26
  */
-public class MasterChannelHandlerException extends Exception{
+public class MasterChannelHandlerException extends RuntimeException{
     public MasterChannelHandlerException(String msg){
         super(msg);
     }

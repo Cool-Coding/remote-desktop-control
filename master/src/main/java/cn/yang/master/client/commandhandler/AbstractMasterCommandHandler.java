@@ -33,7 +33,9 @@ public abstract class AbstractMasterCommandHandler implements ICommandHandler<Re
      */
     private static final SequenceGenerate generator= BeanUtil.getBean(SequenceGenerate.class);
 
-
+    /**
+     *连接时得到ChannelHandlerContext,供其它命令使用，故使用静态成员变量
+     */
     private static ChannelHandlerContext ctx;
 
     @Override

@@ -8,6 +8,7 @@ import cn.yang.master.client.commandhandler.AbstractMasterFireCommandHandler;
 import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.master.client.exception.FireCommandHandlerException;
 import cn.yang.master.client.exception.MasterChannelHandlerException;
+import cn.yang.master.client.exception.MasterClientException;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import javax.swing.*;
+import java.util.concurrent.*;
 
 /**
  * @author Cool-Coding
@@ -25,7 +27,26 @@ import javax.swing.*;
 public class MasterNettyClientHandler extends SimpleChannelInboundHandler<Response> {
     /** logger */
     private static final Logger LOGGER = LoggerFactory.getLogger(MasterNettyClientHandler.class);
+    private static final ArrayBlockingQueue<InputEventCommandData> queue=new ArrayBlockingQueue<InputEventCommandData>(20,true);
 
+    public MasterNettyClientHandler(){
+        //启动发送命令线程
+        final Thread thread = new Thread(()->{
+            for (; ;) {
+                try {
+                    final InputEventCommandData inputEventCommandData = queue.take();
+                    getFireCommandHandler(inputEventCommandData.command).fire(inputEventCommandData.puppetName, inputEventCommandData.command, inputEventCommandData.data);
+                    LOGGER.debug("fire a command to server:{}", inputEventCommandData.command);
+                } catch (InterruptedException e) {
+                    LOGGER.error("it is failed to take command from queue");
+                } catch (FireCommandHandlerException e) {
+                    throw new MasterChannelHandlerException(e.getMessage(), e);
+                }
+            }
+        });
+        thread.setName("fire-command-thread");
+        thread.start();
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -50,26 +71,25 @@ public class MasterNettyClientHandler extends SimpleChannelInboundHandler<Respon
     }
 
     @SuppressWarnings("unchecked")
-    void fireCommand(String puppetName, Enum<Commands> command, Object data) throws MasterChannelHandlerException{
+    void fireCommand(String puppetName, Enum<Commands> command, Object data){
         if (StringUtils.isEmpty(puppetName)){
             throw new MasterChannelHandlerException(ExceptionMessageConstants.PUPPET_NAME_EMPTY);
         }
 
-        final AbstractMasterFireCommandHandler fireCommandHandler = getFireCommandHandler(command);
         try {
-            fireCommandHandler.fire(puppetName,command,data);
-            LOGGER.debug("fire a command to server:{}",command);
-        }catch (FireCommandHandlerException e){
-            throw new MasterChannelHandlerException(e.getMessage(),e);
+            queue.put(new InputEventCommandData(puppetName, command, data));
+        }catch (InterruptedException e){
+            LOGGER.error("it is failed to put command into queue");
         }
     }
 
-    private AbstractMasterFireCommandHandler getFireCommandHandler(Enum<Commands> command) throws MasterChannelHandlerException{
 
+    @SuppressWarnings("unchecked")
+    private AbstractMasterFireCommandHandler<Object> getFireCommandHandler(Enum<Commands> command) throws MasterChannelHandlerException{
         try {
             final ICommandHandler commandHandler = CommandHandlerLoader.getCommandHandler(command);
             if (commandHandler instanceof AbstractMasterFireCommandHandler) {
-                return (AbstractMasterFireCommandHandler) commandHandler;
+                return (AbstractMasterFireCommandHandler<Object>) commandHandler;
             } else {
                 throw new MasterChannelHandlerException(ExceptionMessageConstants.FIRE_COMMAND_HANDLE_ERROR);
             }
@@ -77,6 +97,18 @@ public class MasterNettyClientHandler extends SimpleChannelInboundHandler<Respon
             throw new MasterChannelHandlerException(e.getMessage(),e);
         }
 
+    }
+
+    private class InputEventCommandData{
+        String puppetName;
+        Enum<Commands> command;
+        Object data;
+
+        public InputEventCommandData(String puppetName, Enum<Commands> command, Object data) {
+            this.puppetName = puppetName;
+            this.command = command;
+            this.data = data;
+        }
     }
 
 }

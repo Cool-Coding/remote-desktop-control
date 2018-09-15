@@ -17,6 +17,10 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -38,6 +42,18 @@ public class MouseListener extends MouseAdapter {
      * 记录上次单击的鼠标键位
      */
     private int preButton=-1;
+
+    private volatile int mouseMovingCount=0;
+    private volatile MouseEvent movedMouseEvent;
+    private volatile boolean isInDelegating;
+
+    private final ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1, (r)->{
+        final Thread thread = new Thread(r);
+        thread.setName("mouse-moved-delivery-thread");
+        return thread;
+    }, new ThreadPoolExecutor.DiscardPolicy());
+
+
 
     private static final Logger LOGGER= LoggerFactory.getLogger(MouseListener.class);
 
@@ -105,10 +121,31 @@ public class MouseListener extends MouseAdapter {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-            final MasterMouseEvent mouseEvent = new MasterMouseEvent();
-            mouseEvent.mouseMoved(e.getX(), e.getY());
-            LOGGER.debug("mouse moved:{}", mouseEvent);
-            sendMosueEvent(mouseEvent);
+        mouseMovingCount++;
+        this.movedMouseEvent=e;
+
+        if(!isInDelegating){
+            isInDelegating=true;
+            scheduledThreadPoolExecutor.schedule(new Runnable() {
+                private int mouseMovedCount;
+
+                @Override
+                public void run() {
+                    if (movedMouseEvent!=null && mouseMovedCount == mouseMovingCount) {
+                        final MasterMouseEvent mouseEvent = new MasterMouseEvent();
+                        mouseEvent.mouseMoved(movedMouseEvent.getX(), movedMouseEvent.getY());
+                        LOGGER.debug("mouse moved:{}", mouseEvent);
+                        sendMosueEvent(mouseEvent);
+                        isInDelegating=false;
+
+                        mouseMovingCount=mouseMovedCount=0;
+                    }else{
+                        mouseMovedCount=mouseMovingCount;
+                        scheduledThreadPoolExecutor.schedule(this,500,TimeUnit.MILLISECONDS);
+                    }
+                }
+            },500,TimeUnit.MILLISECONDS);
+        }
     }
 
     /**

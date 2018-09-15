@@ -39,6 +39,7 @@ public abstract class AbstractServerCommandHandler implements ICommandHandler<Re
 
 
     public AbstractServerCommandHandler(){
+        //根据不同的子类，记录的日志类名不一样
         LOGGER=LoggerFactory.getLogger(this.getClass());
     }
 
