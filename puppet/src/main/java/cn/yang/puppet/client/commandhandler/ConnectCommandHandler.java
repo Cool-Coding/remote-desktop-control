@@ -25,6 +25,7 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
 
     private String host;
     private int port;
+    private HeartBeatAndScreenSnapShotTaskManagement taskManagement;
 
     public ConnectCommandHandler() throws CommandHandlerException{
         try {
@@ -43,19 +44,21 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
             popMessageDialog(MessageConstants.PUPPET_NAME_FROM_SERVER,response.getPuppetName());
         }
 
+        reset();
+
         try {
             //为减少带宽负载，发送屏幕截图时不再发送心跳，当屏幕截图发送完后，继续发送心跳，
             //启动一个线程，进行周期性检查，管理心跳与屏幕截图任务
-            final HeartBeatAndScreenSnapShotTaskManagement taskManagement = new HeartBeatAndScreenSnapShotTaskManagement(ctx, response);
+            taskManagement = new HeartBeatAndScreenSnapShotTaskManagement(ctx, response);
             int interval = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.TASK_CHECK_INTERVAL);
-            ctx.executor().scheduleAtFixedRate(()->{
-                    try {
-                        taskManagement.check();
-                    }catch (IOException e){
-                       error(response,e.getMessage());
-                       throw new RuntimeException(e);
-                    }
-            },0,interval,TimeUnit.MILLISECONDS);
+            ctx.executor().scheduleAtFixedRate(() -> {
+                try {
+                    taskManagement.check();
+                } catch (IOException e) {
+                    error(response, e.getMessage());
+                    throw new RuntimeException(e);
+                }
+            }, 0, interval, TimeUnit.MILLISECONDS);
 
         }catch (IOException e){
             ctx.executor().shutdownGracefully();
@@ -63,6 +66,13 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
         }
     }
 
+    private void reset(){
+        //连接时，由于重新生成puppetName,重置为发送心跳状态，并且如果之前有任务的话，则关闭
+        stopUnderControlled();
+        if (taskManagement!=null){
+            taskManagement.reset();
+        }
+    }
 
     private class HeartBeatAndScreenSnapShotTaskManagement {
         private final Map<Runnable,ScheduledFuture> tasks=new HashMap<>();
@@ -72,6 +82,14 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
         private HeartBeatAndScreenSnapShotTaskManagement(ChannelHandlerContext ctx, Response response){
             this.ctx=ctx;
             this.response=response;
+        }
+
+        private void reset(){
+            if (tasks.size()>0){
+             for(ScheduledFuture task:tasks.values()){
+                 task.cancel(true);
+              }
+            }
         }
 
         private void check() throws IOException{

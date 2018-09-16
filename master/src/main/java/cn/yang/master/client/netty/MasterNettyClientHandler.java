@@ -27,26 +27,6 @@ import java.util.concurrent.*;
 public class MasterNettyClientHandler extends SimpleChannelInboundHandler<Response> {
     /** logger */
     private static final Logger LOGGER = LoggerFactory.getLogger(MasterNettyClientHandler.class);
-    private static final ArrayBlockingQueue<InputEventCommandData> queue=new ArrayBlockingQueue<InputEventCommandData>(20,true);
-
-    public MasterNettyClientHandler(){
-        //启动发送命令线程
-        final Thread thread = new Thread(()->{
-            for (; ;) {
-                try {
-                    final InputEventCommandData inputEventCommandData = queue.take();
-                    getFireCommandHandler(inputEventCommandData.command).fire(inputEventCommandData.puppetName, inputEventCommandData.command, inputEventCommandData.data);
-                    LOGGER.debug("fire a command to server:{}", inputEventCommandData.command);
-                } catch (InterruptedException e) {
-                    LOGGER.error("it is failed to take command from queue");
-                } catch (FireCommandHandlerException e) {
-                    throw new MasterChannelHandlerException(e.getMessage(), e);
-                }
-            }
-        });
-        thread.setName("fire-command-thread");
-        thread.start();
-    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -77,9 +57,10 @@ public class MasterNettyClientHandler extends SimpleChannelInboundHandler<Respon
         }
 
         try {
-            queue.put(new InputEventCommandData(puppetName, command, data));
-        }catch (InterruptedException e){
-            LOGGER.error("it is failed to put command into queue");
+        getFireCommandHandler(command).fire(puppetName,command,data);
+        LOGGER.debug("fire a command to server:{}",command);
+        } catch (FireCommandHandlerException e) {
+            throw new MasterChannelHandlerException(e.getMessage(), e);
         }
     }
 
@@ -98,17 +79,4 @@ public class MasterNettyClientHandler extends SimpleChannelInboundHandler<Respon
         }
 
     }
-
-    private class InputEventCommandData{
-        String puppetName;
-        Enum<Commands> command;
-        Object data;
-
-        public InputEventCommandData(String puppetName, Enum<Commands> command, Object data) {
-            this.puppetName = puppetName;
-            this.command = command;
-            this.data = data;
-        }
-    }
-
 }

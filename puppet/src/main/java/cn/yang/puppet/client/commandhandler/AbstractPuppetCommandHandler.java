@@ -64,6 +64,10 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
 
     protected abstract void handle0(ChannelHandlerContext ctx, Response response) throws Exception;
 
+    public static Request buildConnectionRequest(){
+        puppetName=null;
+        return buildRequest(Commands.CONNECT,null);
+    }
 
     public static Request buildRequest(Enum<Commands> command, Object value){
         String mac= MacUtils.getMAC();

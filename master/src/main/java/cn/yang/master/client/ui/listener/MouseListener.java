@@ -17,10 +17,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -42,18 +38,6 @@ public class MouseListener extends MouseAdapter {
      * 记录上次单击的鼠标键位
      */
     private int preButton=-1;
-
-    private volatile int mouseMovingCount=0;
-    private volatile MouseEvent movedMouseEvent;
-    private volatile boolean isInDelegating;
-
-    private final ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1, (r)->{
-        final Thread thread = new Thread(r);
-        thread.setName("mouse-moved-delivery-thread");
-        return thread;
-    }, new ThreadPoolExecutor.DiscardPolicy());
-
-
 
     private static final Logger LOGGER= LoggerFactory.getLogger(MouseListener.class);
 
@@ -86,10 +70,9 @@ public class MouseListener extends MouseAdapter {
                     isDoubleClicked=false;
                     return;
                 }
-
             if (clickNum.getAndDecrement() == 1) {//定时器等待0.2秒后,双击事件仍未发生,执行单击事件
                     preButton = -1;
-                    //mouseSingleClicked(e);//执行单击事件
+                    mouseSingleClicked(e);
             }
         }, PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH,ConfigConstants.MOUSE_DOUBLE_CHECK_DELAY,500));
 
@@ -113,39 +96,18 @@ public class MouseListener extends MouseAdapter {
 
     @Override
     public void mousePressed(MouseEvent e) {
-            final MasterMouseEvent mouseEvent = new MasterMouseEvent();
+            /*final MasterMouseEvent mouseEvent = new MasterMouseEvent();
             mouseEvent.mousePressed(e.getButton());
             LOGGER.debug("mouse pressed:{}", mouseEvent);
-            sendMosueEvent(mouseEvent);
+            sendMosueEvent(mouseEvent);*/
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        mouseMovingCount++;
-        this.movedMouseEvent=e;
-
-        if(!isInDelegating){
-            isInDelegating=true;
-            scheduledThreadPoolExecutor.schedule(new Runnable() {
-                private int mouseMovedCount;
-
-                @Override
-                public void run() {
-                    if (movedMouseEvent!=null && mouseMovedCount == mouseMovingCount) {
-                        final MasterMouseEvent mouseEvent = new MasterMouseEvent();
-                        mouseEvent.mouseMoved(movedMouseEvent.getX(), movedMouseEvent.getY());
-                        LOGGER.debug("mouse moved:{}", mouseEvent);
-                        sendMosueEvent(mouseEvent);
-                        isInDelegating=false;
-
-                        mouseMovingCount=mouseMovedCount=0;
-                    }else{
-                        mouseMovedCount=mouseMovingCount;
-                        scheduledThreadPoolExecutor.schedule(this,500,TimeUnit.MILLISECONDS);
-                    }
-                }
-            },500,TimeUnit.MILLISECONDS);
-        }
+        final MasterMouseEvent mouseEvent = new MasterMouseEvent();
+        mouseEvent.mouseMoved(e.getX(), e.getY());
+        LOGGER.debug("mouse moved:{}", mouseEvent);
+        sendMosueEvent(mouseEvent);
     }
 
     /**
@@ -153,18 +115,18 @@ public class MouseListener extends MouseAdapter {
      * @param e 事件源参数
      */
     public void mouseSingleClicked(MouseEvent e){
-            final MasterMouseEvent mouseEvent = new MasterMouseEvent();
-            mouseEvent.buttonClicked(e.getButton());
-            mouseEvent.setSite(new int[]{e.getX(),e.getY()});
-            LOGGER.debug("mouse clicked", mouseEvent);
-            sendMosueEvent(mouseEvent);
+        final MasterMouseEvent mouseEvent = new MasterMouseEvent();
+        mouseEvent.buttonClicked(e.getButton());
+        mouseEvent.setSite(new int[]{e.getX(),e.getY()});
+        LOGGER.debug("mouse clicked", mouseEvent);
+        sendMosueEvent(mouseEvent);
     }
 
     /**
      * 鼠标双击事件
      * @param e 事件源参数
      */
-    public void mouseDoubleClicked(MouseEvent e){
+    private void mouseDoubleClicked(MouseEvent e){
             final MasterMouseEvent mouseEvent = new MasterMouseEvent();
             mouseEvent.buttonDoubleClick(e.getButton());
             LOGGER.debug("mouse double clicked", mouseEvent);

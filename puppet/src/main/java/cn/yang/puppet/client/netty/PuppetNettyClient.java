@@ -56,7 +56,7 @@ public class PuppetNettyClient implements INettyClient {
             if (channelInitialize.getChannelHandler() instanceof PuppetNettyClientHandler) {
                 try {
                     final ChannelFuture sync = bootstrap.connect(host, port).sync();
-                    sync.channel().writeAndFlush(AbstractPuppetCommandHandler.buildRequest(Commands.CONNECT,null));
+                    sync.channel().writeAndFlush(AbstractPuppetCommandHandler.buildConnectionRequest());
                     sync.channel().closeFuture().sync();
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);
