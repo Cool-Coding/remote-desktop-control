@@ -274,6 +274,7 @@ public interface IDisplayPuppet {
 ![](https://upload-images.jianshu.io/upload_images/6752673-327308e1b21731d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 5. 可以进行鼠标(单击，双击，右键，拖动等)或键盘(单键或组合键等)操作，并可调整屏幕清晰度。
+![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/remote.gif)
 
 ## 讨论
 **bug反馈及建议**：https://github.com/Cool-Coding/remote-desktop-control/issues
