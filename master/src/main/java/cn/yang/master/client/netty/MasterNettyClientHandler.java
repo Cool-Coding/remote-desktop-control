@@ -28,14 +28,20 @@ public class MasterNettyClientHandler extends SimpleChannelInboundHandler<Respon
     /** logger */
     private static final Logger LOGGER = LoggerFactory.getLogger(MasterNettyClientHandler.class);
 
+    //记录上一次消息
+    private String pre_message;
+
     @SuppressWarnings("unchecked")
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Response response) throws Exception {
-        if (response.getError()!=null){
-            SwingUtilities.invokeLater(()->{
-                JOptionPane.showMessageDialog(null,response.getError().getMessage());
-            });
-            LOGGER.error(response.getError().getMessage());
+        if (response.getError()!=null ){
+            if(!response.getError().getMessage().equals(pre_message)) {
+                SwingUtilities.invokeLater(() -> {
+                    JOptionPane.showMessageDialog(null, response.getError().getMessage());
+                });
+                pre_message = response.getError().getMessage();
+                LOGGER.error(pre_message);
+            }
             return;
         }
 

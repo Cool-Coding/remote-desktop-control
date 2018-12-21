@@ -36,6 +36,9 @@ public class PuppetNettyClient implements INettyClient {
     private String host;
     private int port;
 
+    //与服务器的连结次数
+    private int connectionCount=1;
+
     public void init() throws PuppetClientException{
         group = new NioEventLoopGroup();
         try {
@@ -56,7 +59,7 @@ public class PuppetNettyClient implements INettyClient {
             if (channelInitialize.getChannelHandler() instanceof PuppetNettyClientHandler) {
                 try {
                     final ChannelFuture sync = bootstrap.connect(host, port).sync();
-                    sync.channel().writeAndFlush(AbstractPuppetCommandHandler.buildConnectionRequest());
+                    sync.channel().writeAndFlush(AbstractPuppetCommandHandler.buildConnectionRequest(connectionCount++));
                     sync.channel().closeFuture().sync();
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage(), e);

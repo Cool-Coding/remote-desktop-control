@@ -49,6 +49,11 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
      */
     private static String puppetName;
 
+    /**
+     * 前一个截屏
+     */
+    private  static byte[] previousScreen;
+
     @Override
     public void handle(ChannelHandlerContext ctx, Response response) throws Exception {
         final Enum<Commands> command = response.getCommand();
@@ -64,9 +69,8 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
 
     protected abstract void handle0(ChannelHandlerContext ctx, Response response) throws Exception;
 
-    public static Request buildConnectionRequest(){
-        puppetName=null;
-        return buildRequest(Commands.CONNECT,null);
+    public static Request buildConnectionRequest(int connectionCount){
+        return buildRequest(Commands.CONNECT,connectionCount);
     }
 
     public static Request buildRequest(Enum<Commands> command, Object value){
@@ -105,6 +109,15 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
 
     protected void stopUnderControlled(){
         AbstractPuppetCommandHandler.isUnderControlled=false;
+        AbstractPuppetCommandHandler.previousScreen=null;
+    }
+
+    protected static void setPreviousScreen(byte[] previousScreen){
+        AbstractPuppetCommandHandler.previousScreen = previousScreen;
+    }
+
+    protected static byte[] getPreviousScreen() {
+        return previousScreen;
     }
 
     public static IReplay getReplay() {

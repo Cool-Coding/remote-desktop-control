@@ -19,4 +19,5 @@ public class ExceptionMessageConstants {
     public static final String EXTENSION_NOT_FOUND              ="sequence generator is not found";
     public static final String COMMANDHANDLERS_FILE_NOT_FOUND   ="the file of commandhandlers is not found";
     public static final String COMMANDHANDLERS_FILE_CONFIG_ERROR="the file of commandhandlers is configured incorrect";
+    public static final String ILLEGAL_STATUS                   ="illegal status";
 }

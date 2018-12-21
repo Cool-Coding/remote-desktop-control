@@ -42,7 +42,7 @@ public class PuppetNettyClientHandler extends SimpleChannelInboundHandler<Respon
 
                 //判断是大于限制的次数,关闭与服务器之间的连接(比如控制端停止了控制，而傀儡没有收到命令，则会一直发送屏幕截图)
                 //超过错误次数，关闭连接，重新与服务器连接，在连接时，服务器进行判断是否需要停止发送屏幕截图
-                if(ERROR_COUNT_HASHMAP.get(message) >= ERROR_COUNT){
+            if(ERROR_COUNT_HASHMAP.get(message) >= ERROR_COUNT){
                     ctx.close();
                     return;
                 }

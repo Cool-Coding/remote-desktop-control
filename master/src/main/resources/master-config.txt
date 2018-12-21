@@ -1,3 +1,4 @@
-mouse.double.check.delay=500
-server.ip=192.168.124.1
+mouse.double.check.delay=2000
+#server.ip=144.34.157.127
+server.ip=192.168.56.2
 server.port=1234

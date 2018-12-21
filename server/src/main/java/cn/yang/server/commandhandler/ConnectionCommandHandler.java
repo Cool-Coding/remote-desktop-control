@@ -11,6 +11,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.util.StringUtils;
 
+import static cn.yang.common.constant.ExceptionMessageConstants.ILLEGAL_STATUS;
 import static cn.yang.server.constant.MessageConstants.CONNECTION_SUCCEED;
 import static cn.yang.common.constant.ExceptionMessageConstants.CONNECTION_EXIST;
 import static cn.yang.common.constant.ExceptionMessageConstants.WRONG_CLIENT_TYPE;
@@ -44,11 +45,23 @@ public class ConnectionCommandHandler extends AbstractServerCommandHandler {
     private void handlePuppet(ChannelHandlerContext ctx,Request request){
         String puppetName = request.getPuppetName();
         if(!StringUtils.isEmpty(puppetName) && CONNECTED_CHANNELPAIRS.containsKey(puppetName)){
+            if(request.getValue()!=null){
+                if (request.getValue() instanceof Integer){
+                    Integer count = (Integer)request.getValue();
+                    if (count <= 1){
+                        error(request,ILLEGAL_STATUS);
+                        sendError(request,ctx,ILLEGAL_STATUS);
+                        return;
+                    }
+                }
+            }
+
             final ChannelPair channelPair = CONNECTED_CHANNELPAIRS.get(puppetName);
             final Channel puppetChannel = channelPair.getPuppetChannel();
             if(puppetChannel!=null && puppetChannel.isOpen()){
                 error(request,CONNECTION_EXIST);
                 sendError(request,ctx,CONNECTION_EXIST);
+                return;
             }else{
                 channelPair.setPuppetChannel(ctx.channel());
                 info(request,CONNECTION_SUCCEED);
@@ -56,6 +69,9 @@ public class ConnectionCommandHandler extends AbstractServerCommandHandler {
                 //如果傀儡掉线后，再次重连，发现控制端在线,并且没有终止控制傀儡，则继续发送屏幕截图
                 if (masterChannel!=null && masterChannel.isOpen()){
                     ctx.writeAndFlush(buildResponse(request, Commands.CONTROL));
+                    //否则，如果控制端不在线并且傀儡是断线重连的情况，则向其发送终止命令，停止其向服务器发送屏幕截图
+                }else{
+                    ctx.writeAndFlush(buildResponse(request, Commands.TERMINATE));
                 }
             }
         }else {
@@ -67,7 +83,7 @@ public class ConnectionCommandHandler extends AbstractServerCommandHandler {
             info(request,CONNECTION_SUCCEED);
         }
 
-        Response response = buildResponse(request, Commands.CONNECT);
+        Response response = buildResponse(request, Commands.CONNECT,request.getValue());
         ctx.writeAndFlush(response);
     }
 }

@@ -8,6 +8,8 @@ import cn.yang.puppet.client.constant.ConfigConstants;
 import cn.yang.common.exception.CommandHandlerException;
 import cn.yang.puppet.client.constant.MessageConstants;
 import cn.yang.puppet.client.exception.HeartBeatException;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.springframework.util.StringUtils;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Cool-Coding
@@ -38,31 +41,38 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
 
     @Override
     protected void handle0(ChannelHandlerContext ctx, Response response) throws Exception {
-        if(StringUtils.isEmpty(getPuppetName())){
-            setPuppetName(response.getPuppetName());
-            info(response,MessageConstants.PUPPET_NAME_FROM_SERVER,response.getPuppetName());
-            popMessageDialog(MessageConstants.PUPPET_NAME_FROM_SERVER,response.getPuppetName());
-        }
-
-        reset();
-
-        try {
-            //为减少带宽负载，发送屏幕截图时不再发送心跳，当屏幕截图发送完后，继续发送心跳，
-            //启动一个线程，进行周期性检查，管理心跳与屏幕截图任务
-            taskManagement = new HeartBeatAndScreenSnapShotTaskManagement(ctx, response);
-            int interval = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.TASK_CHECK_INTERVAL);
-            ctx.executor().scheduleAtFixedRate(() -> {
-                try {
-                    taskManagement.check();
-                } catch (IOException e) {
-                    error(response, e.getMessage());
-                    throw new RuntimeException(e);
+        if(response.getValue() instanceof Integer) {
+            Integer count = (Integer)response.getValue();
+            if(count == 1) {
+                if (StringUtils.isEmpty(getPuppetName())) {
+                    setPuppetName(response.getPuppetName());
+                    info(response, MessageConstants.PUPPET_NAME_FROM_SERVER, response.getPuppetName());
+                    popMessageDialog(MessageConstants.PUPPET_NAME_FROM_SERVER, response.getPuppetName());
                 }
-            }, 0, interval, TimeUnit.MILLISECONDS);
 
-        }catch (IOException e){
-            ctx.executor().shutdownGracefully();
-            throw new HeartBeatException(e.getMessage(),e);
+                //reset();
+
+                try {
+                    //为减少带宽负载，发送屏幕截图时不再发送心跳，当屏幕截图发送完后，继续发送心跳，
+                    //启动一个线程，进行周期性检查，管理心跳与屏幕截图任务
+                    taskManagement = new HeartBeatAndScreenSnapShotTaskManagement(ctx, response);
+                    int interval = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.TASK_CHECK_INTERVAL);
+                    ctx.executor().scheduleAtFixedRate(() -> {
+                        try {
+                            taskManagement.check();
+                        } catch (IOException e) {
+                            error(response, e.getMessage());
+                            throw new RuntimeException(e);
+                        }
+                    }, 0, interval, TimeUnit.MILLISECONDS);
+
+                } catch (IOException e) {
+                    ctx.executor().shutdownGracefully();
+                    throw new HeartBeatException(e.getMessage(), e);
+                }
+            }else if(count > 1){
+                if(taskManagement!=null) taskManagement.setCtx(ctx);
+            }
         }
     }
 
@@ -84,6 +94,9 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
             this.response=response;
         }
 
+        private void setCtx(ChannelHandlerContext ctx){
+            this.ctx=ctx;
+        }
         private void reset(){
             if (tasks.size()>0){
              for(ScheduledFuture task:tasks.values()){
@@ -141,11 +154,10 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
             @Override
             public void run() {
                 Request heartBeatRequest = AbstractPuppetCommandHandler.buildRequest(Commands.HEARTBEAT,null);
-                debug(response, MessageConstants.SEND_A_HEARTBEAT, host, String.valueOf(port));
-
                 if (heartBeatRequest != null) {
-                    if (ctx.channel() != null && ctx.channel().isOpen()) {
-                        ctx.writeAndFlush(heartBeatRequest);
+                    if (isAvaliable(ctx)) {
+                        debug(response, MessageConstants.SEND_A_HEARTBEAT, host, String.valueOf(port));
+                        ctx.writeAndFlush(heartBeatRequest).addListener(channelFutureListener);
                     }
                 }
             }
@@ -155,22 +167,22 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
          * 屏幕截图任务
          */
         private Runnable screenSnapShotTask = new Runnable(){
-            private byte[] previousScreen;
-
             @Override
             public void run() {
                 final byte[] bytes = REPLAY.getScreenSnapshot();
                 if (isDifferentFrom(bytes)) {
                     final Request request = buildRequest(Commands.SCREEN, bytes);
-                    debug(response, MessageConstants.SEND_A_SCREENSNAPSHOT, host, String.valueOf(port));
                     if (request != null) {
-                        if (ctx.channel() != null && ctx.channel().isOpen()) {
-                            ctx.writeAndFlush(request);
+                        if (isAvaliable(ctx)) {
+                            debug(response, MessageConstants.SEND_A_SCREENSNAPSHOT, host, String.valueOf(port));
+                            ctx.writeAndFlush(request).addListener(channelFutureListener);
                         }
                     }
+                }else{
+                    //如果屏幕相同，则不发送屏幕，发送心跳
+                    heartBeatTask.run();
                 }
             }
-
 
 
             /**
@@ -179,13 +191,14 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
              * @return
              */
             private boolean isDifferentFrom(byte[] now){
+                byte[] previousScreen = getPreviousScreen();
                 if (now == null){
                     return false;
                 }
 
                 //如果前一个屏幕为空，而且当前屏幕与前一个屏幕不一样，则发送
                if(previousScreen==null || previousScreen.length == 0 ||  previousScreen.length != now.length){
-                   previousScreen = now;
+                   setPreviousScreen(now);
                    return true;
                }
 
@@ -193,7 +206,7 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
                boolean changeable = false;
                for(int i=0;i<len;i++){
                 if(previousScreen[i] != now[i] ){
-                    previousScreen = now;
+                    setPreviousScreen(now);
                     changeable = true;
                     break;
                 }
@@ -201,5 +214,27 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
                 return changeable;
             }
         };
+
+
+        private ChannelFutureListener channelFutureListener = new ChannelFutureListener(){
+            private AtomicInteger count=new AtomicInteger(0);
+            private final int ERROR_COUNT=PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH,ConfigConstants.ERROR_COUNT,5);
+
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (future.isSuccess()){
+                    count.set(0);
+                }else{
+                    int i = count.incrementAndGet();
+                    if (i > ERROR_COUNT){
+                        ctx.close();
+                    }
+                }
+            }
+        };
+
+        private  boolean isAvaliable(ChannelHandlerContext ctx){
+            return ctx.channel() != null && ctx.channel().isActive() && ctx.channel().isOpen();
+        }
     }
 }
