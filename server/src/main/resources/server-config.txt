@@ -2,5 +2,5 @@ master.connect.puppetName.retry.interval=1000
 master.connect.puppetName.retry.times=10
 
 #server.ip=144.34.157.127
-server.ip=192.168.124.1
+server.ip=192.168.56.2
 server.port=1234

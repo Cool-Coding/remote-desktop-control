@@ -55,13 +55,13 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
                 try {
                     //为减少带宽负载，发送屏幕截图时不再发送心跳，当屏幕截图发送完后，继续发送心跳，
                     //启动一个线程，进行周期性检查，管理心跳与屏幕截图任务
-                    taskManagement = new HeartBeatAndScreenSnapShotTaskManagement(ctx);
+                    taskManagement = new HeartBeatAndScreenSnapShotTaskManagement(ctx, response);
                     int interval = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.TASK_CHECK_INTERVAL);
                     ctx.executor().scheduleAtFixedRate(() -> {
                         try {
                             taskManagement.check();
                         } catch (IOException e) {
-                            error(taskManagement, e.getMessage());
+                            error(response, e.getMessage());
                             throw new RuntimeException(e);
                         }
                     }, 0, interval, TimeUnit.MILLISECONDS);
@@ -87,9 +87,11 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
     private class HeartBeatAndScreenSnapShotTaskManagement {
         private final Map<Runnable,ScheduledFuture> tasks=new HashMap<>();
         private ChannelHandlerContext ctx;
+        private Response response;
 
-        private HeartBeatAndScreenSnapShotTaskManagement(ChannelHandlerContext ctx){
+        private HeartBeatAndScreenSnapShotTaskManagement(ChannelHandlerContext ctx, Response response){
             this.ctx=ctx;
+            this.response=response;
         }
 
         private void setCtx(ChannelHandlerContext ctx){
@@ -154,8 +156,8 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
                 Request heartBeatRequest = AbstractPuppetCommandHandler.buildRequest(Commands.HEARTBEAT,null);
                 if (heartBeatRequest != null) {
                     if (isAvaliable(ctx)) {
-                        debug(heartBeatRequest, MessageConstants.SEND_A_HEARTBEAT, host, String.valueOf(port));
-                        ctx.writeAndFlush(heartBeatRequest);
+                        debug(response, MessageConstants.SEND_A_HEARTBEAT, host, String.valueOf(port));
+                        ctx.writeAndFlush(heartBeatRequest).addListener(channelFutureListener);
                     }
                 }
             }
@@ -172,8 +174,8 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
                     final Request request = buildRequest(Commands.SCREEN, bytes);
                     if (request != null) {
                         if (isAvaliable(ctx)) {
-                            debug(request, MessageConstants.SEND_A_SCREENSNAPSHOT, host, String.valueOf(port));
-                            ctx.writeAndFlush(request);
+                            debug(response, MessageConstants.SEND_A_SCREENSNAPSHOT, host, String.valueOf(port));
+                            ctx.writeAndFlush(request).addListener(channelFutureListener);
                         }
                     }
                 }else{
@@ -210,6 +212,24 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
                 }
                }
                 return changeable;
+            }
+        };
+
+
+        private ChannelFutureListener channelFutureListener = new ChannelFutureListener(){
+            private AtomicInteger count=new AtomicInteger(0);
+            private final int ERROR_COUNT=PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH,ConfigConstants.ERROR_COUNT,5);
+
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (future.isSuccess()){
+                    count.set(0);
+                }else{
+                    int i = count.incrementAndGet();
+                    if (i > ERROR_COUNT){
+                        ctx.close();
+                    }
+                }
             }
         };
 

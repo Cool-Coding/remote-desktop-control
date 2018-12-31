@@ -11,7 +11,6 @@ import cn.yang.common.exception.ResponseHandleException;
 import cn.yang.common.generator.SequenceGenerate;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.common.util.MacUtils;
-import cn.yang.master.client.constant.MessageConstants;
 import cn.yang.master.client.exception.ConnectionException;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
@@ -74,7 +73,6 @@ public abstract class AbstractMasterCommandHandler implements ICommandHandler<Re
 
     protected void sendRequest(Request request) throws ConnectionException{
         if (ctx!=null && ctx.channel()!=null && ctx.channel().isOpen()){
-            debug(request, MessageConstants.PREPARING_TO_FIRE);
             ctx.writeAndFlush(request);
         }else{
             error(request, cn.yang.master.client.constant.ExceptionMessageConstants.CONNECTION_SERVER_FAILED);
@@ -83,10 +81,6 @@ public abstract class AbstractMasterCommandHandler implements ICommandHandler<Re
     }
     void error(Request request,String... message){
         LOGGER.error("{}:{}",request, Arrays.toString(message));
-    }
-
-    void error(Object object,String... message){
-        LOGGER.error("{}:{}",object.getClass().getCanonicalName(), Arrays.toString(message));
     }
 
     void debug(Request request,String... message){

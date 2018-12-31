@@ -1,7 +1,6 @@
 package cn.yang.master.client.ui.impl;
 
 import cn.yang.common.util.BeanUtil;
-import cn.yang.common.util.TimeUtil;
 import cn.yang.master.client.ui.IDisplayPuppet;
 import cn.yang.master.client.ui.IMasterDesktop;
 import cn.yang.master.client.ui.listener.KeyBoardListener;
@@ -11,7 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Cool-Coding
