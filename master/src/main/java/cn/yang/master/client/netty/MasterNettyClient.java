@@ -19,10 +19,13 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import javax.swing.*;
 import java.io.IOException;
 
 /**
@@ -70,12 +73,12 @@ public class MasterNettyClient implements INettyClient{
                 .handler(channelInitialize);
         final ChannelFuture sync = bootstrap.connect(host, port).sync();
         sync.channel().writeAndFlush(buildConnectRequest());
-            try {
-                sync.channel().closeFuture().sync();
-            }catch (Exception e){
+        try {
+                sync.channel().closeFuture();
+        }catch (Exception e){
                 LOGGER.error(e.getMessage(),e);
                 throw e;
-            }
+        }
     }
 
     /**

@@ -44,7 +44,7 @@ public class ConnectionCommandHandler extends AbstractServerCommandHandler {
 
     private void handlePuppet(ChannelHandlerContext ctx,Request request){
         String puppetName = request.getPuppetName();
-        if(!StringUtils.isEmpty(puppetName) && CONNECTED_CHANNELPAIRS.containsKey(puppetName)){
+        if(!StringUtils.isEmpty(puppetName)){
             if(request.getValue()!=null){
                 if (request.getValue() instanceof Integer){
                     Integer count = (Integer)request.getValue();
@@ -56,23 +56,31 @@ public class ConnectionCommandHandler extends AbstractServerCommandHandler {
                 }
             }
 
-            final ChannelPair channelPair = CONNECTED_CHANNELPAIRS.get(puppetName);
-            final Channel puppetChannel = channelPair.getPuppetChannel();
-            if(puppetChannel!=null && puppetChannel.isOpen()){
-                error(request,CONNECTION_EXIST);
-                sendError(request,ctx,CONNECTION_EXIST);
-                return;
-            }else{
+            ChannelPair channelPair;
+            if(!CONNECTED_CHANNELPAIRS.containsKey(puppetName)){
+                channelPair=new ChannelPair();
                 channelPair.setPuppetChannel(ctx.channel());
-                info(request,CONNECTION_SUCCEED);
-                final Channel masterChannel = channelPair.getMasterChannel();
-                //如果傀儡掉线后，再次重连，发现控制端在线,并且没有终止控制傀儡，则继续发送屏幕截图
-                if (masterChannel!=null && masterChannel.isOpen()){
-                    ctx.writeAndFlush(buildResponse(request, Commands.CONTROL));
-                    //否则，如果控制端不在线并且傀儡是断线重连的情况，则向其发送终止命令，停止其向服务器发送屏幕截图
+                CONNECTED_CHANNELPAIRS.put(puppetName,channelPair);
+            }else {
+                channelPair = CONNECTED_CHANNELPAIRS.get(puppetName);
+                final Channel puppetChannel = channelPair.getPuppetChannel();
+                if(puppetChannel!=null && puppetChannel.isOpen()){
+                    error(request,CONNECTION_EXIST);
+                    sendError(request,ctx,CONNECTION_EXIST);
+                    return;
                 }else{
-                    ctx.writeAndFlush(buildResponse(request, Commands.TERMINATE));
+                    channelPair.setPuppetChannel(ctx.channel());
                 }
+            }
+
+            info(request,CONNECTION_SUCCEED);
+            final Channel masterChannel = channelPair.getMasterChannel();
+            //如果傀儡掉线后，再次重连，发现控制端在线,并且没有终止控制傀儡，则继续发送屏幕截图
+            if (masterChannel!=null && masterChannel.isOpen()){
+                ctx.writeAndFlush(buildResponse(request, Commands.CONTROL));
+              //否则，如果控制端不在线并且傀儡是断线重连的情况，则向其发送终止命令，停止其向服务器发送屏幕截图
+            }else{
+               ctx.writeAndFlush(buildResponse(request, Commands.TERMINATE));
             }
         }else {
             ChannelPair pair=new ChannelPair();

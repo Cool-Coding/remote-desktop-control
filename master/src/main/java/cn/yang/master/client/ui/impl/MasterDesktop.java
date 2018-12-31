@@ -4,6 +4,7 @@ import cn.yang.common.util.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.master.client.constant.ExceptionMessageConstants;
+import cn.yang.master.client.constant.MessageConstants;
 import cn.yang.master.client.exception.MasterClientException;
 import cn.yang.master.client.netty.MasterNettyClient;
 import cn.yang.master.client.ui.IDisplayPuppet;
@@ -154,6 +155,7 @@ public class MasterDesktop extends JFrame implements IMasterDesktop,ActionListen
            case CONNECT:
                try {
                    connect();
+                   popToShowMessage(MessageConstants.CONNECT_SUCCESSFULLY);
                }catch (Exception e2){
                    popToShowMessage(ExceptionMessageConstants.CONNECTION_SERVER_FAILED,e2.getMessage());
                }

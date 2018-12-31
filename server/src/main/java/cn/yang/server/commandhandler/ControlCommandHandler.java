@@ -10,6 +10,7 @@ import cn.yang.server.netty.ChannelPair;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
+import static cn.yang.common.constant.ExceptionMessageConstants.CONNECTION_EXIST;
 import static cn.yang.server.constant.MessageConstants.CONNECTION_SUCCEED;
 import static cn.yang.common.constant.ExceptionMessageConstants.CONNECT_PUPPET_FAILED;
 import static cn.yang.server.constant.ConfigConstants.CONFIG_FILE_PATH;
@@ -35,12 +36,18 @@ public class ControlCommandHandler extends AbstractServerCommandHandler {
 
             final ChannelPair channelPair = CONNECTED_CHANNELPAIRS.get(puppetName);
             if (channelPair != null) {
-                channelPair.setMasterChannel(ctx.channel());
-                info(request,CONNECTION_SUCCEED);
-                //通知傀儡
-                channelPair.getPuppetChannel().writeAndFlush(buildResponse(request, Commands.CONTROL));
-                //给控制端返回消息，通知其做好准备
-                ctx.writeAndFlush(buildResponse(request,Commands.CONTROL,puppetName));
+                final Channel masterChannel = channelPair.getMasterChannel();
+                if (masterChannel!=null && masterChannel.isOpen()){
+                    info(request,CONNECT_PUPPET_FAILED,CONNECTION_EXIST);
+                    sendError(request,ctx,CONNECT_PUPPET_FAILED);
+                }else {
+                    channelPair.setMasterChannel(ctx.channel());
+                    info(request, CONNECTION_SUCCEED);
+                    //通知傀儡
+                    channelPair.getPuppetChannel().writeAndFlush(buildResponse(request, Commands.CONTROL));
+                    //给控制端返回消息，通知其做好准备
+                    ctx.writeAndFlush(buildResponse(request, Commands.CONTROL, puppetName));
+                }
                }
 
         }catch (TaskExecutorException e){

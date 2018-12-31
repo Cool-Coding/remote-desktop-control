@@ -78,7 +78,6 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
         if (StringUtils.isEmpty(mac)){
             return null;
         }
-
         Request request = new Request();
         request.setId(Constants.PUPPET + mac + generator.next());
         request.setCommand(command);
@@ -91,8 +90,16 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
         LOGGER.error("{}:{}",response,message);
     }
 
+    void error(Object object,String message){
+        LOGGER.error("{}:{}",object.getClass().getCanonicalName(),message);
+    }
+
     void debug(Response response,String... message){
         LOGGER.debug("{}:{}",response,Arrays.toString(message));
+    }
+
+    void debug(Request request,String... message){
+        LOGGER.debug("{}:{}",request,Arrays.toString(message));
     }
 
     void info(Response response,String... message){
