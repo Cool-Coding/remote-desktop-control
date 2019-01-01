@@ -283,9 +283,9 @@ public interface IDisplayPuppet {
 ## 项目导入及运行
 1. IntelliJ IDEA
    File->New->Project from version control->Github/Git
-   输入github url:https://github.com/Cool-Coding/remote-desktop-control.git
+   输入github url:https://github.com/Cool-Coding/remote-desktop-control.git   
    ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/import.png)
-2. 导入后项目结构如下图，Maven会自动加载依赖的Jar包
+2. 导入后项目结构如下图，Maven会自动加载依赖的Jar包   
    ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/import_result.png)
 3. 调试运行
    - 配置子项目server/master/puppet resources文件夹下对应的配置文件server-config.txt/master-config.txt/puppet-config.txt
@@ -294,19 +294,19 @@ public interface IDisplayPuppet {
      配置好IP和端口后，分别运行Server/Master/Puppet端，Master和Puppet运行后会自动连接服务端，如果服务器不可用，
      Puppet会不断连接，而Master会报出错误消息，以后需要手工点击菜单连接。
 4. 发布运行
-   - File->Project Structure
+   - File->Project Structure   
    ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy01.png)
    - 创建Artifacts
-     - From Modules with dependencies
+     - From Modules with dependencies   
      ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy02.png)
      - 选择Module和Main Class
        > Moudle应总是选择desktop-control-parent
-       > Main Class根据服务器、控制端、傀儡端需要选择对应的启动类
+       > Main Class根据服务器、控制端、傀儡端需要选择对应的启动类   
        ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy03.png)
-     - 打包common包和对应子项对应的源文件和依赖的jar包
+     - 打包common包和对应子项对应的源文件和依赖的jar包   
      ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy04.png)
      ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy05.png)
-     - Build->Build Artifacts->build对应的artifact
+     - Build->Build Artifacts->build对应的artifact   
      ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy06.png)
      - 运行打好的jar包
        > java -jar xxxx.jar
