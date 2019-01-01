@@ -339,6 +339,7 @@ public interface IDisplayPuppet {
    - puppet两次截图不变化，则不再发送截图，如果master断开，则无法检测到，修改为屏幕截图无变化时，发送心跳数据包
    - master由于某些原因在没有向puppet发送TERMINATE命令时断开，则Master再次请求被控制Puppet时，
    若puppet中本次截图与上次截图数据一样，则不发送，则Master控制端会不显示puppet屏幕截图
+- 优化体验   
    - master向puppet发送命令失败，如果鼠标移动，则会一有移动就发送，导致反复出现相同消息
       
 ## 讨论
