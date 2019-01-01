@@ -306,7 +306,8 @@ public interface IDisplayPuppet {
        ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy03.png)
      - 打包common包和对应子项对应的源文件和依赖的jar包   
      > 截图中只有common包的操作方法，其它子项目也是相同操作方法,不再截图,如打包Master，则需要打包common和master;打包puppet，则需要打包
-     common和puppet;打包server,则需要打包common和server。    
+     common和puppet;打包server,则需要打包common和server。
+         
      (1) 修改name名称   
      (2) 选中common包下的'common' compile output,右键选择Put into Output Root   
      (3) 选择common包下所有依赖的jar包，右键选择Extract Into Output Root     
