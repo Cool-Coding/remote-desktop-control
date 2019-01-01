@@ -313,22 +313,22 @@ public interface IDisplayPuppet {
       
 ## 版本变化
 
-- V0.1.0  
- > 20180802
- - 实现控制端Master通过鼠标键盘远程控制傀儡端Puppet
-- V0.1.1
- > 20180916
- - master: 命令使用队列方式，单线程消费，减轻awt压力，加快响应屏幕刷新
- - puppet获取屏幕截图时，若前后两次获取的屏幕截图无变化，则不发送。
- - bugs fixed
-   - puppet重连时之前发送心跳的任务仍在运行  
-- V0.1.2
- > 20181221
- - 当puppet重连服务端时，保持ID不变
- - master的命令保存到阻塞队列中，再由单线程取出发给服务器
+1. V0.1.0 
+> 20180802
+- 实现控制端Master通过鼠标键盘远程控制傀儡端Puppet   
+2. V0.1.1
+> 20180916
+- master: 命令使用队列方式，单线程消费，减轻awt压力，加快响应屏幕刷新
+- puppet获取屏幕截图时，若前后两次获取的屏幕截图无变化，则不发送。
+- bugs fixed
+  - puppet重连时之前发送心跳的任务仍在运行  
+3. V0.1.2
+> 20181221
+- 当puppet重连服务端时，保持ID不变
+- master的命令保存到阻塞队列中，再由单线程取出发给服务器
    多个mouse moved命令，只发送最后一个mouse moved命令，减少
    无效命令和占用的带宽流量
- - bug fixed
+- bug fixed
    - puppet两次截图不变化，则不再发送截图，如果master断开，则无法检测到，修改为屏幕截图无变化时，发送心跳数据包
    - master由于某些原因在没有向puppet发送TERMINATE命令时断开，则Master再次请求被控制Puppet时，
    若puppet中本次截图与上次截图数据一样，则不发送，则Master控制端会不显示puppet屏幕截图
