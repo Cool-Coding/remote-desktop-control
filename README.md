@@ -283,8 +283,8 @@ public interface IDisplayPuppet {
 
 ## 项目导入及运行
 1. IntelliJ IDEA
-   File->New->Project from version control->Github/Git
-   输入github url:https://github.com/Cool-Coding/remote-desktop-control.git   
+   File->New->Project from version control->Github/Git  
+   输入Url:https://github.com/Cool-Coding/remote-desktop-control.git   
    ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/import.png)
 2. 导入后项目结构如下图，Maven会自动加载依赖的Jar包   
    ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/import_result.png)
