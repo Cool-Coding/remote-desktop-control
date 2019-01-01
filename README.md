@@ -207,7 +207,7 @@ ICommandHandler接口是所有命令处理类的父接口，Netty ChannelHandler
 
 ## 待优化
 - 快速按键的情况、双击时响应的比较慢。传输命令需要时间，所以快速按键时命令产生滞后现象，而傀儡端图像传输到控制端后，Swing是单线程处理AWT事件(鼠标、键盘、绘图等)，若此时仍在按键，则会阻塞，等到按键结束之后，再进行图像的绘制。进行了如下尝试。
-   > 1. 将命令发送采用异步方式，将命令存放在队列中，开启一个线程依次处理，这样可以减轻awt工作负担，加快响应屏幕刷新。经测试，屏幕刷新确定快了，但是命令发送的不及时，响应变慢，最终放弃这种方式，依然使用同步发送。
+   > 1. 将命令发送采用异步方式，将命令存放在队列中，开启一个线程依次处理，这样可以减轻awt工作负担。
    > 2. 鼠标移动时，在移动过程中不发送命令，等待移动结束发送：实现方式是移动事件响应方式中添加一个计数器，再采用一个延迟线程，判断计数器值是否变化，如果延迟时间到时仍没有变化，则发送“移动命令”，但当移动后单击，会先发送单击命令，再发送鼠标移动命令，也不可行。
    > 3. 傀儡端在发送屏幕截图时，与上一次进行比较，如果没有变化，则不发送，减少发送数据量，也减少awt负担。
 
@@ -305,7 +305,8 @@ public interface IDisplayPuppet {
        > Main Class根据服务器、控制端、傀儡端需要选择对应的启动类   
        ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy03.png)
      - 打包common包和对应子项对应的源文件和依赖的jar包   
-     > 截图中只有common包的操作方法，其它子项目也是相同操作方法,不再截图.   
+     > 截图中只有common包的操作方法，其它子项目也是相同操作方法,不再截图,如打包Master，则需要打包common和master;打包puppet，则需要打包
+     common和puppet;打包server,则需要打包common和server。    
      (1) 修改name名称   
      (2) 选中common包下的'common' compile output,右键选择Put into Output Root   
      (3) 选择common包下所有依赖的jar包，右键选择Extract Into Output Root     
