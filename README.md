@@ -305,7 +305,10 @@ public interface IDisplayPuppet {
        > Main Class根据服务器、控制端、傀儡端需要选择对应的启动类   
        ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy03.png)
      - 打包common包和对应子项对应的源文件和依赖的jar包   
-     > 截图中只有common包的操作方法，其它子项目也是相同操作方法,不再截图     
+     > 截图中只有common包的操作方法，其它子项目也是相同操作方法,不再截图
+        - 修改name名称   
+        - 选中common包下的'common' compile output,右键选择Put into Output Root   
+        - 选择common包下所有依赖的jar包，右键选择Extract Into Output Root     
      ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy04.png)  
      ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy05.png)
      - Build->Build Artifacts->build对应的artifact   
