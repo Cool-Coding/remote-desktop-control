@@ -328,7 +328,7 @@ public interface IDisplayPuppet {
 - master的命令保存到阻塞队列中，再由单线程取出发给服务器
    多个mouse moved命令，只发送最后一个mouse moved命令，减少
    无效命令和占用的带宽流量
-- bug fixed
+- bugs fixed
    - puppet两次截图不变化，则不再发送截图，如果master断开，则无法检测到，修改为屏幕截图无变化时，发送心跳数据包
    - master由于某些原因在没有向puppet发送TERMINATE命令时断开，则Master再次请求被控制Puppet时，
    若puppet中本次截图与上次截图数据一样，则不发送，则Master控制端会不显示puppet屏幕截图
