@@ -112,6 +112,7 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
 
     protected void startUnderControlled(){
         AbstractPuppetCommandHandler.isUnderControlled=true;
+        AbstractPuppetCommandHandler.previousScreen = null;
     }
 
     protected void stopUnderControlled(){
