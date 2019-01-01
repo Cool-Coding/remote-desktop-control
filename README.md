@@ -282,6 +282,8 @@ public interface IDisplayPuppet {
 ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/remote.gif)
 
 ## 项目导入及运行
+- 开发工具:Intellij IDEA  
+- JDK1.8  
 1. IntelliJ IDEA
    File->New->Project from version control->Github/Git  
    输入Url:https://github.com/Cool-Coding/remote-desktop-control.git   
