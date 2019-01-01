@@ -1,4 +1,9 @@
+#鼠标双击检测延迟间隔时间
 mouse.double.check.delay=2000
+
+#服务器IP地址
 #server.ip=144.34.157.127
 server.ip=192.168.124.1
+
+#服务器端口号
 server.port=1234

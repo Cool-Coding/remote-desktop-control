@@ -10,6 +10,7 @@
 > <font size="4">[9.待优化](#待优化)</font>  
 > <font size="4">[10.一点心得](#一点心得)</font>  
 > <font size="4">[11.效果演示](#效果演示)</font>  
+> <font size="4">[12.项目导入及运行](#项目导入及运行)</font>  
 
 ## 前言
 远程桌面控制的产品已经有很多很多，我做此项目的初衷并不是要开发出一个商用的产品，只是出于兴趣爱好，做一个开源的项目，之前也没有阅读过任何远程桌面控制的项目源码，只是根据自己已有的经验设计开发，肯定有许多不足，有兴趣的朋友欢迎留言讨论。
@@ -279,5 +280,37 @@ public interface IDisplayPuppet {
 5. 可以进行鼠标(单击，双击，右键，拖动等)或键盘(单键或组合键等)操作，并可调整屏幕清晰度。
 ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/remote.gif)
 
+## 项目导入及运行
+1. IntelliJ IDEA
+   File->New->Project from version control->Github/Git
+   输入github url:https://github.com/Cool-Coding/remote-desktop-control.git
+   ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/import.png)
+2. 导入后项目结构如下图，Maven会自动加载依赖的Jar包
+   ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/import_result.png)
+3. 调试运行
+   - 配置子项目server/master/puppet resources文件夹下对应的配置文件server-config.txt/master-config.txt/puppet-config.txt
+     主要是配置服务器IP与端口号，其它一般保持不变即可。
+   - 运行子项目server/master/puppet 类ServerStarter/MasterStarter/PuppetStart
+     配置好IP和端口后，分别运行Server/Master/Puppet端，Master和Puppet运行后会自动连接服务端，如果服务器不可用，
+     Puppet会不断连接，而Master会报出错误消息，以后需要手工点击菜单连接。
+4. 发布运行
+   - File->Project Structure
+   ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy01.png)
+   - 创建Artifacts
+     - From Modules with dependencies
+     ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy02.png)
+     - 选择Module和Main Class
+       > Moudle应总是选择desktop-control-parent
+       > Main Class根据服务器、控制端、傀儡端需要选择对应的启动类
+       ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy03.png)
+     - 打包common包和对应子项对应的源文件和依赖的jar包
+     ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy04.png)
+     ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy05.png)
+     - Build->Build Artifacts->build对应的artifact
+     ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy06.png)
+     - 运行打好的jar包
+       > java -jar xxxx.jar
+      
+   
 ## 讨论
 **bug反馈及建议**：https://github.com/Cool-Coding/remote-desktop-control/issues
