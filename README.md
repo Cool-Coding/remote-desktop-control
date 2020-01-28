@@ -51,7 +51,7 @@
 具体来看一下commandHandler层：
 ![commandhandler](https://upload-images.jianshu.io/upload_images/6752673-55b5f559f4823e05.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-CommandHandlerLoader工具类会根据Netty或Desktop层传入的Command到配置文件commandhandlers中查找对应的处理类，动态加载，然后进行逻辑处理，这样对于后期命令添加是非常方便的，命令与命令之间，以及命令与Netty/Deskto之间解耦。
+CommandHandlerLoader工具类会根据Netty或Desktop层传入的Command到配置文件commandhandlers中查找对应的处理类，动态加载，然后进行逻辑处理，这样对于后期命令添加是非常方便的，命令与命令之间，以及命令与Netty/Desktop之间解耦。
 
 ## 项目结构
 ![总体顶目结构](https://upload-images.jianshu.io/upload_images/6752673-822b7d4301573cd8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
