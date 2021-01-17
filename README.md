@@ -297,7 +297,7 @@ public interface IDisplayPuppet {
      配置好IP和端口后，分别运行Server/Master/Puppet端，Master和Puppet运行后会自动连接服务端，如果服务器不可用，
      Puppet会不断连接，而Master会报出错误消息，以后需要手工点击菜单连接。
 4. 发布运行
-   直接使用maven打包即可;
+   直接使用maven打包成jar,然后分别执行对应打包模块的jar包即可
       
 ## 版本变化
 
