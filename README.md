@@ -324,8 +324,8 @@ public interface IDisplayPuppet {
    - master向puppet发送命令失败，如果鼠标移动，则会一有移动就发送，导致反复出现相同消息
 4. V0.1.3
 > 20210117
-> 使用Maven打包
-> 修复master关闭链接后无法再次链接问题
+- 使用Maven打包
+- 修复master关闭链接后无法再次链接问题
       
 ## 讨论
 **bug反馈及建议**：https://github.com/Cool-Coding/remote-desktop-control/issues
