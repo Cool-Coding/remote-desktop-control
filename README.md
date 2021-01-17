@@ -297,28 +297,7 @@ public interface IDisplayPuppet {
      配置好IP和端口后，分别运行Server/Master/Puppet端，Master和Puppet运行后会自动连接服务端，如果服务器不可用，
      Puppet会不断连接，而Master会报出错误消息，以后需要手工点击菜单连接。
 4. 发布运行
-   - File->Project Structure   
-   ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy01.png)
-   - 创建Artifacts
-     - From Modules with dependencies   
-     ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy02.png)
-     - 选择Module和Main Class
-       > Moudle应总是选择desktop-control-parent  
-       > Main Class根据服务器、控制端、傀儡端需要选择对应的启动类   
-       ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy03.png)
-     - 打包common包和对应子项对应的源文件和依赖的jar包   
-     > 截图中只有common包的操作方法，其它子项目也是相同操作方法,不再截图,如打包Master，则需要打包common和master;打包puppet，则需要打包
-     common和puppet;打包server,则需要打包common和server。
-         
-     (1) 修改name名称   
-     (2) 选中common包下的'common' compile output,右键选择Put into Output Root   
-     (3) 选择common包下所有依赖的jar包，右键选择Extract Into Output Root     
-     ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy04.png)  
-     ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy05.png)
-     - Build->Build Artifacts->build对应的artifact   
-     ![](https://github.com/Cool-Coding/photos/blob/master/remote-desktop-control/deploy06.png)
-   - 运行打好的jar包
-       > java -jar xxxx.jar
+   直接使用maven打包即可;
       
 ## 版本变化
 
@@ -343,6 +322,10 @@ public interface IDisplayPuppet {
    若puppet中本次截图与上次截图数据一样，则不发送，则Master控制端会不显示puppet屏幕截图
 - 优化体验   
    - master向puppet发送命令失败，如果鼠标移动，则会一有移动就发送，导致反复出现相同消息
+4. V0.1.3
+> 20210117
+> 使用Maven打包
+> 修复master关闭链接后无法再次链接问题
       
 ## 讨论
 **bug反馈及建议**：https://github.com/Cool-Coding/remote-desktop-control/issues
