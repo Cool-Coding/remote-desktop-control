@@ -5,14 +5,14 @@ heartbeat.interval=2000
 reconnect.interval=2000
 
 #向控制端发送屏幕截图间隔时间(ms)
-screen.refresh.frequency=500
+screen.refresh.frequency=1000
 
 #心跳或发送屏幕截图任务检查时间间隔(ms)
 task.check.interval=1000
 
 #服务器IP地址
 #server.ip=144.34.157.127
-server.ip=192.168.124.1
+server.ip=192.168.254.1
 
 #服务器端口号
 server.port=1234

@@ -145,11 +145,7 @@ public class MouseListener extends MouseAdapter {
     }
 
     private void sendMosueEvent(MasterMouseEvent mouseEvent){
-        try {
-            masterClient.fireCommand(puppetScreen.getPuppetName(), Commands.MOUSE, mouseEvent);
-        }catch (MasterClientException e){
-            JOptionPane.showMessageDialog(null,e.getMessage());
-        }
+       new Thread(new SendMouseEventTask(mouseEvent)).start();
     }
 
     @Override
@@ -159,5 +155,21 @@ public class MouseListener extends MouseAdapter {
         mouseEvent.mouseWheel(count);
         LOGGER.debug("mouse wheel:{}",count);
         sendMosueEvent(mouseEvent);
+    }
+
+    class SendMouseEventTask implements Runnable {
+        MasterMouseEvent mouseEvent;
+
+        SendMouseEventTask(MasterMouseEvent mouseEvent) {
+            this.mouseEvent = mouseEvent;
+        }
+        @Override
+        public void run() {
+            try {
+                masterClient.fireCommand(puppetScreen.getPuppetName(), Commands.MOUSE, mouseEvent);
+            }catch (MasterClientException e){
+                JOptionPane.showMessageDialog(null,e.getMessage());
+            }
+        }
     }
 }

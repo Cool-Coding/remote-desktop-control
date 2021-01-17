@@ -6,7 +6,7 @@ master.connect.puppetName.retry.times=10
 
 #服务器IP
 #server.ip=144.34.157.127
-server.ip=192.168.124.1
+server.ip=192.168.254.1
 
 #服务器端口
 server.port=1234

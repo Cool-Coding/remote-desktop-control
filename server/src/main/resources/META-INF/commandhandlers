@@ -5,4 +5,4 @@ SCREEN=cn.yang.server.commandhandler.ScreenCommandHandler
 KEYBOARD=cn.yang.server.commandhandler.CommonFireCommandHandler
 MOUSE=cn.yang.server.commandhandler.CommonFireCommandHandler
 QUALITY=cn.yang.server.commandhandler.CommonFireCommandHandler
-TERMINATE=cn.yang.server.commandhandler.CommonFireCommandHandler
+TERMINATE=cn.yang.server.commandhandler.TerminateCommandHandler
