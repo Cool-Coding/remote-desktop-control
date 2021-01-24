@@ -326,6 +326,11 @@ public interface IDisplayPuppet {
 > 20210117
 - 使用Maven打包
 - 修复master关闭链接后无法再次链接问题
+    
+4. V0.1.4
+> 20210124
+- 优化puppet响应master控制命令性能
+- 解耦robot与puppet,为puppet提供gorobot、javarobot两种robot,并可灵活配置
       
 ## 讨论
 **bug反馈及建议**：https://github.com/Cool-Coding/remote-desktop-control/issues
