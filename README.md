@@ -330,7 +330,7 @@ public interface IDisplayPuppet {
 4. V0.1.4
 > 20210124
 - 优化puppet响应master控制命令性能
-- 解耦robot与puppet,为puppet提供gorobot、javarobot两种robot,并可灵活配置
+- 解耦robot与puppet,为puppet提供[gorobot](https://github.com/Cool-Coding/robotgo)、javarobot两种robot,并可灵活配置
       
 ## 讨论
 **bug反馈及建议**：https://github.com/Cool-Coding/remote-desktop-control/issues
