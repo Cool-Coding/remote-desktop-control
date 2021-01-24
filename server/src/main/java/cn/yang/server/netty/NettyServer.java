@@ -3,13 +3,13 @@ package cn.yang.server.netty;
 import cn.yang.common.util.PropertiesUtil;
 import cn.yang.server.constant.ConfigConstants;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * @author Cool-Coding 2018/7/24
@@ -48,11 +48,11 @@ public class NettyServer {
 
 
     public void start() throws Exception{
+        String ip = PropertiesUtil.getString(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_IP);
+        int port = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_PORT);
         try {
-            String ip = PropertiesUtil.getString(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_IP);
-            int port = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_PORT);
             bind(ip,port);
-        }catch (IOException | InterruptedException e){
+        }catch (InterruptedException e){
             LOGGER.error(e.getMessage(),e);
             throw e;
         }

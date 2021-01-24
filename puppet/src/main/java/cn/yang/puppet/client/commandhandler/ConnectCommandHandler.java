@@ -1,15 +1,13 @@
 package cn.yang.puppet.client.commandhandler;
 
+import cn.yang.common.command.Commands;
 import cn.yang.common.dto.Request;
 import cn.yang.common.dto.Response;
-import cn.yang.common.command.Commands;
+import cn.yang.common.exception.CommandHandlerException;
 import cn.yang.common.util.PropertiesUtil;
 import cn.yang.puppet.client.constant.ConfigConstants;
-import cn.yang.common.exception.CommandHandlerException;
+import cn.yang.puppet.client.constant.ExceptionMessageConstants;
 import cn.yang.puppet.client.constant.MessageConstants;
-import cn.yang.puppet.client.exception.HeartBeatException;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.ScheduledFuture;
 import org.springframework.util.StringUtils;
@@ -18,7 +16,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Cool-Coding
@@ -31,12 +28,8 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
     private HeartBeatAndScreenSnapShotTaskManagement taskManagement;
 
     public ConnectCommandHandler() throws CommandHandlerException{
-        try {
-            host = PropertiesUtil.getString(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_IP);
-            port = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_PORT);
-        }catch (IOException e){
-            throw new CommandHandlerException(e.getMessage(),e);
-        }
+        host = PropertiesUtil.getString(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_IP);
+        port = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_PORT);
     }
 
     @Override
@@ -52,24 +45,20 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
 
                 //reset();
 
-                try {
-                    //为减少带宽负载，发送屏幕截图时不再发送心跳，当屏幕截图发送完后，继续发送心跳，
-                    //启动一个线程，进行周期性检查，管理心跳与屏幕截图任务
-                    taskManagement = new HeartBeatAndScreenSnapShotTaskManagement(ctx);
-                    int interval = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.TASK_CHECK_INTERVAL);
-                    ctx.executor().scheduleAtFixedRate(() -> {
-                        try {
-                            taskManagement.check();
-                        } catch (IOException e) {
-                            error(taskManagement, e.getMessage());
-                            throw new RuntimeException(e);
-                        }
-                    }, 0, interval, TimeUnit.MILLISECONDS);
 
-                } catch (IOException e) {
-                    ctx.executor().shutdownGracefully();
-                    throw new HeartBeatException(e.getMessage(), e);
-                }
+                //为减少带宽负载，发送屏幕截图时不再发送心跳，当屏幕截图发送完后，继续发送心跳，
+                //启动一个线程，进行周期性检查，管理心跳与屏幕截图任务
+                taskManagement = new HeartBeatAndScreenSnapShotTaskManagement(ctx);
+                int interval = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.TASK_CHECK_INTERVAL);
+                ctx.executor().scheduleAtFixedRate(() -> {
+                    try {
+                        taskManagement.check();
+                    } catch (IOException e) {
+                        error(taskManagement, e.getMessage());
+                        throw new RuntimeException(e);
+                    }
+                }, 0, interval, TimeUnit.MILLISECONDS);
+
             }else if(count > 1){
                 if(taskManagement!=null) taskManagement.setCtx(ctx);
             }
@@ -167,18 +156,22 @@ public class ConnectCommandHandler extends AbstractPuppetCommandHandler {
         private Runnable screenSnapShotTask = new Runnable(){
             @Override
             public void run() {
-                final byte[] bytes = REPLAY.getScreenSnapshot();
-                if (isDifferentFrom(bytes)) {
-                    final Request request = buildRequest(Commands.SCREEN, bytes);
-                    if (request != null) {
-                        if (isAvaliable(ctx)) {
-                            debug(request, MessageConstants.SEND_A_SCREENSNAPSHOT, host, String.valueOf(port));
-                            ctx.writeAndFlush(request);
+                try {
+                    final byte[] bytes = REPLAY.getScreenSnapshot();
+                    if (isDifferentFrom(bytes)) {
+                        final Request request = buildRequest(Commands.SCREEN, bytes);
+                        if (request != null) {
+                            if (isAvaliable(ctx)) {
+                                debug(request, MessageConstants.SEND_A_SCREENSNAPSHOT, host, String.valueOf(port));
+                                ctx.writeAndFlush(request);
+                            }
                         }
+                    } else {
+                        //如果屏幕相同，则不发送屏幕，发送心跳
+                        heartBeatTask.run();
                     }
-                }else{
-                    //如果屏幕相同，则不发送屏幕，发送心跳
-                    heartBeatTask.run();
+                }catch (Exception e) {
+                    error(this, ExceptionMessageConstants.CAPTURE_SCREEN_ERROR);
                 }
             }
 

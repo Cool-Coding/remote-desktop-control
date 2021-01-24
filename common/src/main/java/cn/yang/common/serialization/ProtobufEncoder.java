@@ -4,7 +4,6 @@ import cn.yang.common.dto.Request;
 import cn.yang.common.dto.Response;
 import cn.yang.common.util.SerializationUtil;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import org.slf4j.Logger;

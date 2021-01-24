@@ -1,12 +1,11 @@
 package cn.yang.master.client.commandhandler;
 
 import cn.yang.common.command.Commands;
-import cn.yang.common.dto.Request;
-import cn.yang.common.dto.Response;
 import cn.yang.common.command.handler.ICommandHandler;
 import cn.yang.common.constant.Constants;
 import cn.yang.common.constant.ExceptionMessageConstants;
-import cn.yang.common.exception.CommandHandlerException;
+import cn.yang.common.dto.Request;
+import cn.yang.common.dto.Response;
 import cn.yang.common.exception.ResponseHandleException;
 import cn.yang.common.generator.SequenceGenerate;
 import cn.yang.common.util.BeanUtil;

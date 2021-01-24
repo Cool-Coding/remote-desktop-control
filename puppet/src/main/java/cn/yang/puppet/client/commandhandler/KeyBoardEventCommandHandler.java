@@ -2,12 +2,9 @@ package cn.yang.puppet.client.commandhandler;
 
 import cn.yang.common.InputEvent.MasterKeyEvent;
 import cn.yang.common.dto.Response;
-import cn.yang.common.exception.CommandHandlerException;
 import cn.yang.puppet.client.constant.ExceptionMessageConstants;
 import cn.yang.puppet.client.exception.NullValueException;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.awt.*;
 
 /**
  * @author Cool-Coding

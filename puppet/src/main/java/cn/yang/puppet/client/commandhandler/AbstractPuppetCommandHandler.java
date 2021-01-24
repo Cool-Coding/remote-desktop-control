@@ -1,15 +1,17 @@
 package cn.yang.puppet.client.commandhandler;
 
 import cn.yang.common.command.Commands;
+import cn.yang.common.command.handler.ICommandHandler;
+import cn.yang.common.constant.Constants;
 import cn.yang.common.constant.ExceptionMessageConstants;
 import cn.yang.common.dto.Request;
 import cn.yang.common.dto.Response;
-import cn.yang.common.command.handler.ICommandHandler;
-import cn.yang.common.constant.Constants;
 import cn.yang.common.exception.ResponseHandleException;
 import cn.yang.common.generator.SequenceGenerate;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.common.util.MacUtils;
+import cn.yang.common.util.PropertiesUtil;
+import cn.yang.puppet.client.constant.ConfigConstants;
 import cn.yang.puppet.client.ui.IReplay;
 import cn.yang.puppet.client.ui.MessageDialog;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import javax.swing.*;
 import java.util.Arrays;
 
 /**
@@ -36,9 +37,10 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
     private static final SequenceGenerate generator=BeanUtil.getBean(SequenceGenerate.class);
 
     /**
-     * 桌面控制器
+     * robot
      */
-    protected static final IReplay REPLAY = BeanUtil.getBean(IReplay.class);
+    protected static IReplay REPLAY;
+
     /**
      * 标识:是否正处于被控制中
      */
@@ -54,6 +56,10 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
      */
     private  static byte[] previousScreen;
 
+    public AbstractPuppetCommandHandler() {
+        String robot = PropertiesUtil.getString(ConfigConstants.CONFIG_FILE_PATH,ConfigConstants.ROBOT);
+        REPLAY  = BeanUtil.getBean(robot);
+    }
     @Override
     public void handle(ChannelHandlerContext ctx, Response response) throws Exception {
         final Enum<Commands> command = response.getCommand();
@@ -91,7 +97,7 @@ public abstract class AbstractPuppetCommandHandler implements ICommandHandler<Re
     }
 
     void error(Object object,String message){
-        LOGGER.error("{}:{}",object.getClass().getCanonicalName(),message);
+        LOGGER.error("{}:{}",object.getClass().getName(),message);
     }
 
     void debug(Response response,String... message){

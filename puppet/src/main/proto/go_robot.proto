@@ -1,0 +1,39 @@
+syntax = "proto3";
+package service;
+
+message Point {
+  uint32 x = 1;
+  uint32 y = 2;
+}
+
+message MouseButton {
+  uint32 x = 1;
+}
+
+message MouseScrolledRequest {
+  uint32 distance = 2;
+}
+
+message Empty {
+
+}
+
+message CaptureScreenRequest {
+  uint32 width = 1;
+  uint32 height = 2;
+}
+
+message CaptureScreenResponse {
+  bytes bitmap = 1;
+}
+
+service GoRobot {
+  rpc MouseMove(Point) returns(Empty) {};
+  rpc MouseClick(MouseButton) returns(Empty) {};
+  rpc MouseDoubleClick(MouseButton) returns(Empty) {};
+  rpc MousePressed(MouseButton) returns(Empty) {};
+  rpc MouseReleased(MouseButton) returns(Empty) {};
+  rpc MouseScrolledUp(MouseScrolledRequest) returns(Empty) {};
+  rpc MouseScrolledDown(MouseScrolledRequest) returns(Empty) {};
+  rpc CaptureScreen(CaptureScreenRequest) returns(stream CaptureScreenResponse) {};
+}

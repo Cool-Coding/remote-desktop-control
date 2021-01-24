@@ -1,8 +1,6 @@
 package cn.yang.master.client;
 
 import cn.yang.master.client.ui.IMasterDesktop;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 

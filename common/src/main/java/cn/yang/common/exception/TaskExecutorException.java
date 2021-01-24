@@ -1,7 +1,5 @@
 package cn.yang.common.exception;
 
-import java.util.concurrent.ExecutionException;
-
 /**
  * @author Cool-Coding
  * @date 2018/7/25

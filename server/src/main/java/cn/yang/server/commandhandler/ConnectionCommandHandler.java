@@ -1,9 +1,9 @@
 package cn.yang.server.commandhandler;
 
-import cn.yang.common.dto.Request;
-import cn.yang.common.dto.Response;
 import cn.yang.common.command.Commands;
 import cn.yang.common.constant.Constants;
+import cn.yang.common.dto.Request;
+import cn.yang.common.dto.Response;
 import cn.yang.common.generator.PuppetNameGenerate;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.server.netty.ChannelPair;
@@ -11,10 +11,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.springframework.util.StringUtils;
 
-import static cn.yang.common.constant.ExceptionMessageConstants.ILLEGAL_STATUS;
+import static cn.yang.common.constant.ExceptionMessageConstants.*;
 import static cn.yang.server.constant.MessageConstants.CONNECTION_SUCCEED;
-import static cn.yang.common.constant.ExceptionMessageConstants.CONNECTION_EXIST;
-import static cn.yang.common.constant.ExceptionMessageConstants.WRONG_CLIENT_TYPE;
 
 /**
  * @author Cool-Coding

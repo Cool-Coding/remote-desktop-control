@@ -1,17 +1,16 @@
 package cn.yang.master.client.netty;
 
-import cn.yang.common.netty.ChannelInitializer;
-import cn.yang.common.dto.Request;
 import cn.yang.common.command.Commands;
 import cn.yang.common.constant.Constants;
+import cn.yang.common.dto.Request;
 import cn.yang.common.generator.SequenceGenerate;
+import cn.yang.common.netty.ChannelInitializer;
 import cn.yang.common.netty.INettyClient;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.common.util.MacUtils;
-import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.common.util.PropertiesUtil;
 import cn.yang.master.client.constant.ConfigConstants;
-
+import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.master.client.exception.MasterChannelHandlerException;
 import cn.yang.master.client.exception.MasterClientException;
 import io.netty.bootstrap.Bootstrap;
@@ -19,14 +18,9 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
-
-import javax.swing.*;
-import java.io.IOException;
 
 /**
  * @author Cool-Coding
@@ -52,12 +46,9 @@ public class MasterNettyClient implements INettyClient{
      */
     public void init(){
         group = new NioEventLoopGroup();
-        try {
-            host = PropertiesUtil.getString(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_IP);
-            port = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_PORT);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        host = PropertiesUtil.getString(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_IP);
+        port = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_PORT);
+
     }
 
     /**

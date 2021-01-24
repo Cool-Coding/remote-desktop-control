@@ -67,7 +67,7 @@ public abstract class AbstractDisplayPuppet implements IDisplayPuppet {
         final MouseListener mouseListener = new MouseListener(AbstractDisplayPuppet.this);
         jFrame.addKeyListener(keyBoardListener);
         imageJpanel.addMouseListener(mouseListener);
-        imageJpanel.addMouseMotionListener(mouseListener);
+//        imageJpanel.addMouseMotionListener(mouseListener);
         imageJpanel.addMouseWheelListener(mouseListener);
     }
 

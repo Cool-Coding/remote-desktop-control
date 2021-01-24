@@ -2,8 +2,8 @@ package cn.yang.puppet.client.commandhandler;
 
 import cn.yang.common.dto.Response;
 import cn.yang.puppet.client.constant.ExceptionMessageConstants;
+import cn.yang.puppet.client.constant.PuppetDynamicSetting;
 import cn.yang.puppet.client.exception.NullValueException;
-import cn.yang.puppet.client.ui.impl.PuppetDesktop;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -26,7 +26,6 @@ public class QualityCommandHandler extends AbstractPuppetCommandHandler {
             throw new ClassCastException(ExceptionMessageConstants.QUALITY_EVENT_VALUE_ERROR);
         }
 
-
-        ((PuppetDesktop) getReplay()).setQuality((Integer)result);
+        PuppetDynamicSetting.quality = ((Integer)result);
     }
 }

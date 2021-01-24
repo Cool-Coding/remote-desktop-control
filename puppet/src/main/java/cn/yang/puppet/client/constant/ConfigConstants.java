@@ -18,4 +18,11 @@ public class ConfigConstants {
     public static final String ERROR_COUNT="error.count";
     public static final String SCREEN_REFRESH_FREQUENCY="screen.refresh.frequency";
 
+    /**
+     * goRobot   使用robotgo实现
+     * javaRobot 使用java自带robot实现
+     */
+    public static final String ROBOT = "robot";
+    public static final String GO_ROBOT_ENDPOINT = "go.robot.endpoint";
+
 }

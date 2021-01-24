@@ -1,7 +1,5 @@
 package cn.yang.common.InputEvent;
 
-import java.awt.event.KeyEvent;
-
 /**
  * @author Cool-Coding
  *         2018/7/26

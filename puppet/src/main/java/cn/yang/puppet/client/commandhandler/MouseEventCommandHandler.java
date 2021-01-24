@@ -50,10 +50,6 @@ public class MouseEventCommandHandler extends AbstractPuppetCommandHandler {
 
         if(mouseEvent.isMousePressed()){
             REPLAY.mousePress(mouseEvent);
-            /**
-             * 同键盘按键一样，为了处理按下之后的延迟，按下后即释放
-             */
-            REPLAY.mouseRelease(mouseEvent);
         }
 
         if(mouseEvent.isMouseReleased()){

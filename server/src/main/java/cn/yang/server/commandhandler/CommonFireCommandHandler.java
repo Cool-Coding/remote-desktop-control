@@ -28,7 +28,7 @@ public class CommonFireCommandHandler extends AbstractServerCommandHandler{
 
         //发送数据
         final Channel puppetChannel = channelPair.getPuppetChannel();
-        Response response=null;
+        Response response;
         response = buildResponse(request,request.getCommand(),request.getValue());
         puppetChannel.writeAndFlush(response);
     }

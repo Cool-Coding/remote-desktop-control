@@ -1,10 +1,9 @@
 package cn.yang.puppet.client.netty;
 
-import cn.yang.common.util.CommandHandlerLoader;
 import cn.yang.common.command.handler.ICommandHandler;
 import cn.yang.common.dto.Response;
+import cn.yang.common.util.CommandHandlerLoader;
 import cn.yang.common.util.PropertiesUtil;
-import cn.yang.puppet.client.commandhandler.AbstractPuppetCommandHandler;
 import cn.yang.puppet.client.constant.ConfigConstants;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

@@ -1,21 +1,19 @@
 package cn.yang.server.commandhandler;
 
-import cn.yang.common.dto.Request;
-import cn.yang.common.util.TaskExecutors;
 import cn.yang.common.command.Commands;
+import cn.yang.common.dto.Request;
 import cn.yang.common.exception.ServerException;
 import cn.yang.common.exception.TaskExecutorException;
 import cn.yang.common.util.PropertiesUtil;
+import cn.yang.common.util.TaskExecutors;
 import cn.yang.server.netty.ChannelPair;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
 import static cn.yang.common.constant.ExceptionMessageConstants.CONNECTION_EXIST;
-import static cn.yang.server.constant.MessageConstants.CONNECTION_SUCCEED;
 import static cn.yang.common.constant.ExceptionMessageConstants.CONNECT_PUPPET_FAILED;
-import static cn.yang.server.constant.ConfigConstants.CONFIG_FILE_PATH;
-import static cn.yang.server.constant.ConfigConstants.MASTER_CONNECT_PUPPET_RETRY_INTERVAL;
-import static cn.yang.server.constant.ConfigConstants.MASTER_CONNECT_PUPPET_RETRY_TIMES;
+import static cn.yang.server.constant.ConfigConstants.*;
+import static cn.yang.server.constant.MessageConstants.CONNECTION_SUCCEED;
 
 /**
  * @author Cool-Coding

@@ -1,8 +1,8 @@
 package cn.yang.master.client.ui.impl;
 
-import cn.yang.common.util.TaskExecutors;
 import cn.yang.common.command.Commands;
 import cn.yang.common.util.BeanUtil;
+import cn.yang.common.util.TaskExecutors;
 import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.master.client.constant.MessageConstants;
 import cn.yang.master.client.exception.MasterClientException;
@@ -13,7 +13,10 @@ import org.springframework.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.HashMap;
 

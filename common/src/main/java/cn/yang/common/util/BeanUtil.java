@@ -27,6 +27,10 @@ public class BeanUtil implements BeanFactoryAware {
         return (T)beanFactory.getBean(aclass);
     }
 
+    public static <T> T getBean(String name){
+        return (T)beanFactory.getBean(name);
+    }
+
     public static <T> T getBean(Class<T> aclass,Object... args){
         return (T)beanFactory.getBean(aclass,args);
     }

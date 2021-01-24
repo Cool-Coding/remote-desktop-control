@@ -2,9 +2,7 @@ package cn.yang.common.InputEvent;
 
 import java.util.Arrays;
 
-import static java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
-import static java.awt.event.InputEvent.BUTTON2_DOWN_MASK;
-import static java.awt.event.InputEvent.BUTTON3_DOWN_MASK;
+import static java.awt.event.InputEvent.*;
 
 /**
  * @author Cool-Coding

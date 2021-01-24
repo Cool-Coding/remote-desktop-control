@@ -5,10 +5,10 @@ heartbeat.interval=2000
 reconnect.interval=2000
 
 #向控制端发送屏幕截图间隔时间(ms)
-screen.refresh.frequency=1000
+screen.refresh.frequency=200
 
 #心跳或发送屏幕截图任务检查时间间隔(ms)
-task.check.interval=1000
+task.check.interval=200
 
 #服务器IP地址
 #server.ip=144.34.157.127
@@ -19,3 +19,9 @@ server.port=1234
 
 #接收到服务器错误消息超过这个阀值就断开连接
 error.count=5
+
+#robot的实例方式;可选javaRobot、goRobot
+robot=goRobot
+
+#goRobot的IP:PORT,只有当robot实现方式是goRobot时才有意义
+go.robot.endpoint=127.0.0.1:12345

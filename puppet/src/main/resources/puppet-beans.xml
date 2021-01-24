@@ -37,5 +37,10 @@
     <!--sequence generator-->
     <bean id="generator" class="cn.yang.common.generator.impl.SimpleSequenceGenerator" />
 
-    <bean id="messageDialog" class="cn.yang.puppet.client.ui.MessageDialog" scope="prototype" />
+    <bean id="messageDialog" class="cn.yang.puppet.client.ui.MessageDialog" scope="prototype" >
+        <constructor-arg value="java.lang.String"/>
+    </bean>
+
+    <bean id="goRobot" name="goRobot" class="cn.yang.puppet.client.robot.GoRobotReplay"/>
+    <bean id="javaRobot" name="javaRobot" class="cn.yang.puppet.client.robot.JavaRobotReplay"/>
 </beans>

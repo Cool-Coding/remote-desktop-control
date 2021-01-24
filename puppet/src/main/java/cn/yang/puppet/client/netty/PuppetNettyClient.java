@@ -1,13 +1,12 @@
 package cn.yang.puppet.client.netty;
 
 import cn.yang.common.netty.ChannelInitializer;
-import cn.yang.common.util.TaskExecutors;
-import cn.yang.common.command.Commands;
 import cn.yang.common.netty.INettyClient;
+import cn.yang.common.util.PropertiesUtil;
+import cn.yang.common.util.TaskExecutors;
 import cn.yang.puppet.client.commandhandler.AbstractPuppetCommandHandler;
 import cn.yang.puppet.client.constant.ConfigConstants;
 import cn.yang.puppet.client.constant.ExceptionMessageConstants;
-import cn.yang.common.util.PropertiesUtil;
 import cn.yang.puppet.client.exception.PuppetClientException;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -16,7 +15,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.IOException;
 
 /**
  * @author Cool-Coding
@@ -41,12 +39,8 @@ public class PuppetNettyClient implements INettyClient {
 
     public void init() throws PuppetClientException{
         group = new NioEventLoopGroup();
-        try {
-            host = PropertiesUtil.getString(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_IP);
-            port = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_PORT);
-        }catch (IOException e){
-            throw new PuppetClientException(e.getMessage(),e);
-        }
+        host = PropertiesUtil.getString(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_IP);
+        port = PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.SERVER_PORT);
     }
 
     @Override
@@ -65,13 +59,9 @@ public class PuppetNettyClient implements INettyClient {
                     LOGGER.error(e.getMessage(), e);
                 } finally {
                     //如果连接断开了，重新与服务器连接
-                    try {
-                        int interval=PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.RECONNECT_INTERVAL);
-                        LOGGER.error(ExceptionMessageConstants.DISCONNECT_TO_SERVER, host, port,interval);
-                        TaskExecutors.submit(this::connect,interval );
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    int interval=PropertiesUtil.getInt(ConfigConstants.CONFIG_FILE_PATH, ConfigConstants.RECONNECT_INTERVAL);
+                    LOGGER.error(ExceptionMessageConstants.DISCONNECT_TO_SERVER, host, port,interval);
+                    TaskExecutors.submit(this::connect,interval );
                 }
             }else {
                 throw new RuntimeException(ExceptionMessageConstants.PUPPET_HANDLER_ERROR);

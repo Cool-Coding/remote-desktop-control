@@ -2,7 +2,6 @@ package cn.yang.master.client.commandhandler;
 
 import cn.yang.common.command.Commands;
 import cn.yang.common.dto.Response;
-import cn.yang.common.exception.CommandHandlerException;
 import cn.yang.master.client.constant.ExceptionMessageConstants;
 import cn.yang.master.client.exception.FireCommandHandlerException;
 import io.netty.channel.ChannelHandlerContext;

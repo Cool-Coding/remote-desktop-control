@@ -1,13 +1,10 @@
 package cn.yang.master.client.commandhandler;
 
 import cn.yang.common.dto.Response;
-import cn.yang.common.exception.CommandHandlerException;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.master.client.constant.MessageConstants;
 import cn.yang.master.client.ui.IMasterDesktop;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.awt.image.BufferedImage;
 
 /**
  * @author Cool-Coding

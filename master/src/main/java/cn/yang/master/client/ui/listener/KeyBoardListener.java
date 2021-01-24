@@ -4,8 +4,8 @@ import cn.yang.common.InputEvent.MasterKeyEvent;
 import cn.yang.common.command.Commands;
 import cn.yang.common.util.BeanUtil;
 import cn.yang.master.client.exception.MasterClientException;
-import cn.yang.master.client.ui.IDisplayPuppet;
 import cn.yang.master.client.netty.MasterNettyClient;
+import cn.yang.master.client.ui.IDisplayPuppet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
